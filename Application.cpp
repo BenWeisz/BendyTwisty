@@ -2,6 +2,8 @@
 // Defined before OpenGL and GLUT includes to avoid deprecation messages
 #define GL_SILENCE_DEPRECATION
 #include <GLFW/glfw3.h>
+#include <extern/glm/glm.hpp>
+#include <extern/glm/gtc/matrix_transform.hpp>
 #endif
 
 #include <iostream>
@@ -53,10 +55,10 @@ int main(void) {
 
     // Generate the model
     GLfloat triangle[] = {
-        -0.25f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
-        0.25f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f};
+        -0.25f, 0.5f, -1.0f, 1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -1.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f,
+        0.25f, 0.5f, -1.0f, 1.0f, 1.0f, 1.0f};
 
     VertexBuffer vbo((GLvoid*)triangle, 24 * sizeof(GLfloat));
     VertexBufferLayout layout;
@@ -74,6 +76,11 @@ int main(void) {
     vao.Unbind();
 
     ShaderProgram shader("../res/base.vert", "../res/base.frag");
+    glm::mat4 u_Test = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
+    // glm::mat4 u_Test = glm::mat4(1.0f);
+    shader.Bind();
+    shader.SetUniformMat4f("u_Test", u_Test);
+    shader.Unbind();
 
     // const char* shaderSource = ShaderProgram::readShaderFile("../res/base.vert");
 

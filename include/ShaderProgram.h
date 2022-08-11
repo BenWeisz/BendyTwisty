@@ -3,6 +3,7 @@
 #define GL_SILENCE_DEPRECATION
 
 #include <OpenGL/gl3.h>
+#include <extern/glm/glm.hpp>
 #include <fstream>
 #include <iostream>
 
@@ -13,6 +14,7 @@ class ShaderProgram {
     void Bind() const;
     void Unbind() const;
     GLint LoadCompileShader(const char *shaderPath, const GLenum shaderType);
+    void SetUniformMat4f(const char *uniformName, const glm::mat4 &mat);
 
    private:
     GLuint m_RendererID;
@@ -37,4 +39,5 @@ class ShaderProgram {
 
         return source;
     }
+    const GLint GetUniformLocation(const char *uniformName) const;
 };
