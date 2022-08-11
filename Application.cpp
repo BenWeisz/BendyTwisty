@@ -53,7 +53,7 @@ int main(void) {
     std::cout << "OpenGL version supported: " << version << std::endl;
 
     // Generate the model
-    const Model* model = ModelFactory::SimplePlane();
+    const Model* model = ModelFactory::CheckeredPlane(1.0f, 1.0f, 2, 2);
     const Entity entity(model);
 
     ShaderProgram shader("../res/base.vert", "../res/base.frag");
