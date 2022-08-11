@@ -8,11 +8,10 @@
 
 #include <iostream>
 
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
 #include "ShaderProgram.h"
+#include "Model.h"
+#include "ModelFactory.h"
+#include "Entity.h"
 
 const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
@@ -54,33 +53,16 @@ int main(void) {
     std::cout << "OpenGL version supported: " << version << std::endl;
 
     // Generate the model
-    GLfloat triangle[] = {
-        -0.25f, 0.5f, -1.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f,
-        0.25f, 0.5f, -1.0f, 1.0f, 1.0f, 1.0f};
-
-    VertexBuffer vbo((GLvoid*)triangle, 24 * sizeof(GLfloat));
-    VertexBufferLayout layout;
-    layout.Push<GLfloat>(3);
-    layout.Push<GLfloat>(3);
-
-    GLuint indexBufferData[] = {
-        0, 1, 2, 0, 2, 3};
-
-    IndexBuffer ibo((const GLvoid*)indexBufferData, 6 * sizeof(GLuint));
-
-    VertexArray vao;
-    vao.Bind();
-    vao.AddBuffer(vbo, layout);
-    vao.Unbind();
+    const Model* model = ModelFactory::SimplePlane();
+    const Entity entity(model);
 
     ShaderProgram shader("../res/base.vert", "../res/base.frag");
-    glm::mat4 u_Test = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
+
+    // glm::mat4 u_Test = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
     // glm::mat4 u_Test = glm::mat4(1.0f);
-    shader.Bind();
-    shader.SetUniformMat4f("u_Test", u_Test);
-    shader.Unbind();
+    // shader.Bind();
+    // shader.SetUniformMat4f("u_Test", u_Test);
+    // shader.Unbind();
 
     // const char* shaderSource = ShaderProgram::readShaderFile("../res/base.vert");
 
@@ -90,14 +72,17 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.Bind();
-        vao.Bind();
-        ibo.Bind();
+        // vao.Bind();
+        // ibo.Bind();
 
         // glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const GLvoid*)0);
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const GLvoid*)0);
 
-        ibo.Unbind();
-        vao.Unbind();
+        // ibo.Unbind();
+        // vao.Unbind();
+
+        entity.Draw();
+
         shader.Unbind();
 
         // Swap front and back buffers

@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model() {}
+Model::Model() : m_IndexCount(0), m_VBO(nullptr), m_IBO(nullptr), m_VAO(nullptr) {}
 
 Model::~Model() {
     if (m_VBO != nullptr)
@@ -33,6 +33,7 @@ void Model::SetVertexData(const GLfloat *data, const unsigned int count) {
 
 void Model::SetIndexData(const GLuint *data, const unsigned int count) {
     m_IBO = new IndexBuffer((const GLvoid *)data, count * sizeof(GLuint));
+    m_IndexCount = count;
 }
 
 void Model::PackModel(const std::vector<LayoutElement> &layoutElements) {
@@ -48,4 +49,8 @@ void Model::PackModel(const std::vector<LayoutElement> &layoutElements) {
         m_VAO->AddBuffer(*m_VBO, layout);
         m_VAO->Unbind();
     }
+}
+
+void Model::Draw() const {
+    glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, (const GLvoid *)0);
 }
