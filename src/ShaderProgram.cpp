@@ -40,11 +40,11 @@ ShaderProgram::~ShaderProgram() {
     glDeleteProgram(m_RendererID);
 }
 
-void ShaderProgram::Bind() {
+void ShaderProgram::Bind() const {
     glUseProgram(m_RendererID);
 }
 
-void ShaderProgram::Unbind() {
+void ShaderProgram::Unbind() const {
     glUseProgram(0);
 }
 

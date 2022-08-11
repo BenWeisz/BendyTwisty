@@ -10,8 +10,8 @@ class ShaderProgram {
    public:
     ShaderProgram(const char *vertexShaderPath, const char *fragmentShaderPath);
     ~ShaderProgram();
-    void Bind();
-    void Unbind();
+    void Bind() const;
+    void Unbind() const;
     GLint LoadCompileShader(const char *shaderPath, const GLenum shaderType);
 
    private:

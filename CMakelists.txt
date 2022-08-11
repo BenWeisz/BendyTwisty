@@ -10,6 +10,7 @@ set(CMAKE_BUILD_TYPE Debug)
 add_executable(ModelEngine Application.cpp)
 target_sources(ModelEngine PUBLIC
     src/VertexBuffer.cpp
+    src/IndexBuffer.cpp
     src/VertexArray.cpp
     src/ShaderProgram.cpp)
 

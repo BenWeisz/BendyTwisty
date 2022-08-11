@@ -8,6 +8,7 @@ VertexBuffer::VertexBuffer(const GLvoid *data, const GLsizeiptr size) {
 }
 
 VertexBuffer::~VertexBuffer() {
+    VertexBuffer::Unbind();
     glDeleteBuffers(1, &m_RendererID);
 }
 

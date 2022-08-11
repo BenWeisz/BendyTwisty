@@ -8,6 +8,7 @@
 
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "ShaderProgram.h"
 
@@ -52,14 +53,20 @@ int main(void) {
 
     // Generate the model
     GLfloat triangle[] = {
-        0.0f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f,
+        -0.25f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f,
         -0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f};
+        0.0f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
+        0.25f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f};
 
-    VertexBuffer vbo((GLvoid*)triangle, 18 * sizeof(GLfloat));
+    VertexBuffer vbo((GLvoid*)triangle, 24 * sizeof(GLfloat));
     VertexBufferLayout layout;
     layout.Push<GLfloat>(3);
     layout.Push<GLfloat>(3);
+
+    GLuint indexBufferData[] = {
+        0, 1, 2, 0, 2, 3};
+
+    IndexBuffer ibo((const GLvoid*)indexBufferData, 6 * sizeof(GLuint));
 
     VertexArray vao;
     vao.Bind();
@@ -77,9 +84,12 @@ int main(void) {
 
         shader.Bind();
         vao.Bind();
+        ibo.Bind();
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        // glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const GLvoid*)0);
 
+        ibo.Unbind();
         vao.Unbind();
         shader.Unbind();
 

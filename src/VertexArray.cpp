@@ -7,6 +7,8 @@ VertexArray::VertexArray() {
 }
 
 VertexArray::~VertexArray() {
+    VertexArray::Unbind();
+    glDeleteVertexArrays(1, &m_RendererID);
 }
 
 void VertexArray::Bind() const {
