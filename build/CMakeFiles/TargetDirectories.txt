@@ -1,0 +1,3 @@
+/Users/benweisz/dev/graphics/rendering/ModelEngine/build/CMakeFiles/rebuild_cache.dir
+/Users/benweisz/dev/graphics/rendering/ModelEngine/build/CMakeFiles/edit_cache.dir
+/Users/benweisz/dev/graphics/rendering/ModelEngine/build/CMakeFiles/ModelEngine.dir
