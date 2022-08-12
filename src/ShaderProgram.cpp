@@ -73,7 +73,7 @@ GLint ShaderProgram::LoadCompileShader(const char* shaderPath, const GLenum shad
     return (GLint)shaderID;
 }
 
-void ShaderProgram::SetUniformMat4f(const char* uniformName, const glm::mat4& mat) {
+void ShaderProgram::SetUniformMat4fv(const char* uniformName, const glm::mat4& mat) {
     GLint uniformID = ShaderProgram::GetUniformLocation(uniformName);
     if (uniformID == -1)
         return;
@@ -81,11 +81,23 @@ void ShaderProgram::SetUniformMat4f(const char* uniformName, const glm::mat4& ma
     glUniformMatrix4fv(uniformID, 1, GL_FALSE, &mat[0][0]);
 }
 
-const GLint ShaderProgram::GetUniformLocation(const char* uniformName) const {
-    GLint v;
-    glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORMS, &v);
-    std::cout << "v: " << v << std::endl;
+void ShaderProgram::SetUniform3fv(const char* uniformName, const GLfloat* val) {
+    GLint uniformID = ShaderProgram::GetUniformLocation(uniformName);
+    if (uniformID == -1)
+        return;
 
+    glUniform3fv(uniformID, 1, val);
+}
+
+void ShaderProgram::SetUniform2fv(const char* uniformName, const GLfloat* val) {
+    GLint uniformID = ShaderProgram::GetUniformLocation(uniformName);
+    if (uniformID == -1)
+        return;
+
+    glUniform2fv(uniformID, 1, val);
+}
+
+const GLint ShaderProgram::GetUniformLocation(const char* uniformName) const {
     GLint uniformID = glGetUniformLocation(m_RendererID, uniformName);
     if (uniformID == -1) {
         std::cerr << "[ERROR]: Cannot find uniform of name: " << uniformName << std::endl;

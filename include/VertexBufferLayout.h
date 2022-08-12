@@ -48,6 +48,7 @@ class VertexBufferLayout {
                 .type = element.type};
 
             m_LayoutElements.push_back(e);
+            m_Stride += element.count * LayoutElement::GetSizeOfType(element.type);
         }
     }
 

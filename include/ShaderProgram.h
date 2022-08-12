@@ -15,7 +15,9 @@ class ShaderProgram {
     void Bind() const;
     void Unbind() const;
     GLint LoadCompileShader(const char *shaderPath, const GLenum shaderType);
-    void SetUniformMat4f(const char *uniformName, const glm::mat4 &mat);
+    void SetUniformMat4fv(const char *uniformName, const glm::mat4 &mat);
+    void SetUniform3fv(const char *uniformName, const GLfloat *val);
+    void SetUniform2fv(const char *uniformName, const GLfloat *val);
 
    private:
     GLuint m_RendererID;
