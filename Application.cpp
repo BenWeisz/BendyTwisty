@@ -13,6 +13,8 @@
 #include "Model.h"
 #include "ModelFactory.h"
 #include "Entity.h"
+#include "World.h"
+#include "WorldFactory.h"
 
 const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
