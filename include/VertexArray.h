@@ -10,6 +10,7 @@
 class VertexArray {
    private:
     GLuint m_RendererID;
+    int m_NextAttr;
 
    public:
     VertexArray();

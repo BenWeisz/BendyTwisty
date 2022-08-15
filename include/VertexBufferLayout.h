@@ -41,17 +41,6 @@ class VertexBufferLayout {
         m_Stride += count * LayoutElement::GetSizeOfType(GL_FLOAT);
     }
 
-    inline void PushMany(const std::vector<LayoutElement>& layoutElements) {
-        for (auto& element : layoutElements) {
-            LayoutElement e = {
-                .count = element.count,
-                .type = element.type};
-
-            m_LayoutElements.push_back(e);
-            m_Stride += element.count * LayoutElement::GetSizeOfType(element.type);
-        }
-    }
-
     inline const std::vector<LayoutElement>& GetLayoutElements() const { return m_LayoutElements; }
     inline const GLsizei GetStride() const { return m_Stride; }
 };

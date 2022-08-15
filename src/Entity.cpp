@@ -1,3 +1,4 @@
+/*
 #include "Entity.h"
 
 Entity::Entity(const Model* model) : m_Model(model) {
@@ -22,4 +23,4 @@ void Entity::Draw() const {
 
 glm::mat4 Entity::GetTransform() const {
     return m_Translation * m_Rotation * m_Scale;
-}
+}*/

@@ -1,4 +1,4 @@
-#include "Model.h"
+/*#include "Model.h"
 
 Model::Model() : m_IndexCount(0), m_VBO(nullptr), m_IBO(nullptr), m_VAO(nullptr) {}
 
@@ -53,4 +53,4 @@ void Model::PackModel(const std::vector<LayoutElement> &layoutElements) {
 
 void Model::Draw() const {
     glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, (const GLvoid *)0);
-}
+}*/

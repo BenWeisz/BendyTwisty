@@ -6,8 +6,10 @@
 
 class IndexBuffer {
    public:
+    IndexBuffer();
     IndexBuffer(const GLvoid *data, const GLsizeiptr size);
     ~IndexBuffer();
+    void SetData(const GLvoid *data, const GLsizeiptr size);
     void Bind() const;
     void Unbind() const;
 

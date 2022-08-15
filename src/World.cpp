@@ -1,4 +1,4 @@
-#include "World.h"
+/*#include "World.h"
 
 World::World() {}
 
@@ -18,4 +18,4 @@ void World::Draw() {
         shaderEntity.entity->Draw();
         shaderEntity.shader->Unbind();
     }
-}
+}*/

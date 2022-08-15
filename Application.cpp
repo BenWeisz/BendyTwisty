@@ -57,7 +57,7 @@ int main(void) {
     std::cout << "OpenGL version supported: " << version << std::endl;
 
     // Generate the model
-    const Model* model = ModelFactory::SimplePlane();
+    /*const Model* model = ModelFactory::SimplePlane();
     const Entity entity(model);
 
     // ShaderProgram shader("../res/base.vert", "../res/base.frag");
@@ -78,15 +78,42 @@ int main(void) {
 
     glm::mat4 mod = glm::mat4(1.0f);
 
-    glm::mat4 mvp = proj * view * mod;
+    glm::mat4 mvp = proj * view * mod;*/
 
-    ShaderProgram shader("../res/checkered.vert", "../res/checkered.frag");
-    shader.Bind();
+    // ShaderProgram shader("../res/checkered.vert", "../res/checkered.frag");
+    ShaderProgram shader("../res/base.vert", "../res/base.frag");
+    /*shader.Bind();
     shader.SetUniform3fv("u_LightColor", &lightColor[0]);
     shader.SetUniform3fv("u_DarkColor", &darkColor[0]);
     shader.SetUniform2fv("u_Resolution", &resolution[0]);
     shader.SetUniformMat4fv("u_MVP", mvp);
-    shader.Unbind();
+    shader.Unbind();*/
+
+    GLfloat data1[] = {
+        0.0f, 0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f};
+
+    VertexBuffer vbo1;
+    vbo1.Bind();
+    vbo1.SetData(data1, 9 * sizeof(GLfloat));
+    vbo1.Unbind();
+
+    VertexBufferLayout vbo1Layout;
+    vbo1Layout.Push<GLfloat>(3);
+
+    GLuint iboData[] = {
+        0, 1, 2};
+
+    IndexBuffer ibo;
+    ibo.Bind();
+    ibo.SetData(iboData, 3 * sizeof(GLuint));
+    ibo.Unbind();
+
+    VertexArray vao;
+    vao.Bind();
+    vao.AddBuffer(vbo1, vbo1Layout);
+    vao.Unbind();
 
     // Now we have a current OpenGL context, we can use OpenGL normally
     while (!glfwWindowShouldClose(window)) {
@@ -94,7 +121,11 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.Bind();
-        entity.Draw();
+        vao.Bind();
+        ibo.Bind();
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const GLvoid*)0);
+        ibo.Unbind();
+        vao.Unbind();
         shader.Unbind();
 
         // Swap front and back buffers

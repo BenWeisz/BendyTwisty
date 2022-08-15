@@ -1,9 +1,7 @@
 #include "VertexArray.h"
 
-VertexArray::VertexArray() {
+VertexArray::VertexArray() : m_NextAttr(0) {
     glGenVertexArrays(1, &m_RendererID);
-    glBindVertexArray(m_RendererID);
-    glBindVertexArray(0);
 }
 
 VertexArray::~VertexArray() {
@@ -26,10 +24,12 @@ void VertexArray::AddBuffer(const VertexBuffer& vbo, const VertexBufferLayout& l
     unsigned int offset = 0;
     for (int i = 0; i < elements.size(); i++) {
         const auto& element = elements[i];
-        glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, element.count, element.type, GL_FALSE, layout.GetStride(), (const GLvoid*)offset);
+        glEnableVertexAttribArray(m_NextAttr + i);
+        glVertexAttribPointer(m_NextAttr + i, element.count, element.type, GL_FALSE, layout.GetStride(), (const GLvoid*)offset);
         offset += element.count * LayoutElement::GetSizeOfType(element.type);
     }
+
+    m_NextAttr += elements.size();
 
     vbo.Unbind();
 }
