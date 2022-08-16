@@ -18,14 +18,15 @@ class Model {
     ~Model();
     void Bind() const;
     void Unbind() const;
-    void SetVertexData(const GLfloat *data, const unsigned int count);
+    void AddVertexData(const GLvoid *data, const unsigned int count, const GLenum type);
     void SetIndexData(const GLuint *data, const unsigned int count);
-    void PackModel(const std::vector<LayoutElement> &layoutElements);
+    void AddBufferLayout(const std::vector<LayoutElement> layoutElements);
+    void PackModel();
     void Draw() const;
 
    private:
-    VertexArray *m_VAO;
-    VertexBuffer *m_VBO;
-    IndexBuffer *m_IBO;
-    unsigned int m_IndexCount;
+    std::vector<VertexBuffer> m_VBOs;
+    IndexBuffer m_IBO;
+    VertexArray m_VAO;
+    std::vector<VertexBufferLayout> m_BufferLayouts;
 };

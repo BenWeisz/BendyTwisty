@@ -23,13 +23,14 @@ class ModelFactory {
             0, 1, 2,
             2, 1, 3};
 
-        model->SetVertexData(buffer, 12);
+        model->AddVertexData((GLvoid*)buffer, 12, GL_FLOAT);
         model->SetIndexData(indices, 6);
 
         std::vector<LayoutElement> layoutElements;
-        layoutElements.push_back((LayoutElement){.count = 3, .type = GL_FLOAT});
+        layoutElements.push_back((LayoutElement){3, GL_FLOAT});
+        model->AddBufferLayout(layoutElements);
 
-        model->PackModel(layoutElements);
+        model->PackModel();
 
         return model;
     }

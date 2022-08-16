@@ -1,56 +1,63 @@
-/*#include "Model.h"
+#include "Model.h"
 
-Model::Model() : m_IndexCount(0), m_VBO(nullptr), m_IBO(nullptr), m_VAO(nullptr) {}
+Model::Model() {}
 
-Model::~Model() {
-    if (m_VBO != nullptr)
-        delete m_VBO;
-
-    if (m_IBO != nullptr)
-        delete m_IBO;
-
-    if (m_VAO != nullptr)
-        delete m_VAO;
-}
+Model::~Model() {}
 
 void Model::Bind() const {
-    m_VAO->Bind();
-    m_IBO->Bind();
+    m_VAO.Bind();
+    m_IBO.Bind();
 }
 
 void Model::Unbind() const {
-    assert(m_VBO != nullptr);
-    assert(m_IBO != nullptr);
-    assert(m_VAO != nullptr);
-
-    m_IBO->Unbind();
-    m_VAO->Unbind();
+    m_IBO.Unbind();
+    m_VAO.Unbind();
 }
 
-void Model::SetVertexData(const GLfloat *data, const unsigned int count) {
-    m_VBO = new VertexBuffer((const GLvoid *)data, count * sizeof(GLfloat));
+void Model::AddVertexData(const GLvoid *data, const unsigned int count, const GLenum type) {
+    GLsizeiptr size;
+    switch (type) {
+        case GL_FLOAT:
+            size = count * sizeof(GLfloat);
+            break;
+        default:
+            size = count * 4;
+            break;
+    }
+
+    m_VBOs.emplace_back(data, size);
 }
 
 void Model::SetIndexData(const GLuint *data, const unsigned int count) {
-    m_IBO = new IndexBuffer((const GLvoid *)data, count * sizeof(GLuint));
-    m_IndexCount = count;
+    m_IBO.Bind();
+    m_IBO.SetData(data, count);
+    m_IBO.Unbind();
 }
 
-void Model::PackModel(const std::vector<LayoutElement> &layoutElements) {
-    if (m_VAO == nullptr) {
-        assert(m_VBO != nullptr);
-        assert(m_IBO != nullptr);
+void Model::AddBufferLayout(const std::vector<LayoutElement> layoutElements) {
+    if (!layoutElements.size())
+        return;
 
-        VertexBufferLayout layout = VertexBufferLayout();
-        layout.PushMany(layoutElements);
+    m_BufferLayouts.emplace_back();
 
-        m_VAO = new VertexArray();
-        m_VAO->Bind();
-        m_VAO->AddBuffer(*m_VBO, layout);
-        m_VAO->Unbind();
+    for (auto &element : layoutElements) {
+        GLint count = element.count;
+        GLenum type = element.type;
+        if (type == GL_FLOAT)
+            m_BufferLayouts[m_BufferLayouts.size() - 1].Push<GLfloat>(count);
     }
 }
 
+void Model::PackModel() {
+    assert(m_VBOs.size() == m_BufferLayouts.size());
+    m_VAO.Bind();
+
+    for (int i = 0; i < m_VBOs.size(); i++)
+        m_VAO.AddBuffer(m_VBOs[i], m_BufferLayouts[i]);
+
+    m_VAO.Unbind();
+}
+
 void Model::Draw() const {
-    glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, (const GLvoid *)0);
-}*/
+    glDrawElements(GL_TRIANGLES, m_IBO.GetIndexCount(), GL_UNSIGNED_INT, (const GLvoid *)0);
+}

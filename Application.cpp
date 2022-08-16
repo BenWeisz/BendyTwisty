@@ -89,31 +89,25 @@ int main(void) {
     shader.SetUniformMat4fv("u_MVP", mvp);
     shader.Unbind();*/
 
-    GLfloat data1[] = {
-        0.0f, 0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f};
+    // GLfloat data1[] = {
+    //     0.0f, 0.5f, 0.0f,
+    //     -0.5f, -0.5f, 0.0f,
+    //     0.5f, -0.5f, 0.0f};
 
-    VertexBuffer vbo1;
-    vbo1.Bind();
-    vbo1.SetData(data1, 9 * sizeof(GLfloat));
-    vbo1.Unbind();
+    // GLuint iboData[] = {
+    //     0, 1, 2};
 
-    VertexBufferLayout vbo1Layout;
-    vbo1Layout.Push<GLfloat>(3);
+    // Model model;
+    // model.AddVertexData((GLvoid*)data1, 9, GL_FLOAT);
+    // model.SetIndexData(iboData, 3);
 
-    GLuint iboData[] = {
-        0, 1, 2};
+    // std::vector<LayoutElement> layoutElements;
+    // layoutElements.push_back((LayoutElement){3, GL_FLOAT});
+    // model.AddBufferLayout(layoutElements);
 
-    IndexBuffer ibo;
-    ibo.Bind();
-    ibo.SetData(iboData, 3 * sizeof(GLuint));
-    ibo.Unbind();
+    // model.PackModel();
 
-    VertexArray vao;
-    vao.Bind();
-    vao.AddBuffer(vbo1, vbo1Layout);
-    vao.Unbind();
+    const Model* model = ModelFactory::SimplePlane();
 
     // Now we have a current OpenGL context, we can use OpenGL normally
     while (!glfwWindowShouldClose(window)) {
@@ -121,11 +115,11 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.Bind();
-        vao.Bind();
-        ibo.Bind();
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const GLvoid*)0);
-        ibo.Unbind();
-        vao.Unbind();
+
+        model->Bind();
+        model->Draw();
+        model->Unbind();
+
         shader.Unbind();
 
         // Swap front and back buffers
@@ -134,6 +128,8 @@ int main(void) {
         // Poll for and process events
         glfwPollEvents();
     }
+
+    delete model;
 
     glfwTerminate();
 
