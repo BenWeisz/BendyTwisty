@@ -34,4 +34,43 @@ class ModelFactory {
 
         return model;
     }
+    static const Model* ColorCube() {
+        Model* model = new Model();
+
+        GLfloat buffer[] = {
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5, 0.0f, 0.0f, 1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5, 0.0f, 0.0f, 0.0f};
+
+        GLuint indices[] = {
+            0, 2, 1,
+            3, 2, 0,
+            4, 6, 5,
+            7, 6, 4,
+            4, 0, 1,
+            4, 1, 5,
+            7, 3, 2,
+            7, 2, 6,
+            4, 7, 0,
+            0, 7, 3,
+            1, 2, 5,
+            5, 2, 6};
+
+        model->AddVertexData((GLvoid*)buffer, 48, GL_FLOAT);
+
+        std::vector<LayoutElement> layoutElements;
+        layoutElements.push_back((LayoutElement){3, GL_FLOAT});
+        layoutElements.push_back((LayoutElement){3, GL_FLOAT});
+        model->AddBufferLayout(layoutElements);
+
+        model->SetIndexData(indices, 36);
+        model->PackModel();
+
+        return model;
+    }
 };

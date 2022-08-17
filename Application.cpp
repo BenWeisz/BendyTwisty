@@ -64,16 +64,18 @@ int main(void) {
 
     Camera camera = Camera(WIDTH, HEIGHT, initialEye, initialCenter, initialUp);
 
-    ShaderProgram shader("../res/base.vert", "../res/base.frag");
+    ShaderProgram shader("../res/colorcube.vert", "../res/colorcube.frag");
     shader.Bind();
     shader.SetUniformMat4fv("u_MVP", camera.GetCameraMatrix());
     shader.Unbind();
 
     // Generate the model
-    const Model* model = ModelFactory::SimplePlane();
+    const Model* model = ModelFactory::ColorCube();
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
+
+    glEnable(GL_DEPTH_TEST);
 
     // Now we have a current OpenGL context, we can use OpenGL normally
     while (!glfwWindowShouldClose(window)) {
