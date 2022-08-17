@@ -21,12 +21,10 @@ const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
 const char* WINDOW_NAME = "ModelEngine";
 
-/*
- * Callback to handle the "close window" event, once the user pressed the Escape key.
- */
-static void QuitCallback(GLFWwindow* window, int key, int scancode, int action, int _mods) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+static void ExitCallback(GLFWwindow* window, int key, int scancode, int action, int _mods) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
 }
 
 int main(void) {
@@ -48,7 +46,10 @@ int main(void) {
         return -1;
     }
     // Close the window as soon as the Escape key has been pressed
-    glfwSetKeyCallback(window, QuitCallback);
+    glfwSetKeyCallback(window, ExitCallback);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     // Makes the window context current
     glfwMakeContextCurrent(window);
 
@@ -57,11 +58,11 @@ int main(void) {
     std::cout << "Renderer: " << renderer << std::endl;
     std::cout << "OpenGL version supported: " << version << std::endl;
 
-    glm::vec3 eye = glm::vec3(0.0f, 0.0f, -2.0f);
-    glm::vec3 center = glm::vec3(0.0f, 0.0f, 1.0f);
-    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 initialEye = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 initialCenter = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 initialUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    Camera camera = Camera(WIDTH, HEIGHT, eye, center, up);
+    Camera camera = Camera(WIDTH, HEIGHT, initialEye, initialCenter, initialUp);
 
     ShaderProgram shader("../res/base.vert", "../res/base.frag");
     shader.Bind();
@@ -71,13 +72,21 @@ int main(void) {
     // Generate the model
     const Model* model = ModelFactory::SimplePlane();
 
+    float deltaTime = 0.0f;
+    float lastTime = (float)glfwGetTime();
+
     // Now we have a current OpenGL context, we can use OpenGL normally
     while (!glfwWindowShouldClose(window)) {
+        float currentTime = (float)glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        camera.ProcessInput(window, deltaTime);
+
         // Render
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.Bind();
-        camera.Move(glm::vec3(0.0f, 0.0f, 0.01f));
         shader.SetUniformMat4fv("u_MVP", camera.GetCameraMatrix());
 
         model->Bind();
