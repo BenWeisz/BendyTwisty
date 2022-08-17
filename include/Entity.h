@@ -4,19 +4,22 @@
 
 #include <OpenGL/gl3.h>
 #include <extern/glm/glm.hpp>
+#include <extern/glm/gtc/matrix_transform.hpp>
+#include <extern/glm/gtx/transform.hpp>
 
 #include "Model.h"
 
 class Entity {
    public:
-    Entity(const Model* model);
+    Entity();
     ~Entity();
-    void Draw() const;
+    void Draw(const float deltaTime) const;
+    void Update(const float deltaTime);
     glm::mat4 GetTransform() const;
 
-   private:
-    const Model* m_Model;
-    glm::mat4 m_Translation;
-    glm::mat4 m_Rotation;
-    glm::mat4 m_Scale;
+   protected:
+    Model* m_Model;
+    glm::vec3 m_Translation;
+    glm::vec3 m_Rotation;
+    glm::vec3 m_Scale;
 };

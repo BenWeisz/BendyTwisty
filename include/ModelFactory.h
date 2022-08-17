@@ -10,7 +10,7 @@
 
 class ModelFactory {
    public:
-    static const Model* SimplePlane() {
+    static Model* SimplePlane() {
         Model* model = new Model();
 
         GLfloat buffer[] = {
@@ -34,7 +34,7 @@ class ModelFactory {
 
         return model;
     }
-    static const Model* ColorCube() {
+    static Model* ColorCube() {
         Model* model = new Model();
 
         GLfloat buffer[] = {

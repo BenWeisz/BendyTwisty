@@ -17,6 +17,8 @@
 #include "WorldFactory.h"
 #include "Camera.h"
 
+#include "custom/Box.h"
+
 const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
 const char* WINDOW_NAME = "ModelEngine";
@@ -64,13 +66,13 @@ int main(void) {
 
     Camera camera = Camera(WIDTH, HEIGHT, initialEye, initialCenter, initialUp);
 
+    Box box;
+    glm::mat4 u_MVP = camera.GetCameraMatrix() * box.GetTransform();
+
     ShaderProgram shader("../res/colorcube.vert", "../res/colorcube.frag");
     shader.Bind();
-    shader.SetUniformMat4fv("u_MVP", camera.GetCameraMatrix());
+    shader.SetUniformMat4fv("u_MVP", u_MVP);
     shader.Unbind();
-
-    // Generate the model
-    const Model* model = ModelFactory::ColorCube();
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
@@ -89,11 +91,11 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.Bind();
-        shader.SetUniformMat4fv("u_MVP", camera.GetCameraMatrix());
+        u_MVP = camera.GetCameraMatrix() * box.GetTransform();
+        shader.SetUniformMat4fv("u_MVP", u_MVP);
 
-        model->Bind();
-        model->Draw();
-        model->Unbind();
+        box.Update(deltaTime);
+        box.Draw(deltaTime);
 
         shader.Unbind();
 
@@ -103,8 +105,6 @@ int main(void) {
         // Poll for and process events
         glfwPollEvents();
     }
-
-    delete model;
 
     glfwTerminate();
 
