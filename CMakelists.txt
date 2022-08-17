@@ -13,7 +13,8 @@ target_sources(ModelEngine PUBLIC
     src/IndexBuffer.cpp
     src/VertexArray.cpp
     src/ShaderProgram.cpp
-    src/Model.cpp)
+    src/Model.cpp
+    src/Camera.cpp)
 
 find_package(glfw3 3.4 REQUIRED)
 find_package(OpenGL REQUIRED)
