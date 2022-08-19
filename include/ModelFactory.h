@@ -34,7 +34,7 @@ class ModelFactory {
 
         return model;
     }
-    static Model* ColorCube() {
+    static Model* RainbowCube() {
         Model* model = new Model();
 
         GLfloat buffer[] = {

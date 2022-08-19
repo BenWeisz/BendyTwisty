@@ -16,9 +16,9 @@
 #include "World.h"
 #include "WorldFactory.h"
 #include "ModelRenderer.h"
+#include "Light.h"
 
-#include "custom/Box.h"
-#include "custom/Light.h"
+#include "custom/RainbowBox.h"
 
 const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
@@ -64,14 +64,14 @@ int main(void) {
 
     ModelRenderer modelRenderer(window, WIDTH, HEIGHT);
 
-    Box box;
+    RainbowBox rainbowBox;
     Light light;
 
-    ShaderProgram shader("../res/colorcube.vert", "../res/colorcube.frag");
+    ShaderProgram rainboxShader("../res/rainbow.vert", "../res/rainbow.frag");
     ShaderProgram lightShader("../res/base.vert", "../res/base.frag");
 
-    modelRenderer.AddEntityShaderPair(&box, &shader);
-    modelRenderer.AddEntityShaderPair(&light, &lightShader);
+    modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
+    // modelRenderer.AddEntityShaderPair(&light, &lightShader);
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
