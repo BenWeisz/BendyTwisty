@@ -7,14 +7,15 @@
 #include "Model.h"
 #include "Transform.h"
 #include "Light.h"
+#include "ShaderProgram.h"
 
 class Entity {
    public:
     Entity();
     ~Entity();
-    void Draw(const float deltaTime) const;
-    void Draw(const float deltaTime, Light* const light) const;
-    void Update(const float deltaTime);
+    virtual void Draw(const float deltaTime, ShaderProgram* const shader) const;
+    virtual void Draw(const float deltaTime, ShaderProgram* const shader, Light* const light) const;
+    virtual void Update(const float deltaTime);
     Transform GetTransform() const;
     bool IsLightingEnabled() const;
 

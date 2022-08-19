@@ -19,6 +19,7 @@
 #include "Light.h"
 
 #include "custom/RainbowBox.h"
+#include "custom/Plane.h"
 
 const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
@@ -65,12 +66,17 @@ int main(void) {
     ModelRenderer modelRenderer(window, WIDTH, HEIGHT);
 
     RainbowBox rainbowBox;
-    Light light;
+    Plane plane;
 
     ShaderProgram rainboxShader("../res/rainbow.vert", "../res/rainbow.frag");
+    ShaderProgram flatShader("../res/base.vert", "../res/flat.frag");
     ShaderProgram lightShader("../res/base.vert", "../res/base.frag");
 
+    Light light(&lightShader);
+    modelRenderer.SetLight(&light);
+
     modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
+    modelRenderer.AddEntityShaderPair(&plane, &flatShader);
     // modelRenderer.AddEntityShaderPair(&light, &lightShader);
 
     float deltaTime = 0.0f;

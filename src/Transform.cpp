@@ -24,7 +24,7 @@ void Transform::SetScale(const float scaleX, const float scaleY, const float sca
 }
 
 void Transform::SetRotation(const float rotationX, const float rotationY, const float rotationZ) {
-    m_Rotation = glm::vec3(rotationX, rotationY, rotationZ);
+    m_Rotation = glm::vec3(rotationX * (M_PI / 180.0f), rotationY * (M_PI / 180.0f), rotationZ * (M_PI / 180.0f));
 }
 
 void Transform::SetTranslation(const float translationX, const float translationY, const float translationZ) {
