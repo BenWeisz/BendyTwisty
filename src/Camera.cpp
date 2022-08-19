@@ -73,10 +73,10 @@ void Camera::ProcessInput(GLFWwindow *window, const float deltaTime) {
     m_Yaw += xOffset;
     m_Pitch += yOffset;
 
-    if (m_Pitch > 89.0f)
-        m_Pitch = 89.0f;
-    if (m_Pitch < -89.0f)
-        m_Pitch = -89.0f;
+    if (m_Pitch > 44.0f)
+        m_Pitch = 44.0f;
+    if (m_Pitch < -44.0f)
+        m_Pitch = -44.0f;
 
     glm::vec3 dir;
     dir.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));

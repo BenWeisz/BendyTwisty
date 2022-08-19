@@ -15,7 +15,8 @@ target_sources(ModelEngine PUBLIC
     src/ShaderProgram.cpp
     src/Model.cpp
     src/Camera.cpp
-    src/Entity.cpp)
+    src/Entity.cpp
+    src/ModelRenderer.cpp)
 
 find_package(glfw3 3.4 REQUIRED)
 find_package(OpenGL REQUIRED)

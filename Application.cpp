@@ -15,9 +15,10 @@
 #include "Entity.h"
 #include "World.h"
 #include "WorldFactory.h"
-#include "Camera.h"
+#include "ModelRenderer.h"
 
 #include "custom/Box.h"
+#include "custom/Light.h"
 
 const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
@@ -51,6 +52,7 @@ int main(void) {
     glfwSetKeyCallback(window, ExitCallback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     // Makes the window context current
     glfwMakeContextCurrent(window);
@@ -60,19 +62,16 @@ int main(void) {
     std::cout << "Renderer: " << renderer << std::endl;
     std::cout << "OpenGL version supported: " << version << std::endl;
 
-    glm::vec3 initialEye = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 initialCenter = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 initialUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-    Camera camera = Camera(WIDTH, HEIGHT, initialEye, initialCenter, initialUp);
+    ModelRenderer modelRenderer(window, WIDTH, HEIGHT);
 
     Box box;
-    glm::mat4 u_MVP = camera.GetCameraMatrix() * box.GetTransform();
+    Light light;
 
     ShaderProgram shader("../res/colorcube.vert", "../res/colorcube.frag");
-    shader.Bind();
-    shader.SetUniformMat4fv("u_MVP", u_MVP);
-    shader.Unbind();
+    ShaderProgram lightShader("../res/base.vert", "../res/base.frag");
+
+    modelRenderer.AddEntityShaderPair(&box, &shader);
+    modelRenderer.AddEntityShaderPair(&light, &lightShader);
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
@@ -85,19 +84,12 @@ int main(void) {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        camera.ProcessInput(window, deltaTime);
+        modelRenderer.Update(deltaTime);
 
         // Render
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        shader.Bind();
-        u_MVP = camera.GetCameraMatrix() * box.GetTransform();
-        shader.SetUniformMat4fv("u_MVP", u_MVP);
-
-        box.Update(deltaTime);
-        box.Draw(deltaTime);
-
-        shader.Unbind();
+        modelRenderer.Draw(deltaTime);
 
         // Swap front and back buffers
         glfwSwapBuffers(window);

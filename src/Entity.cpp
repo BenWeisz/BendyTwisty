@@ -3,6 +3,7 @@
 #include <iostream>
 
 Entity::Entity() {
+    m_Model = nullptr;
     m_Translation = glm::vec3(0.0f, 0.0f, 0.0f);
     m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     m_Scale = glm::vec3(1.0f, 1.0f, 1.0f);
