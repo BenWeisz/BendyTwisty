@@ -72,7 +72,7 @@ int main(void) {
     ShaderProgram flatShader("../res/base.vert", "../res/flat.frag");
     ShaderProgram lightShader("../res/base.vert", "../res/base.frag");
 
-    Light light(&lightShader);
+    Light light(&flatShader, glm::vec3(1.0f, 1.0f, 0.0f));
     modelRenderer.SetLight(&light);
 
     modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);

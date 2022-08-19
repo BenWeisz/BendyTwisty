@@ -9,10 +9,11 @@
 
 class Light {
    public:
-    Light(ShaderProgram* const shader);
+    Light(ShaderProgram* const shader, glm::vec3 color);
     void Draw(const float deltaTime) const;
     ShaderProgram* GetShader() const;
     Transform GetTransform() const;
+    glm::vec3 GetColor() const;
 
    private:
     Model* m_Model;
