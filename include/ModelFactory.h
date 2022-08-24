@@ -44,8 +44,8 @@ class ModelFactory {
             0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f};
 
         GLuint indices[] = {
-            1, 2, 0,
-            1, 2, 3};
+            1, 0, 2,
+            1, 3, 2};
 
         model->AddVertexData((GLvoid*)buffer, 24, GL_FLOAT);
         model->SetIndexData(indices, 6);
@@ -59,6 +59,47 @@ class ModelFactory {
 
         return model;
     }
+
+    static Model* NormalsCube() {
+        Model* model = new Model();
+
+        GLfloat buffer[] = {
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f};
+
+        GLuint indices[] = {
+            0, 2, 1,
+            0, 3, 2,
+            5, 7, 4,
+            5, 6, 7,
+            1, 6, 5,
+            1, 2, 6,
+            7, 0, 4,
+            7, 3, 0,
+            4, 1, 5,
+            4, 0, 1,
+            6, 3, 7,
+            6, 2, 3};
+
+        model->AddVertexData((GLvoid*)buffer, 48, GL_FLOAT);
+
+        std::vector<LayoutElement> layoutElements;
+        layoutElements.push_back((LayoutElement){3, GL_FLOAT});
+        layoutElements.push_back((LayoutElement){3, GL_FLOAT});
+        model->AddBufferLayout(layoutElements);
+
+        model->SetIndexData(indices, 36);
+        model->PackModel();
+
+        return model;
+    }
+
     static Model* RainbowCube() {
         Model* model = new Model();
 

@@ -28,7 +28,7 @@ void Transform::SetRotation(const float rotationX, const float rotationY, const 
 }
 
 void Transform::SetTranslation(const float translationX, const float translationY, const float translationZ) {
-    m_Translation = glm::vec3(translationX, translationY, -translationZ);
+    m_Translation = glm::vec3(translationX, translationY, translationZ);
 }
 
 glm::vec3 Transform::GetTranslation() const {

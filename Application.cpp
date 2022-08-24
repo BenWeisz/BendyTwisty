@@ -18,6 +18,7 @@
 
 #include "custom/RainbowBox.h"
 #include "custom/Plane.h"
+#include "custom/Box.h"
 
 const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
@@ -64,6 +65,7 @@ int main(void) {
 
     RainbowBox rainbowBox;
     Plane plane;
+    Box box;
 
     ShaderProgram rainboxShader("../res/rainbow.vert", "../res/rainbow.frag");
     ShaderProgram flatShader("../res/base.vert", "../res/flat.frag");
@@ -75,6 +77,7 @@ int main(void) {
 
     modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
     modelRenderer.AddEntityShaderPair(&plane, &flatPhongShader);
+    modelRenderer.AddEntityShaderPair(&box, &flatPhongShader);
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
