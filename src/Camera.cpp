@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera(const size_t width, const size_t height, const glm::vec3 &eye, const glm::vec3 &center, const glm::vec3 &up) : m_Eye(eye), m_CameraSpeed(2.5f), m_Sensitivity(0.1f), m_Yaw(-90.0f), m_Pitch(0.0f), m_FirstMouse(true) {
+Camera::Camera(const size_t width, const size_t height, const glm::vec3 &eye, const glm::vec3 &center, const glm::vec3 &up) : m_Eye(eye), m_CameraSpeed(5.0f), m_Sensitivity(0.1f), m_Yaw(-90.0f), m_Pitch(0.0f), m_FirstMouse(true) {
     m_Center = glm::normalize(center);
     m_Up = glm::normalize(up);
     m_Right = glm::normalize(glm::cross(m_Center, m_Up));

@@ -97,6 +97,14 @@ void ShaderProgram::SetUniform2fv(const char* uniformName, const GLfloat* val) {
     glUniform2fv(uniformID, 1, val);
 }
 
+void ShaderProgram::SetUniform1f(const char* uniformName, const GLfloat val) {
+    GLint uniformID = ShaderProgram::GetUniformLocation(uniformName);
+    if (uniformID == -1)
+        return;
+
+    glUniform1f(uniformID, val);
+}
+
 const GLint ShaderProgram::GetUniformLocation(const char* uniformName) const {
     GLint uniformID = glGetUniformLocation(m_RendererID, uniformName);
     if (uniformID == -1) {

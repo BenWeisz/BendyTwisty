@@ -17,6 +17,7 @@ class ShaderProgram {
     void SetUniformMat4fv(const char *uniformName, const glm::mat4 &mat);
     void SetUniform3fv(const char *uniformName, const GLfloat *val);
     void SetUniform2fv(const char *uniformName, const GLfloat *val);
+    void SetUniform1f(const char *uniformName, const GLfloat val);
 
    private:
     GLuint m_RendererID;

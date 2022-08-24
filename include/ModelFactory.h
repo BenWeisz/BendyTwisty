@@ -34,6 +34,31 @@ class ModelFactory {
 
         return model;
     }
+    static Model* NormalsPlane() {
+        Model* model = new Model();
+
+        GLfloat buffer[] = {
+            -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f,
+            0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f};
+
+        GLuint indices[] = {
+            1, 2, 0,
+            1, 2, 3};
+
+        model->AddVertexData((GLvoid*)buffer, 24, GL_FLOAT);
+        model->SetIndexData(indices, 6);
+
+        std::vector<LayoutElement> layoutElements;
+        layoutElements.push_back((LayoutElement){3, GL_FLOAT});
+        layoutElements.push_back((LayoutElement){3, GL_FLOAT});
+        model->AddBufferLayout(layoutElements);
+
+        model->PackModel();
+
+        return model;
+    }
     static Model* RainbowCube() {
         Model* model = new Model();
 

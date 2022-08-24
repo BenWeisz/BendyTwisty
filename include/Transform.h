@@ -12,6 +12,7 @@ class Transform {
     void SetScale(const float scaleX, const float scaleY, const float scaleZ);
     void SetRotation(const float rotationX, const float rotationY, const float rotationZ);
     void SetTranslation(const float translationX, const float translationY, const float translationZ);
+    glm::vec3 GetTranslation() const;
 
    private:
     glm::vec3 m_Scale;

@@ -13,8 +13,6 @@
 #include "Model.h"
 #include "ModelFactory.h"
 #include "Entity.h"
-#include "World.h"
-#include "WorldFactory.h"
 #include "ModelRenderer.h"
 #include "Light.h"
 
@@ -53,7 +51,6 @@ int main(void) {
     glfwSetKeyCallback(window, ExitCallback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     // Makes the window context current
     glfwMakeContextCurrent(window);
@@ -70,19 +67,20 @@ int main(void) {
 
     ShaderProgram rainboxShader("../res/rainbow.vert", "../res/rainbow.frag");
     ShaderProgram flatShader("../res/base.vert", "../res/flat.frag");
+    ShaderProgram flatPhongShader("../res/normals.vert", "../res/flatPhong.frag");
     ShaderProgram lightShader("../res/base.vert", "../res/base.frag");
 
-    Light light(&flatShader, glm::vec3(1.0f, 1.0f, 0.0f));
+    Light light(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
     modelRenderer.SetLight(&light);
 
     modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
-    modelRenderer.AddEntityShaderPair(&plane, &flatShader);
-    // modelRenderer.AddEntityShaderPair(&light, &lightShader);
+    modelRenderer.AddEntityShaderPair(&plane, &flatPhongShader);
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
 
     glEnable(GL_DEPTH_TEST);
+    glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
 
     // Now we have a current OpenGL context, we can use OpenGL normally
     while (!glfwWindowShouldClose(window)) {

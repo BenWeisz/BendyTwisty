@@ -8,13 +8,14 @@
 #include "Transform.h"
 #include "Light.h"
 #include "ShaderProgram.h"
+#include "Camera.h"
 
 class Entity {
    public:
     Entity();
     ~Entity();
     virtual void Draw(const float deltaTime, ShaderProgram* const shader) const;
-    virtual void Draw(const float deltaTime, ShaderProgram* const shader, Light* const light) const;
+    virtual void Draw(const float deltaTime, ShaderProgram* const shader, Light* const light, Camera* const camera) const;
     virtual void Update(const float deltaTime);
     Transform GetTransform() const;
     bool IsLightingEnabled() const;

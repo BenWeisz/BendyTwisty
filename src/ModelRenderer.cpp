@@ -13,11 +13,14 @@ ModelRenderer::~ModelRenderer() {
 }
 
 void ModelRenderer::Draw(const float deltaTime) {
-    m_Light->GetShader()->Bind();
+    ShaderProgram* lightShader = m_Light->GetShader();
+    lightShader->Bind();
+
     glm::mat4 mvp = m_Camera->GetCameraMatrix() * m_Light->GetTransform().GetMatrix();
-    m_Light->GetShader()->SetUniformMat4fv("u_MVP", mvp);
+    lightShader->SetUniformMat4fv("u_MVP", mvp);
+
     m_Light->Draw(deltaTime);
-    m_Light->GetShader()->Unbind();
+    lightShader->Unbind();
 
     for (auto& e : m_EntityShaderPairs) {
         e.shader->Bind();
@@ -25,7 +28,7 @@ void ModelRenderer::Draw(const float deltaTime) {
         e.shader->SetUniformMat4fv("u_MVP", mvp);
 
         if (e.entity->IsLightingEnabled()) {
-            e.entity->Draw(deltaTime, e.shader, m_Light);
+            e.entity->Draw(deltaTime, e.shader, m_Light, m_Camera);
         } else {
             e.entity->Draw(deltaTime, e.shader);
         }
@@ -35,6 +38,8 @@ void ModelRenderer::Draw(const float deltaTime) {
 
 void ModelRenderer::Update(const float deltaTime) {
     m_Camera->ProcessInput(m_Window, deltaTime);
+
+    m_Light->Update(deltaTime);
 
     for (auto& e : m_EntityShaderPairs) {
         e.entity->Update(deltaTime);
