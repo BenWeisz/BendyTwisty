@@ -1,6 +1,7 @@
 #version 410 core
 
 uniform vec3 u_LightPos;
+uniform vec3 u_LightColor;
 uniform vec3 u_ViewPos;
 
 uniform vec3 u_FlatColor;
@@ -24,7 +25,7 @@ void main(void) {
     vec3 reflectDir = reflect(-lightDir, normal);
     float specular = pow(max(dot(viewDir, reflectDir), 0.0), 100) * u_SpecularStrength;
 
-    vec3 total = (ambient + diffuse + specular) * u_FlatColor;
+    vec3 total = (ambient + diffuse + specular) * (u_FlatColor * u_LightColor);
 
     out_FragmentColor = vec4(total, 1.0);
 }
