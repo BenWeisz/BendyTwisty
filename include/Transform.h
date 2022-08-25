@@ -1,9 +1,9 @@
 #pragma once
 
-#include <extern/glm/glm.hpp>
-#include <extern/glm/glm.hpp>
-#include <extern/glm/gtc/matrix_transform.hpp>
-#include <extern/glm/gtx/transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 
 class Transform {
    public:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <extern/glm/glm.hpp>
+#include <glm/glm.hpp>
 
 #include "ModelFactory.h"
 #include "Transform.h"

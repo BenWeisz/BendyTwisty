@@ -3,8 +3,8 @@
 #define GL_SILENCE_DEPRECATION
 
 #include <GLFW/glfw3.h>
-#include <extern/glm/glm.hpp>
-#include <extern/glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 class Camera {
    public:

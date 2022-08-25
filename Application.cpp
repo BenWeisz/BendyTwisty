@@ -1,10 +1,15 @@
 #ifdef __APPLE__
 // Defined before OpenGL and GLUT includes to avoid deprecation messages
 #define GL_SILENCE_DEPRECATION
-#include <GLFW/glfw3.h>
-#include <extern/glm/glm.hpp>
-#include <extern/glm/gtc/matrix_transform.hpp>
 #endif
+
+// #include "extern/imgui/imgui.h"
+// #include "extern/imgui/imgui_impl_glfw.h"
+// #include "extern/imgui/imgui_impl_opengl3.h"
+
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <numeric>
@@ -67,10 +72,10 @@ int main(void) {
     Plane plane;
     Box box;
 
-    ShaderProgram rainboxShader("../res/rainbow.vert", "../res/rainbow.frag");
-    ShaderProgram flatShader("../res/base.vert", "../res/flat.frag");
-    ShaderProgram flatPhongShader("../res/normals.vert", "../res/flatPhong.frag");
-    ShaderProgram lightShader("../res/base.vert", "../res/base.frag");
+    ShaderProgram rainboxShader("../res/shaders/rainbow.vert", "../res/shaders/rainbow.frag");
+    ShaderProgram flatShader("../res/shaders/base.vert", "../res/shaders/flat.frag");
+    ShaderProgram flatPhongShader("../res/shaders/normals.vert", "../res/shaders/flatPhong.frag");
+    ShaderProgram lightShader("../res/shaders/base.vert", "../res/shaders/base.frag");
 
     Light light(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
     modelRenderer.SetLight(&light);

@@ -1,3 +1,4 @@
 **/.vscode/
 **/build/
 **/debug/
+extern/glm/.DS_Store

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <extern/glm/glm.hpp>
-#include <extern/glm/gtc/matrix_inverse.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 
 #include "ModelFactory.h"
 

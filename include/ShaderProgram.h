@@ -3,7 +3,7 @@
 #define GL_SILENCE_DEPRECATION
 
 #include <OpenGL/gl3.h>
-#include <extern/glm/glm.hpp>
+#include <glm/glm.hpp>
 #include <fstream>
 #include <iostream>
 
