@@ -1,6 +1,9 @@
 #include "Camera.h"
+#include <iostream>
 
-Camera::Camera(const size_t width, const size_t height, const glm::vec3 &eye, const glm::vec3 &center, const glm::vec3 &up) : m_Eye(eye), m_CameraSpeed(5.0f), m_Sensitivity(0.1f), m_Yaw(-90.0f), m_Pitch(0.0f), m_FirstMouse(true) {
+bool keyPPressed = false;
+
+Camera::Camera(const size_t width, const size_t height, const glm::vec3 &eye, const glm::vec3 &center, const glm::vec3 &up) : m_Eye(eye), m_CameraSpeed(5.0f), m_Sensitivity(0.1f), m_Yaw(-90.0f), m_Pitch(0.0f), m_FirstMouse(true), m_Active(true) {
     m_Center = glm::normalize(center);
     m_Up = glm::normalize(up);
     m_Right = glm::normalize(glm::cross(m_Center, m_Up));
@@ -43,49 +46,63 @@ float Camera::GetCameraSpeed() const {
 }
 
 void Camera::ProcessInput(GLFWwindow *window, const float deltaTime) {
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        Move(deltaTime * m_CameraSpeed * m_Center);
-    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        Move(deltaTime * m_CameraSpeed * -m_Center);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        Move(deltaTime * m_CameraSpeed * -m_Right);
-    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        Move(deltaTime * m_CameraSpeed * m_Right);
-
-    double xpos;
-    double ypos;
-    glfwGetCursorPos(window, &xpos, &ypos);
-
-    if (m_FirstMouse) {
-        m_MouseLastX = xpos;
-        m_MouseLastY = ypos;
-        m_FirstMouse = false;
+    auto event = glfwGetKey(window, GLFW_KEY_P);
+    if (event == GLFW_PRESS && !keyPPressed) {
+        keyPPressed = true;
+        m_Active = !m_Active;
+        if (m_Active)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        else
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    } else if (event == GLFW_RELEASE) {
+        keyPPressed = false;
     }
 
-    float xOffset = xpos - m_MouseLastX;
-    float yOffset = m_MouseLastY - ypos;
-    m_MouseLastX = xpos;
-    m_MouseLastY = ypos;
+    if (m_Active) {
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            Move(deltaTime * m_CameraSpeed * m_Center);
+        else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            Move(deltaTime * m_CameraSpeed * -m_Center);
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            Move(deltaTime * m_CameraSpeed * -m_Right);
+        else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            Move(deltaTime * m_CameraSpeed * m_Right);
 
-    xOffset *= m_Sensitivity;
-    yOffset *= m_Sensitivity;
+        double xpos;
+        double ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
 
-    m_Yaw += xOffset;
-    m_Pitch += yOffset;
+        if (m_FirstMouse) {
+            m_MouseLastX = xpos;
+            m_MouseLastY = ypos;
+            m_FirstMouse = false;
+        }
 
-    if (m_Pitch > 44.0f)
-        m_Pitch = 44.0f;
-    if (m_Pitch < -44.0f)
-        m_Pitch = -44.0f;
+        float xOffset = xpos - m_MouseLastX;
+        float yOffset = m_MouseLastY - ypos;
+        m_MouseLastX = xpos;
+        m_MouseLastY = ypos;
 
-    glm::vec3 dir;
-    dir.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-    dir.y = sin(glm::radians(m_Pitch));
-    dir.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-    m_Center = glm::normalize(dir);
+        xOffset *= m_Sensitivity;
+        yOffset *= m_Sensitivity;
 
-    dir.y = sin(glm::radians(m_Pitch + 90.0f));
-    m_Up = glm::normalize(dir);
+        m_Yaw += xOffset;
+        m_Pitch += yOffset;
 
-    m_Right = glm::normalize(glm::cross(m_Center, m_Up));
+        if (m_Pitch > 44.0f)
+            m_Pitch = 44.0f;
+        if (m_Pitch < -44.0f)
+            m_Pitch = -44.0f;
+
+        glm::vec3 dir;
+        dir.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+        dir.y = sin(glm::radians(m_Pitch));
+        dir.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+        m_Center = glm::normalize(dir);
+
+        dir.y = sin(glm::radians(m_Pitch + 90.0f));
+        m_Up = glm::normalize(dir);
+
+        m_Right = glm::normalize(glm::cross(m_Center, m_Up));
+    }
 }

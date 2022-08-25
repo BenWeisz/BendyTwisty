@@ -33,4 +33,5 @@ class Camera {
     float m_MouseLastX;
     float m_MouseLastY;
     bool m_FirstMouse;
+    bool m_Active;
 };
