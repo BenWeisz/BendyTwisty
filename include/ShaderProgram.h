@@ -6,22 +6,26 @@
 #include <glm/glm.hpp>
 #include <fstream>
 #include <iostream>
+#include <unordered_map>
+#include <algorithm>
+#include <string>
 
 class ShaderProgram {
    public:
-    ShaderProgram(const char *vertexShaderPath, const char *fragmentShaderPath);
+    ShaderProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
     ~ShaderProgram();
     void Bind() const;
     void Unbind() const;
-    GLint LoadCompileShader(const char *shaderPath, const GLenum shaderType);
-    void SetUniformMat4fv(const char *uniformName, const glm::mat4 &mat);
-    void SetUniform3fv(const char *uniformName, const GLfloat *val);
-    void SetUniform2fv(const char *uniformName, const GLfloat *val);
-    void SetUniform1f(const char *uniformName, const GLfloat val);
+    GLint LoadCompileShader(const std::string& shaderPath, const GLenum shaderType);
+    void SetUniformMat4fv(const std::string& uniformName, const glm::mat4& mat);
+    void SetUniform3fv(const std::string& uniformName, const GLfloat* val);
+    void SetUniform2fv(const std::string& uniformName, const GLfloat* val);
+    void SetUniform1f(const std::string& uniformName, const GLfloat val);
 
    private:
     GLuint m_RendererID;
-    static const char *readShaderFile(const char *path) {
+    std::unordered_map<std::string, GLint> m_UniformCache;
+    static const char* readShaderFile(const std::string& path) {
         // Open the file
         std::ifstream file(path);
         if (!file.is_open()) {
@@ -34,7 +38,7 @@ class ShaderProgram {
         size_t fileSize = file.tellg();
 
         // Read the file
-        char *source = new char[fileSize + 1];
+        char* source = new char[fileSize + 1];
         file.seekg(0, std::ios::beg);
         file.read(source, fileSize);
 
@@ -42,5 +46,5 @@ class ShaderProgram {
 
         return source;
     }
-    const GLint GetUniformLocation(const char *uniformName) const;
+    const GLint GetUniformLocation(const std::string& uniformName);
 };

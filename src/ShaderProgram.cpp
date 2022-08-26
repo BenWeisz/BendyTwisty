@@ -1,6 +1,6 @@
 #include "ShaderProgram.h"
 
-ShaderProgram::ShaderProgram(const char* vertexShaderPath, const char* fragmentShaderPath) {
+ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
     GLint vertexShaderID = ShaderProgram::LoadCompileShader(vertexShaderPath, GL_VERTEX_SHADER);
     if (vertexShaderID == -1)
         return;
@@ -48,7 +48,7 @@ void ShaderProgram::Unbind() const {
     glUseProgram(0);
 }
 
-GLint ShaderProgram::LoadCompileShader(const char* shaderPath, const GLenum shaderType) {
+GLint ShaderProgram::LoadCompileShader(const std::string& shaderPath, const GLenum shaderType) {
     const char* shaderSource = ShaderProgram::readShaderFile(shaderPath);
 
     if (shaderSource == nullptr)
@@ -73,7 +73,7 @@ GLint ShaderProgram::LoadCompileShader(const char* shaderPath, const GLenum shad
     return (GLint)shaderID;
 }
 
-void ShaderProgram::SetUniformMat4fv(const char* uniformName, const glm::mat4& mat) {
+void ShaderProgram::SetUniformMat4fv(const std::string& uniformName, const glm::mat4& mat) {
     GLint uniformID = ShaderProgram::GetUniformLocation(uniformName);
     if (uniformID == -1)
         return;
@@ -81,7 +81,7 @@ void ShaderProgram::SetUniformMat4fv(const char* uniformName, const glm::mat4& m
     glUniformMatrix4fv(uniformID, 1, GL_FALSE, &mat[0][0]);
 }
 
-void ShaderProgram::SetUniform3fv(const char* uniformName, const GLfloat* val) {
+void ShaderProgram::SetUniform3fv(const std::string& uniformName, const GLfloat* val) {
     GLint uniformID = ShaderProgram::GetUniformLocation(uniformName);
     if (uniformID == -1)
         return;
@@ -89,7 +89,7 @@ void ShaderProgram::SetUniform3fv(const char* uniformName, const GLfloat* val) {
     glUniform3fv(uniformID, 1, val);
 }
 
-void ShaderProgram::SetUniform2fv(const char* uniformName, const GLfloat* val) {
+void ShaderProgram::SetUniform2fv(const std::string& uniformName, const GLfloat* val) {
     GLint uniformID = ShaderProgram::GetUniformLocation(uniformName);
     if (uniformID == -1)
         return;
@@ -97,7 +97,7 @@ void ShaderProgram::SetUniform2fv(const char* uniformName, const GLfloat* val) {
     glUniform2fv(uniformID, 1, val);
 }
 
-void ShaderProgram::SetUniform1f(const char* uniformName, const GLfloat val) {
+void ShaderProgram::SetUniform1f(const std::string& uniformName, const GLfloat val) {
     GLint uniformID = ShaderProgram::GetUniformLocation(uniformName);
     if (uniformID == -1)
         return;
@@ -105,11 +105,19 @@ void ShaderProgram::SetUniform1f(const char* uniformName, const GLfloat val) {
     glUniform1f(uniformID, val);
 }
 
-const GLint ShaderProgram::GetUniformLocation(const char* uniformName) const {
-    GLint uniformID = glGetUniformLocation(m_RendererID, uniformName);
+const GLint ShaderProgram::GetUniformLocation(const std::string& uniformName) {
+    GLint uniformID;
+
+    auto elementFound = m_UniformCache.find(uniformName);
+    if (elementFound != m_UniformCache.end())
+        return elementFound->second;
+
+    uniformID = glGetUniformLocation(m_RendererID, uniformName.c_str());
+    m_UniformCache[uniformName] = uniformID;
     if (uniformID == -1) {
         std::cerr << "[ERROR]: Cannot find uniform of name: " << uniformName << std::endl;
         return -1;
     }
+
     return uniformID;
 }
