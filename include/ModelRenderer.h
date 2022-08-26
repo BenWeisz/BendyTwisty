@@ -23,6 +23,7 @@ class ModelRenderer {
     void Update(const float deltaTime);
     void AddEntityShaderPair(Entity* entity, ShaderProgram* shader);
     void SetLight(Light* light);
+    Camera* GetCamera() const;
 
    private:
     GLFWwindow* m_Window;

@@ -17,6 +17,7 @@ class Camera {
     glm::vec3 GetUp() const;
     glm::vec3 GetRight() const;
     float GetCameraSpeed() const;
+    void SetCameraSpeed(const float cameraSpeed);
     void ProcessInput(GLFWwindow *window, const float deltaTime);
     void MouseCallback(GLFWwindow *window, double xpos, double ypos);
 

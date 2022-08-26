@@ -1,9 +1,10 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 
 #include "ModelFactory.h"
+#include "Entity.h"
 
 class Plane : public Entity {
    public:
@@ -37,6 +38,10 @@ class Plane : public Entity {
 
         m_Model->Draw();
         m_Model->Unbind();
+    }
+
+    void SetColor(const float* color) {
+        m_Color = glm::make_vec3(color);
     }
 
    private:

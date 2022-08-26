@@ -53,3 +53,7 @@ void ModelRenderer::AddEntityShaderPair(Entity* entity, ShaderProgram* shader) {
 void ModelRenderer::SetLight(Light* light) {
     m_Light = light;
 }
+
+Camera* ModelRenderer::GetCamera() const {
+    return m_Camera;
+}

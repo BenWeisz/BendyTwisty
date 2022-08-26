@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include <iostream>
 
 bool keyPPressed = false;
 
@@ -43,6 +42,10 @@ glm::vec3 Camera::GetRight() const {
 
 float Camera::GetCameraSpeed() const {
     return m_CameraSpeed;
+}
+
+void Camera::SetCameraSpeed(const float cameraSpeed) {
+    m_CameraSpeed = cameraSpeed;
 }
 
 void Camera::ProcessInput(GLFWwindow *window, const float deltaTime) {

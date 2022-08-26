@@ -47,3 +47,7 @@ float Light::GetAmbientStrength() const {
 float Light::GetSpecularStrength() const {
     return m_SpecularStrength;
 }
+
+void Light::SetColor(const float* rgb) {
+    m_Color = glm::make_vec3(rgb);
+}

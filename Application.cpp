@@ -3,10 +3,6 @@
 #define GL_SILENCE_DEPRECATION
 #endif
 
-#include "imgui/imgui.h"
-#include "imgui/backends/imgui_impl_glfw.h"
-#include "imgui/backends/imgui_impl_opengl3.h"
-
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,6 +16,7 @@
 #include "Entity.h"
 #include "ModelRenderer.h"
 #include "Light.h"
+#include "EngineGui.h"
 
 #include "custom/RainbowBox.h"
 #include "custom/Plane.h"
@@ -55,7 +52,6 @@ int main(void) {
     }
     // Close the window as soon as the Escape key has been pressed
     glfwSetKeyCallback(window, ExitCallback);
-
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Makes the window context current
@@ -63,25 +59,7 @@ int main(void) {
     glfwSwapInterval(1);
 
     // Set up ImGui
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    (void)io;
-
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-    ImGui::StyleColorsDark();
-
-    ImGuiStyle& style = ImGui::GetStyle();
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-        style.WindowRounding = 0.0f;
-        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-    }
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 410");
+    EngineGui::Init(window);
 
     const GLubyte* renderer = glGetString(GL_RENDERER);
     const GLubyte* version = glGetString(GL_VERSION);
@@ -127,30 +105,15 @@ int main(void) {
 
         modelRenderer.Draw(deltaTime);
 
-        // Draw ImGui
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        bool test = false;
-        ImGui::Begin("Another Window", &test);
-        ImGui::Text("Hello from another window!");
-        if (ImGui::Button("Close Me"))
-            std::cout << "Close me" << std::endl;
-        ImGui::End();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-            GLFWwindow* backup_current_context = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backup_current_context);
-        }
+        EngineGui::StartDraw("ModelEngine Settings");
+        EngineGui::ShowSettingsMenu(&light, &plane, &box, modelRenderer.GetCamera());
+        EngineGui::EndDraw();
 
         // Swap front and back buffers
         glfwSwapBuffers(window);
     }
 
+    EngineGui::Destory();
     glfwTerminate();
 
     return 0;

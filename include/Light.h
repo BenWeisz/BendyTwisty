@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 #include "ModelFactory.h"
 #include "Transform.h"
@@ -17,6 +17,7 @@ class Light {
     glm::vec3 GetColor() const;
     float GetAmbientStrength() const;
     float GetSpecularStrength() const;
+    void SetColor(const float* rgb);
 
    private:
     Model* m_Model;

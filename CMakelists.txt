@@ -20,6 +20,7 @@ target_sources(ModelEngine PUBLIC
     src/ModelRenderer.cpp
     src/Transform.cpp
     src/Light.cpp
+    src/EngineGui.cpp
     extern/imgui/imgui.cpp
     extern/imgui/backends/imgui_impl_opengl3.cpp
     extern/imgui/backends/imgui_impl_glfw.cpp

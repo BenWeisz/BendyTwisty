@@ -1,6 +1,9 @@
 #pragma once
 
+#include <glm/ext.hpp>
+
 #include "ModelFactory.h"
+#include "Entity.h"
 
 class Box : public Entity {
    public:
@@ -30,6 +33,10 @@ class Box : public Entity {
 
         m_Model->Draw();
         m_Model->Unbind();
+    }
+
+    void SetColor(const float* color) {
+        m_Color = glm::make_vec3(color);
     }
 
    private:
