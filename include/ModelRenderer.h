@@ -8,7 +8,7 @@
 #include "Entity.h"
 #include "ShaderProgram.h"
 #include "Camera.h"
-#include "Light.h"
+#include "PointLight.h"
 
 struct EntityShader {
     Entity* entity;
@@ -22,12 +22,12 @@ class ModelRenderer {
     void Draw(const float deltaTime);
     void Update(const float deltaTime);
     void AddEntityShaderPair(Entity* entity, ShaderProgram* shader);
-    void SetLight(Light* light);
+    void SetPointLight(PointLight* pointLight);
     Camera* GetCamera() const;
 
    private:
     GLFWwindow* m_Window;
     Camera* m_Camera;
-    Light* m_Light;
+    PointLight* m_PointLight;
     std::vector<EntityShader> m_EntityShaderPairs;
 };

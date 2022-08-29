@@ -6,7 +6,7 @@
 
 #include "Model.h"
 #include "Transform.h"
-#include "Light.h"
+#include "PointLight.h"
 #include "ShaderProgram.h"
 #include "Camera.h"
 
@@ -15,7 +15,7 @@ class Entity {
     Entity();
     ~Entity();
     virtual void Draw(const float deltaTime, ShaderProgram* const shader) const;
-    virtual void Draw(const float deltaTime, ShaderProgram* const shader, Light* const light, Camera* const camera) const;
+    virtual void Draw(const float deltaTime, ShaderProgram* const shader, PointLight* const pointLight, Camera* const camera) const;
     virtual void Update(const float deltaTime);
     Transform GetTransform() const;
     bool IsLightingEnabled() const;

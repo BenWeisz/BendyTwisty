@@ -15,7 +15,7 @@
 #include "ModelLoader.h"
 #include "Entity.h"
 #include "ModelRenderer.h"
-#include "Light.h"
+#include "PointLight.h"
 #include "EngineGui.h"
 
 #include "custom/RainbowBox.h"
@@ -80,8 +80,8 @@ int main(void) {
     ShaderProgram lightShader("../res/shaders/base.vert", "../res/shaders/base.frag");
     ShaderProgram interpPhongShader("../res/shaders/interp_norm.vert", "../res/shaders/interp_norm.frag");
 
-    Light light(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
-    modelRenderer.SetLight(&light);
+    PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
+    modelRenderer.SetPointLight(&pointLight);
 
     // modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
     modelRenderer.AddEntityShaderPair(&plane, &flatPhongShader);
@@ -93,6 +93,7 @@ int main(void) {
 
     glEnable(GL_DEPTH_TEST);
     glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
+    glClearColor(0.0f, 0.4f, 0.8f, 1.0f);
 
     // Now we have a current OpenGL context, we can use OpenGL normally
     while (!glfwWindowShouldClose(window)) {
@@ -110,7 +111,7 @@ int main(void) {
         modelRenderer.Draw(deltaTime);
 
         EngineGui::StartDraw("ModelEngine Settings");
-        EngineGui::ShowSettingsMenu(&light, &plane, &box, &teapot, modelRenderer.GetCamera());
+        EngineGui::ShowSettingsMenu(&pointLight, &plane, &box, &teapot, modelRenderer.GetCamera());
         EngineGui::EndDraw();
 
         // Swap front and back buffers

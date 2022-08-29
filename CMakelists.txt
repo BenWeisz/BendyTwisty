@@ -19,7 +19,7 @@ target_sources(ModelEngine PUBLIC
     src/Entity.cpp
     src/ModelRenderer.cpp
     src/Transform.cpp
-    src/Light.cpp
+    src/PointLight.cpp
     src/EngineGui.cpp
     src/ModelLoader.cpp
     extern/imgui/imgui.cpp

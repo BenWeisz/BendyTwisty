@@ -7,9 +7,9 @@
 #include "Model.h"
 #include "ShaderProgram.h"
 
-class Light {
+class PointLight {
    public:
-    Light(ShaderProgram* const shader, glm::vec3 color);
+    PointLight(ShaderProgram* const shader, glm::vec3 color);
     void Draw(const float deltaTime) const;
     void Update(const float deltaTime);
     ShaderProgram* GetShader() const;

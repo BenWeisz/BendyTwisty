@@ -1,6 +1,6 @@
-#include "Light.h"
+#include "PointLight.h"
 
-Light::Light(ShaderProgram* const shader, glm::vec3 color) {
+PointLight::PointLight(ShaderProgram* const shader, glm::vec3 color) {
     m_Model = ModelLoader::SimpleCube();
     m_Shader = shader;
 
@@ -14,7 +14,7 @@ Light::Light(ShaderProgram* const shader, glm::vec3 color) {
     m_Time = 0.0f;
 }
 
-void Light::Draw(const float deltaTime) const {
+void PointLight::Draw(const float deltaTime) const {
     assert(m_Model != nullptr);
     m_Shader->SetUniform3fv("u_FlatColor", &m_Color[0]);
 
@@ -23,31 +23,31 @@ void Light::Draw(const float deltaTime) const {
     m_Model->Unbind();
 }
 
-void Light::Update(const float deltaTime) {
-    // m_Time += deltaTime;
+void PointLight::Update(const float deltaTime) {
+    m_Time += deltaTime;
     m_Transform.SetTranslation(5.0f * cos(m_Time), 1.0f, 5.0f * sin(m_Time));
 }
 
-ShaderProgram* Light::GetShader() const {
+ShaderProgram* PointLight::GetShader() const {
     return m_Shader;
 }
 
-Transform Light::GetTransform() const {
+Transform PointLight::GetTransform() const {
     return m_Transform;
 }
 
-glm::vec3 Light::GetColor() const {
+glm::vec3 PointLight::GetColor() const {
     return m_Color;
 }
 
-float Light::GetAmbientStrength() const {
+float PointLight::GetAmbientStrength() const {
     return m_AmbientStrength;
 }
 
-float Light::GetSpecularStrength() const {
+float PointLight::GetSpecularStrength() const {
     return m_SpecularStrength;
 }
 
-void Light::SetColor(const float* rgb) {
+void PointLight::SetColor(const float* rgb) {
     m_Color = glm::make_vec3(rgb);
 }

@@ -14,7 +14,7 @@ class Box : public Entity {
         m_Color = glm::vec3(0.498f, 0.588f, 0.6f);
     }
 
-    void Draw(const float deltaTime, ShaderProgram* const shader, Light* const light, Camera* const camera) const override {
+    void Draw(const float deltaTime, ShaderProgram* const shader, PointLight* const pointLight, Camera* const camera) const override {
         assert(m_Model != nullptr);
         m_Model->Bind();
 
@@ -24,13 +24,13 @@ class Box : public Entity {
         shader->SetUniformMat4fv("u_Model", model);
         shader->SetUniformMat4fv("u_NormalModel", normalModel);
 
-        shader->SetUniform3fv("u_LightPos", &light->GetTransform().GetTranslation()[0]);
-        shader->SetUniform3fv("u_LightColor", &light->GetColor()[0]);
+        shader->SetUniform3fv("u_LightPos", &pointLight->GetTransform().GetTranslation()[0]);
+        shader->SetUniform3fv("u_LightColor", &pointLight->GetColor()[0]);
         shader->SetUniform3fv("u_ViewPos", &camera->GetEye()[0]);
 
         shader->SetUniform3fv("u_FlatColor", &m_Color[0]);
-        shader->SetUniform1f("u_AmbientStrength", light->GetAmbientStrength());
-        shader->SetUniform1f("u_SpecularStrength", light->GetSpecularStrength());
+        shader->SetUniform1f("u_AmbientStrength", pointLight->GetAmbientStrength());
+        shader->SetUniform1f("u_SpecularStrength", pointLight->GetSpecularStrength());
 
         m_Model->Draw();
         m_Model->Unbind();
