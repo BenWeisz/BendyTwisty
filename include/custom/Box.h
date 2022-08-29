@@ -25,6 +25,7 @@ class Box : public Entity {
         shader->SetUniformMat4fv("u_NormalModel", normalModel);
 
         shader->SetUniform3fv("u_LightPos", &light->GetTransform().GetTranslation()[0]);
+        shader->SetUniform3fv("u_LightColor", &light->GetColor()[0]);
         shader->SetUniform3fv("u_ViewPos", &camera->GetEye()[0]);
 
         shader->SetUniform3fv("u_FlatColor", &m_Color[0]);

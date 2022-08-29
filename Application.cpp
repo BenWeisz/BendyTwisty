@@ -81,6 +81,7 @@ int main(void) {
     ShaderProgram flatShader("../res/shaders/base.vert", "../res/shaders/flat.frag");
     ShaderProgram flatPhongShader("../res/shaders/normals.vert", "../res/shaders/flatPhong.frag");
     ShaderProgram lightShader("../res/shaders/base.vert", "../res/shaders/base.frag");
+    ShaderProgram interpPhongShader("../res/shaders/interp_norm.vert", "../res/shaders/interp_norm.frag");
 
     Light light(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
     modelRenderer.SetLight(&light);
@@ -88,7 +89,7 @@ int main(void) {
     // modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
     modelRenderer.AddEntityShaderPair(&plane, &flatPhongShader);
     modelRenderer.AddEntityShaderPair(&box, &flatPhongShader);
-    modelRenderer.AddEntityShaderPair(&teapot, &flatShader);
+    modelRenderer.AddEntityShaderPair(&teapot, &interpPhongShader);
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
