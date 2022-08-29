@@ -4,6 +4,7 @@ ImGuiIO* EngineGui::IO;
 float* EngineGui::lightRGB;
 float* EngineGui::planeRGB;
 float* EngineGui::boxRGB;
+float* EngineGui::teapotRGB;
 float EngineGui::cameraSpeed;
 
 void EngineGui::Init(GLFWwindow* window) {
@@ -41,6 +42,11 @@ void EngineGui::Init(GLFWwindow* window) {
     boxRGB[1] = 0.588f;
     boxRGB[2] = 0.6f;
 
+    teapotRGB = new float[3];
+    teapotRGB[0] = 0.498f;
+    teapotRGB[1] = 0.588f;
+    teapotRGB[2] = 0.6f;
+
     cameraSpeed = 5.0f;
 }
 
@@ -67,7 +73,7 @@ void EngineGui::EndDraw() {
     }
 }
 
-void EngineGui::ShowSettingsMenu(Light* const light, Plane* const plane, Box* const box, Camera* const camera) {
+void EngineGui::ShowSettingsMenu(Light* const light, Plane* const plane, Box* const box, Teapot* const teapot, Camera* const camera) {
     ImGui::ColorEdit3("Light Color", (float*)lightRGB);
     light->SetColor(lightRGB);
 
@@ -76,6 +82,9 @@ void EngineGui::ShowSettingsMenu(Light* const light, Plane* const plane, Box* co
 
     ImGui::ColorEdit3("Box Color", (float*)boxRGB);
     box->SetColor(boxRGB);
+
+    ImGui::ColorEdit3("Teapot", (float*)teapotRGB);
+    teapot->SetColor(teapotRGB);
 
     ImGui::SetNextItemWidth(220);
     ImGui::DragFloat("Camera Move Speed", &cameraSpeed, 5.0f);

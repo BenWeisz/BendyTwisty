@@ -113,7 +113,7 @@ int main(void) {
         modelRenderer.Draw(deltaTime);
 
         EngineGui::StartDraw("ModelEngine Settings");
-        EngineGui::ShowSettingsMenu(&light, &plane, &box, modelRenderer.GetCamera());
+        EngineGui::ShowSettingsMenu(&light, &plane, &box, &teapot, modelRenderer.GetCamera());
         EngineGui::EndDraw();
 
         // Swap front and back buffers

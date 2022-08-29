@@ -8,7 +8,7 @@
 class Teapot : public Entity {
    public:
     Teapot() : Entity() {
-        m_Model = ModelImporter::LoadModel("../res/obj/teapot_uniform_avg.obj");
+        m_Model = ModelImporter::LoadModel("../res/obj/teapot_area.obj");
         // m_Transform.SetTranslation(-5.0f, 0.0f, 0.0f);
         m_Transform.SetScale(0.5, 0.5f, 0.5f);
 

@@ -24,7 +24,7 @@ void Light::Draw(const float deltaTime) const {
 }
 
 void Light::Update(const float deltaTime) {
-    m_Time += deltaTime;
+    // m_Time += deltaTime;
     m_Transform.SetTranslation(5.0f * cos(m_Time), 1.0f, 5.0f * sin(m_Time));
 }
 
