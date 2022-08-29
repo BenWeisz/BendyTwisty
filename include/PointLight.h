@@ -13,9 +13,11 @@ class PointLight : public Light {
     PointLight(ShaderProgram* const shader, glm::vec3 color);
     void Draw(const float deltaTime) const;
     void Update(const float deltaTime);
+    ShaderProgram* GetShader() const;
     Transform GetTransform() const;
 
    private:
+    ShaderProgram* m_Shader;
     Model* m_Model;
     Transform m_Transform;
     float m_Time;

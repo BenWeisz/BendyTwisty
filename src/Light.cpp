@@ -1,14 +1,10 @@
 #include "Light.h"
 
-Light::Light(ShaderProgram* const shader, glm::vec3 color) {
-    m_Shader = shader;
+Light::Light(glm::vec3 color, unsigned int type) {
     m_Color = color;
     m_AmbientStrength = 0.1f;
     m_SpecularStrength = 0.5f;
-}
-
-ShaderProgram* Light::GetShader() const {
-    return m_Shader;
+    m_Type = type;
 }
 
 glm::vec3 Light::GetColor() const {
@@ -25,4 +21,8 @@ float Light::GetSpecularStrength() const {
 
 void Light::SetColor(const float* rgb) {
     m_Color = glm::make_vec3(rgb);
+}
+
+const unsigned int Light::GetType() const {
+    return m_Type;
 }

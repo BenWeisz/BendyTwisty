@@ -21,6 +21,7 @@ target_sources(ModelEngine PUBLIC
     src/Transform.cpp
     src/Light.cpp
     src/PointLight.cpp
+    src/DirectionalLight.cpp
     src/EngineGui.cpp
     src/ModelLoader.cpp
     extern/imgui/imgui.cpp

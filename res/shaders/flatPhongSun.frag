@@ -10,7 +10,7 @@ uniform float u_SpecularStrength;
 
 layout(location = 0) out vec4 out_FragmentColor;
 
-in vec3 v_SurfaceNormal;
+flat in vec3 v_SurfaceNormal;
 in vec3 v_FragPos;
 
 void main(void) { 

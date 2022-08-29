@@ -6,7 +6,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "PointLight.h"
+#include "Light.h"
 #include "Camera.h"
 #include "custom/Plane.h"
 #include "custom/Box.h"
@@ -14,7 +14,7 @@
 
 namespace EngineGui {
 extern ImGuiIO* IO;
-extern float* pointLightRGB;
+extern float* lightRGB;
 extern float* planeRGB;
 extern float* boxRGB;
 extern float* teapotRGB;
@@ -22,6 +22,6 @@ extern float cameraSpeed;
 void Init(GLFWwindow* window);
 void StartDraw(const char* title);
 void EndDraw();
-void ShowSettingsMenu(PointLight* const pointLight, Plane* const plane, Box* const box, Teapot* const teapot, Camera* const camera);
+void ShowSettingsMenu(Light* const light, Plane* const plane, Box* const box, Teapot* const teapot, Camera* const camera);
 void Destory();
 };

@@ -13,22 +13,30 @@ ModelRenderer::~ModelRenderer() {
 }
 
 void ModelRenderer::Draw(const float deltaTime) {
-    ShaderProgram* lightShader = m_PointLight->GetShader();
-    lightShader->Bind();
+    // Render all the models for the point lights
+    for (auto light : m_Lights) {
+        if (light->GetType() == LIGHT_POINT) {
+            PointLight* pointLight = (PointLight*)light;
+            ShaderProgram* lightShader = pointLight->GetShader();
+            lightShader->Bind();
 
-    glm::mat4 mvp = m_Camera->GetCameraMatrix() * m_PointLight->GetTransform().GetMatrix();
-    lightShader->SetUniformMat4fv("u_MVP", mvp);
+            glm::mat4 mvp = m_Camera->GetCameraMatrix() * pointLight->GetTransform().GetMatrix();
+            lightShader->SetUniformMat4fv("u_MVP", mvp);
 
-    m_PointLight->Draw(deltaTime);
-    lightShader->Unbind();
+            pointLight->Draw(deltaTime);
+            lightShader->Unbind();
+        }
+    }
 
+    glm::mat4 mvp;
     for (auto& e : m_EntityShaderPairs) {
         e.shader->Bind();
         mvp = m_Camera->GetCameraMatrix() * e.entity->GetTransform().GetMatrix();
         e.shader->SetUniformMat4fv("u_MVP", mvp);
 
         if (e.entity->IsLightingEnabled()) {
-            e.entity->Draw(deltaTime, e.shader, m_PointLight, m_Camera);
+            // This is temporary until I can handle multiple lights
+            e.entity->Draw(deltaTime, e.shader, m_Lights[0], m_Camera);
         } else {
             e.entity->Draw(deltaTime, e.shader);
         }
@@ -39,7 +47,12 @@ void ModelRenderer::Draw(const float deltaTime) {
 void ModelRenderer::Update(const float deltaTime) {
     m_Camera->ProcessInput(m_Window, deltaTime);
 
-    m_PointLight->Update(deltaTime);
+    for (auto light : m_Lights) {
+        if (light->GetType() == LIGHT_POINT) {
+            PointLight* pointLight = (PointLight*)light;
+            pointLight->Update(deltaTime);
+        }
+    }
 
     for (auto& e : m_EntityShaderPairs) {
         e.entity->Update(deltaTime);
@@ -50,8 +63,8 @@ void ModelRenderer::AddEntityShaderPair(Entity* entity, ShaderProgram* shader) {
     m_EntityShaderPairs.emplace_back(EntityShader{entity, shader});
 }
 
-void ModelRenderer::SetPointLight(PointLight* pointLight) {
-    m_PointLight = pointLight;
+void ModelRenderer::AddLight(Light* const light) {
+    m_Lights.push_back(light);
 }
 
 Camera* ModelRenderer::GetCamera() const {

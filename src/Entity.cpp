@@ -20,7 +20,7 @@ void Entity::Draw(const float deltaTime, ShaderProgram* const shader) const {
     m_Model->Unbind();
 }
 
-void Entity::Draw(const float deltaTime, ShaderProgram* const shader, PointLight* const pointLight, Camera* const camera) const {
+void Entity::Draw(const float deltaTime, ShaderProgram* const shader, Light* const light, Camera* const camera) const {
     assert(m_Model != nullptr);
     m_Model->Bind();
     m_Model->Draw();

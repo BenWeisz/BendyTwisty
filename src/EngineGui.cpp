@@ -1,7 +1,7 @@
 #include "EngineGui.h"
 
 ImGuiIO* EngineGui::IO;
-float* EngineGui::pointLightRGB;
+float* EngineGui::lightRGB;
 float* EngineGui::planeRGB;
 float* EngineGui::boxRGB;
 float* EngineGui::teapotRGB;
@@ -27,10 +27,10 @@ void EngineGui::Init(GLFWwindow* window) {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 410");
 
-    pointLightRGB = new float[3];
-    pointLightRGB[0] = 1.0f;
-    pointLightRGB[1] = 1.0f;
-    pointLightRGB[2] = 1.0f;
+    lightRGB = new float[3];
+    lightRGB[0] = 1.0f;
+    lightRGB[1] = 1.0f;
+    lightRGB[2] = 1.0f;
 
     planeRGB = new float[3];
     planeRGB[0] = 0.498f;
@@ -51,7 +51,7 @@ void EngineGui::Init(GLFWwindow* window) {
 }
 
 void EngineGui::Destory() {
-    delete pointLightRGB;
+    delete lightRGB;
     delete planeRGB;
     delete boxRGB;
     delete teapotRGB;
@@ -76,9 +76,9 @@ void EngineGui::EndDraw() {
     }
 }
 
-void EngineGui::ShowSettingsMenu(PointLight* const pointLight, Plane* const plane, Box* const box, Teapot* const teapot, Camera* const camera) {
-    ImGui::ColorEdit3("Point Light Color", (float*)pointLightRGB);
-    pointLight->SetColor(pointLightRGB);
+void EngineGui::ShowSettingsMenu(Light* const pointLight, Plane* const plane, Box* const box, Teapot* const teapot, Camera* const camera) {
+    ImGui::ColorEdit3("Light Color", (float*)lightRGB);
+    pointLight->SetColor(lightRGB);
 
     ImGui::ColorEdit3("Plane Color", (float*)planeRGB);
     plane->SetColor(planeRGB);

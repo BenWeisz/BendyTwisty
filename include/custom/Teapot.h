@@ -5,6 +5,9 @@
 #include "ModelLoader.h"
 #include "Entity.h"
 
+#include "PointLight.h"
+#include "DirectionalLight.h"
+
 class Teapot : public Entity {
    public:
     Teapot() : Entity() {
@@ -15,7 +18,7 @@ class Teapot : public Entity {
         m_Color = glm::vec3(1.0f, 0.0f, 0.0f);
     }
 
-    void Draw(const float deltaTime, ShaderProgram* const shader, PointLight* const pointLight, Camera* const camera) const override {
+    void Draw(const float deltaTime, ShaderProgram* const shader, Light* const light, Camera* const camera) const override {
         assert(m_Model != nullptr);
         m_Model->Bind();
 
@@ -25,13 +28,20 @@ class Teapot : public Entity {
         shader->SetUniformMat4fv("u_Model", model);
         shader->SetUniformMat4fv("u_NormalModel", normalModel);
 
-        shader->SetUniform3fv("u_LightPos", &pointLight->GetTransform().GetTranslation()[0]);
-        shader->SetUniform3fv("u_LightColor", &pointLight->GetColor()[0]);
+        if (light->GetType() == LIGHT_POINT) {
+            PointLight* pointLight = (PointLight*)light;
+            shader->SetUniform3fv("u_LightPos", &pointLight->GetTransform().GetTranslation()[0]);
+        } else if (light->GetType() == LIGHT_DIRECTIONAL) {
+            DirectionalLight* directionalLight = (DirectionalLight*)light;
+            shader->SetUniform3fv("u_LightDir", &directionalLight->GetDirection()[0]);
+        }
+
+        shader->SetUniform3fv("u_LightColor", &light->GetColor()[0]);
         shader->SetUniform3fv("u_ViewPos", &camera->GetEye()[0]);
 
         shader->SetUniform3fv("u_FlatColor", &m_Color[0]);
-        shader->SetUniform1f("u_AmbientStrength", pointLight->GetAmbientStrength());
-        shader->SetUniform1f("u_SpecularStrength", pointLight->GetSpecularStrength());
+        shader->SetUniform1f("u_AmbientStrength", light->GetAmbientStrength());
+        shader->SetUniform1f("u_SpecularStrength", light->GetSpecularStrength());
 
         m_Model->Draw();
         m_Model->Unbind();
