@@ -38,14 +38,14 @@ void EngineGui::Init(GLFWwindow* window) {
     planeRGB[2] = 0.6f;
 
     boxRGB = new float[3];
-    boxRGB[0] = 0.498f;
-    boxRGB[1] = 0.588f;
-    boxRGB[2] = 0.6f;
+    boxRGB[0] = 1.0f;
+    boxRGB[1] = 0.5f;
+    boxRGB[2] = 0.0f;
 
     teapotRGB = new float[3];
-    teapotRGB[0] = 0.498f;
-    teapotRGB[1] = 0.588f;
-    teapotRGB[2] = 0.6f;
+    teapotRGB[0] = 0.2f;
+    teapotRGB[1] = 0.6f;
+    teapotRGB[2] = 1.0f;
 
     cameraSpeed = 5.0f;
 }

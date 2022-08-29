@@ -12,7 +12,7 @@ class Teapot : public Entity {
    public:
     Teapot() : Entity() {
         m_Model = ModelLoader::LoadModel("../res/obj/teapot_area.obj");
-        // m_Transform.SetTranslation(-5.0f, 0.0f, 0.0f);
+        m_Transform.SetTranslation(-5.0f, 0.0f, 0.0f);
         m_Transform.SetScale(0.5, 0.5f, 0.5f);
 
         m_Color = glm::vec3(1.0f, 0.0f, 0.0f);

@@ -76,18 +76,22 @@ int main(void) {
     Box box;
     Teapot teapot;
 
-    // ShaderProgram rainboxShader("../res/shaders/rainbow.vert", "../res/shaders/rainbow.frag");
-    // ShaderProgram flatShader("../res/shaders/base.vert", "../res/shaders/flat.frag");
-    ShaderProgram flatPhongShader("../res/shaders/normals.vert", "../res/shaders/flatPhongSun.frag");
+    ShaderProgram rainboxShader("../res/shaders/rainbow.vert", "../res/shaders/rainbow.frag");
+    ShaderProgram flatShader("../res/shaders/base.vert", "../res/shaders/flat.frag");
     // ShaderProgram lightShader("../res/shaders/base.vert", "../res/shaders/base.frag");
-    ShaderProgram interpPhongShader("../res/shaders/interp_norm.vert", "../res/shaders/interp_norm_sun.frag");
 
-    // PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
-    DirectionalLight directionalLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 2.0f, 3.0f));
-    modelRenderer.AddLight(&directionalLight);
-    // modelRenderer.AddLight(&pointLight);
+    ShaderProgram flatPhongShader("../res/shaders/normals.vert", "../res/shaders/flatPhong.frag");
+    ShaderProgram interpPhongShader("../res/shaders/interp_norm.vert", "../res/shaders/interp_norm.frag");
 
-    // modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
+    // ShaderProgram flatPhongShader("../res/shaders/normals.vert", "../res/shaders/flatPhongSun.frag");
+    // ShaderProgram interpPhongShader("../res/shaders/interp_norm.vert", "../res/shaders/interp_norm_sun.frag");
+
+    PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
+    // DirectionalLight directionalLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 2.0f, 3.0f));
+    // modelRenderer.AddLight(&directionalLight);
+    modelRenderer.AddLight(&pointLight);
+
+    modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
     modelRenderer.AddEntityShaderPair(&plane, &flatPhongShader);
     modelRenderer.AddEntityShaderPair(&box, &flatPhongShader);
     modelRenderer.AddEntityShaderPair(&teapot, &interpPhongShader);
@@ -115,7 +119,8 @@ int main(void) {
         modelRenderer.Draw(deltaTime);
 
         EngineGui::StartDraw("ModelEngine Settings");
-        EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
+        EngineGui::ShowSettingsMenu(&pointLight, &plane, &box, &teapot, modelRenderer.GetCamera());
+        // EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
         EngineGui::EndDraw();
 
         // Swap front and back buffers

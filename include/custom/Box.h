@@ -14,7 +14,7 @@ class Box : public Entity {
         m_Model = ModelLoader::NormalsCube();
         m_Transform.SetTranslation(5.0f, 0.0f, 0.0f);
 
-        m_Color = glm::vec3(0.498f, 0.588f, 0.6f);
+        m_Color = glm::vec3(1.0f, 0.5f, 0.0f);
     }
 
     void Draw(const float deltaTime, ShaderProgram* const shader, Light* const light, Camera* const camera) const override {
