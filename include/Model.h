@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <cassert>
 #include <vector>
+#include <string>
 
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"

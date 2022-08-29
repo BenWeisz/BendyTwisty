@@ -17,10 +17,12 @@
 #include "ModelRenderer.h"
 #include "Light.h"
 #include "EngineGui.h"
+#include "ModelImporter.h"
 
 #include "custom/RainbowBox.h"
 #include "custom/Plane.h"
 #include "custom/Box.h"
+#include "custom/Teapot.h"
 
 const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
@@ -66,11 +68,14 @@ int main(void) {
     std::cout << "Renderer: " << renderer << std::endl;
     std::cout << "OpenGL version supported: " << version << std::endl;
 
+    ModelImporter::LoadModel("../res/obj/teapot.obj");
+
     ModelRenderer modelRenderer(window, WIDTH, HEIGHT);
 
     RainbowBox rainbowBox;
     Plane plane;
     Box box;
+    Teapot teapot;
 
     ShaderProgram rainboxShader("../res/shaders/rainbow.vert", "../res/shaders/rainbow.frag");
     ShaderProgram flatShader("../res/shaders/base.vert", "../res/shaders/flat.frag");
@@ -80,9 +85,10 @@ int main(void) {
     Light light(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
     modelRenderer.SetLight(&light);
 
-    modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
+    // modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
     modelRenderer.AddEntityShaderPair(&plane, &flatPhongShader);
     modelRenderer.AddEntityShaderPair(&box, &flatPhongShader);
+    modelRenderer.AddEntityShaderPair(&teapot, &flatShader);
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
