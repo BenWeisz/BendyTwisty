@@ -1,7 +1,7 @@
 #include "Light.h"
 
 Light::Light(ShaderProgram* const shader, glm::vec3 color) {
-    m_Model = ModelFactory::SimpleCube();
+    m_Model = ModelLoader::SimpleCube();
     m_Shader = shader;
 
     m_Transform.SetScale(0.8f, 0.8f, 0.8f);

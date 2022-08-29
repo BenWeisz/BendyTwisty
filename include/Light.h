@@ -2,7 +2,7 @@
 
 #include <glm/ext.hpp>
 
-#include "ModelFactory.h"
+#include "ModelLoader.h"
 #include "Transform.h"
 #include "Model.h"
 #include "ShaderProgram.h"

@@ -3,13 +3,13 @@
 #include <glm/ext.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 
-#include "ModelFactory.h"
+#include "ModelLoader.h"
 #include "Entity.h"
 
 class Plane : public Entity {
    public:
     Plane() : Entity() {
-        m_Model = ModelFactory::NormalsPlane();
+        m_Model = ModelLoader::NormalsPlane();
 
         m_Transform.SetScale(10.0f, 10.0f, 1.0f);
         m_Transform.SetRotation(90.0f, 0.0f, 0.0f);

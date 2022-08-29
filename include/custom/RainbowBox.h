@@ -1,13 +1,13 @@
 #pragma once
 
-#include "ModelFactory.h"
+#include "ModelLoader.h"
 
 #include <iostream>
 
 class RainbowBox : public Entity {
    public:
     RainbowBox() : Entity(), m_Time(0.0f) {
-        m_Model = ModelFactory::RainbowCube();
+        m_Model = ModelLoader::RainbowCube();
         m_Transform.SetScale(1.0f, 1.0f, 1.0f);
         m_LightingEnabled = false;
     }

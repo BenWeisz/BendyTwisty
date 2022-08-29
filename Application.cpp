@@ -12,12 +12,11 @@
 
 #include "ShaderProgram.h"
 #include "Model.h"
-#include "ModelFactory.h"
+#include "ModelLoader.h"
 #include "Entity.h"
 #include "ModelRenderer.h"
 #include "Light.h"
 #include "EngineGui.h"
-#include "ModelImporter.h"
 
 #include "custom/RainbowBox.h"
 #include "custom/Plane.h"
@@ -67,8 +66,6 @@ int main(void) {
     const GLubyte* version = glGetString(GL_VERSION);
     std::cout << "Renderer: " << renderer << std::endl;
     std::cout << "OpenGL version supported: " << version << std::endl;
-
-    ModelImporter::LoadModel("../res/obj/teapot.obj");
 
     ModelRenderer modelRenderer(window, WIDTH, HEIGHT);
 
