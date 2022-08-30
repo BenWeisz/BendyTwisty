@@ -2,9 +2,7 @@
 
 Basic OpenGL Engine for loading up models
 
-## Initial Render Test
-
-![Test](samples/sample1.png)
+## Demos
 
 https://user-images.githubusercontent.com/15256744/186548807-a67006e7-4386-43ac-b1b4-cf9537abb265.mov
 
