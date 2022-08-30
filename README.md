@@ -2,11 +2,11 @@
 
 Basic OpenGL Engine for loading up models
 
-## Initial Render Test
-
-![Test](samples/sample1.png)
+## Demos
 
 https://user-images.githubusercontent.com/15256744/186548807-a67006e7-4386-43ac-b1b4-cf9537abb265.mov
+
+https://user-images.githubusercontent.com/15256744/187484764-42a4a681-e387-4140-a74c-5a9f1ad9d7ef.mov
 
 ## M1 Mac Setup
 
