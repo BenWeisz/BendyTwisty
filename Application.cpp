@@ -101,7 +101,7 @@ int main(void) {
 
     glEnable(GL_DEPTH_TEST);
     glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
-    glClearColor(0.0f, 0.4f, 0.8f, 1.0f);
+    glClearColor(15.0f / 255.0f, 44.0f / 255.0f, 92.0f / 255.0f, 1.0f);
 
     // Now we have a current OpenGL context, we can use OpenGL normally
     while (!glfwWindowShouldClose(window)) {
@@ -120,7 +120,7 @@ int main(void) {
 
         EngineGui::StartDraw("ModelEngine Settings");
         EngineGui::ShowSettingsMenu(&pointLight, &plane, &box, &teapot, modelRenderer.GetCamera());
-        // EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
+        EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
         EngineGui::EndDraw();
 
         // Swap front and back buffers
