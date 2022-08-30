@@ -8,6 +8,8 @@ Basic OpenGL Engine for loading up models
 
 https://user-images.githubusercontent.com/15256744/186548807-a67006e7-4386-43ac-b1b4-cf9537abb265.mov
 
+https://user-images.githubusercontent.com/15256744/187484764-42a4a681-e387-4140-a74c-5a9f1ad9d7ef.mov
+
 ## M1 Mac Setup
 
 1. Download, build, install glfw3 using [Guide](http://carette.xyz/posts/opengl_and_cpp_on_m1_mac/)
