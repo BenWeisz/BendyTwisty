@@ -120,7 +120,7 @@ int main(void) {
 
         EngineGui::StartDraw("ModelEngine Settings");
         EngineGui::ShowSettingsMenu(&pointLight, &plane, &box, &teapot, modelRenderer.GetCamera());
-        EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
+        // EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
         EngineGui::EndDraw();
 
         // Swap front and back buffers
