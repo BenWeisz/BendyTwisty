@@ -26,7 +26,7 @@ class ModelRenderer {
     void AddEntityShaderPair(Entity* entity,
                              ShaderProgram* shader);
     void AddLight(Light* const light);
-    Camera* GetCamera() const;
+    const Camera& GetCamera() const;
 
    private:
     GLFWwindow* m_Window;

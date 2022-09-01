@@ -61,3 +61,7 @@ void Model::PackModel() {
 void Model::Draw() const {
     glDrawElements(GL_TRIANGLES, m_IBO.GetIndexCount(), GL_UNSIGNED_INT, (const GLvoid *)0);
 }
+
+// is drawing light
+// is color changeable
+// is moveable

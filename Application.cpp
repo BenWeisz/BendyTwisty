@@ -103,6 +103,17 @@ int main(void) {
     glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
     glClearColor(15.0f / 255.0f, 44.0f / 255.0f, 92.0f / 255.0f, 1.0f);
 
+    EngineGui::RegisterEntity(rainbowBox);
+    EngineGui::RegisterEntity(plane);
+    EngineGui::RegisterEntity(box);
+    EngineGui::RegisterEntity(teapot);
+
+    // flat_shading
+    // light_shading_point_fn
+    // light_shading_point_vn
+    // light_shading_directional_fn
+    // light_shading_directional_vn
+
     // Now we have a current OpenGL context, we can use OpenGL normally
     while (!glfwWindowShouldClose(window)) {
         float currentTime = (float)glfwGetTime();
@@ -118,10 +129,13 @@ int main(void) {
 
         modelRenderer.Draw(deltaTime);
 
-        EngineGui::StartDraw("ModelEngine Settings");
-        EngineGui::ShowSettingsMenu(&pointLight, &plane, &box, &teapot, modelRenderer.GetCamera());
-        // EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
-        EngineGui::EndDraw();
+        if (EngineGui::HasContent()) {
+            EngineGui::StartDraw("ModelEngine Settings");
+            EngineGui::ShowSettingsMenu(pointLight, modelRenderer.GetCamera());
+            // EngineGui::ShowSettingsMenu(&pointLight, &plane, &box, &teapot, modelRenderer.GetCamera());
+            // EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
+            EngineGui::EndDraw();
+        }
 
         // Swap front and back buffers
         glfwSwapBuffers(window);

@@ -11,7 +11,7 @@
 
 class Plane : public Entity {
    public:
-    Plane() : Entity() {
+    Plane() : Entity("Plane") {
         m_Model = ModelLoader::NormalsPlane();
 
         m_Transform.SetScale(10.0f, 10.0f, 1.0f);

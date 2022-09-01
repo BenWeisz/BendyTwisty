@@ -10,7 +10,7 @@
 
 class Box : public Entity {
    public:
-    Box() : Entity() {
+    Box() : Entity("Box") {
         m_Model = ModelLoader::NormalsCube();
         m_Transform.SetTranslation(5.0f, 0.0f, 0.0f);
 

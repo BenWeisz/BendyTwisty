@@ -34,7 +34,7 @@ void ModelRenderer::Draw(const float deltaTime) {
         mvp = m_Camera->GetCameraMatrix() * e.entity->GetTransform().GetMatrix();
         e.shader->SetUniformMat4fv("u_MVP", mvp);
 
-        if (e.entity->IsLightingEnabled()) {
+        if (e.entity->GetIsLightingEnabled()) {
             // This is temporary until I can handle multiple lights
             e.entity->Draw(deltaTime, e.shader, m_Lights[0], m_Camera);
         } else {
@@ -67,6 +67,6 @@ void ModelRenderer::AddLight(Light* const light) {
     m_Lights.push_back(light);
 }
 
-Camera* ModelRenderer::GetCamera() const {
-    return m_Camera;
+const Camera& ModelRenderer::GetCamera() const {
+    return *m_Camera;
 }
