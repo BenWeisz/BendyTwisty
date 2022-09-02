@@ -29,18 +29,21 @@ void ModelRenderer::Draw(const float deltaTime) {
     }
 
     glm::mat4 mvp;
-    for (auto& e : m_EntityShaderPairs) {
-        e.shader->Bind();
-        mvp = m_Camera->GetCameraMatrix() * e.entity->GetTransform().GetMatrix();
-        e.shader->SetUniformMat4fv("u_MVP", mvp);
+    for (auto& entity : m_Entities) {
+        Material* material = entity->GetActiveMaterial();
+        ShaderProgram& shader = material->shader;
+        shader.Bind();
 
-        if (e.entity->GetIsLightingEnabled()) {
+        mvp = m_Camera->GetCameraMatrix() * entity->GetTransform().GetMatrix();
+        shader.SetUniformMat4fv("u_MVP", mvp);
+
+        if (entity->GetIsLightingEnabled()) {
             // This is temporary until I can handle multiple lights
-            e.entity->Draw(deltaTime, e.shader, m_Lights[0], m_Camera);
+            entity->Draw(deltaTime, m_Lights[0], m_Camera);
         } else {
-            e.entity->Draw(deltaTime, e.shader);
+            entity->Draw(deltaTime);
         }
-        e.shader->Unbind();
+        shader.Unbind();
     }
 }
 
@@ -54,13 +57,13 @@ void ModelRenderer::Update(const float deltaTime) {
         }
     }
 
-    for (auto& e : m_EntityShaderPairs) {
-        e.entity->Update(deltaTime);
+    for (auto& entity : m_Entities) {
+        entity->Update(deltaTime);
     }
 }
 
-void ModelRenderer::AddEntityShaderPair(Entity* entity, ShaderProgram* shader) {
-    m_EntityShaderPairs.emplace_back(EntityShader{entity, shader});
+void ModelRenderer::AddEntity(Entity* entity) {
+    m_Entities.push_back(entity);
 }
 
 void ModelRenderer::AddLight(Light* const light) {

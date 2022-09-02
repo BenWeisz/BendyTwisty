@@ -19,6 +19,7 @@
 
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "Material.h"
 
 #include "custom/RainbowBox.h"
 #include "custom/Plane.h"
@@ -76,25 +77,45 @@ int main(void) {
     Box box;
     Teapot teapot;
 
-    ShaderProgram rainboxShader("../res/shaders/rainbow.vert", "../res/shaders/rainbow.frag");
+    ShaderProgram phongPointFnShader("../res/shaders/normals_f.vert", "../res/shaders/light_shading_point_fn.frag");
+    PhongMaterial* phongPointFnMaterial_Plane = new PhongMaterial(
+        phongPointFnShader,
+        glm::vec3(0.498f, 0.588f, 0.6f),
+        0.1f,
+        1.0f,
+        0.5f);
+
+    PhongMaterial* phongPointFnMaterial_Box = new PhongMaterial(
+        phongPointFnShader,
+        glm::vec3(1.0f, 0.5f, 0.0f),
+        0.1f,
+        1.0f,
+        0.5f);
+
+    ShaderProgram rainbowBoxShader("../res/shaders/rainbow_box.vert", "../res/shaders/rainbow_box.frag");
+    Material* rainbowBoxMaterial = new Material(rainbowBoxShader);
+
+    ShaderProgram phongPointVnShader("../res/shaders/normals_v.vert", "../res/shaders/light_shading_point_vn.frag");
+    PhongMaterial* phongPointVnMaterial_Teapot = new PhongMaterial(
+        phongPointVnShader,
+        glm::vec3(0.3f, 0.5f, 1.0f),
+        0.1f,
+        1.0f,
+        1.0f);
+
+    plane.AddMaterial(phongPointFnMaterial_Plane);
+    box.AddMaterial(phongPointFnMaterial_Box);
+    rainbowBox.AddMaterial(rainbowBoxMaterial);
+    teapot.AddMaterial(phongPointVnMaterial_Teapot);
+
     ShaderProgram flatShader("../res/shaders/base.vert", "../res/shaders/flat.frag");
-    // ShaderProgram lightShader("../res/shaders/base.vert", "../res/shaders/base.frag");
-
-    ShaderProgram flatPhongShader("../res/shaders/normals.vert", "../res/shaders/flatPhong.frag");
-    ShaderProgram interpPhongShader("../res/shaders/interp_norm.vert", "../res/shaders/interp_norm.frag");
-
-    // ShaderProgram flatPhongShader("../res/shaders/normals.vert", "../res/shaders/flatPhongSun.frag");
-    // ShaderProgram interpPhongShader("../res/shaders/interp_norm.vert", "../res/shaders/interp_norm_sun.frag");
-
     PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
-    // DirectionalLight directionalLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 2.0f, 3.0f));
-    // modelRenderer.AddLight(&directionalLight);
     modelRenderer.AddLight(&pointLight);
 
-    modelRenderer.AddEntityShaderPair(&rainbowBox, &rainboxShader);
-    modelRenderer.AddEntityShaderPair(&plane, &flatPhongShader);
-    modelRenderer.AddEntityShaderPair(&box, &flatPhongShader);
-    modelRenderer.AddEntityShaderPair(&teapot, &interpPhongShader);
+    modelRenderer.AddEntity(&plane);
+    modelRenderer.AddEntity(&box);
+    modelRenderer.AddEntity(&rainbowBox);
+    modelRenderer.AddEntity(&teapot);
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
@@ -108,7 +129,14 @@ int main(void) {
     EngineGui::RegisterEntity(box);
     EngineGui::RegisterEntity(teapot);
 
-    // flat_shading
+    // Vertex Shaders
+    // base
+    // normals_f
+    // normals_v
+
+    // Fragment Shaders
+    // base
+    // flat
     // light_shading_point_fn
     // light_shading_point_vn
     // light_shading_directional_fn

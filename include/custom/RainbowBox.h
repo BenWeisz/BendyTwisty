@@ -8,10 +8,9 @@ class RainbowBox : public Entity {
    public:
     RainbowBox() : Entity("RainbowBox"), m_Time(0.0f) {
         m_Model = ModelLoader::RainbowCube();
-        m_Transform.SetScale(1.0f, 1.0f, 1.0f);
-        m_IsLightingEnabled = false;
         m_Metadata[ENTITY_SHOW_TRANSFORM_IN_GUI] = ENTITY_STATE_ENABLED;
         m_Metadata[ENTITY_SHOW_ROTATION_IN_GUI] = ENTITY_STATE_ENABLED;
+        m_IsLightingEnabled = false;
     }
 
     void Update(const float deltaTime) override {

@@ -16,6 +16,8 @@ Entity::Entity(const std::string& name) {
     m_Metadata[ENTITY_SHOW_COLOR_IN_GUI] = ENTITY_STATE_ENABLED;
     m_Metadata[ENTITY_SHOW_TRANSFORM_IN_GUI] = ENTITY_STATE_DISABLED;
     m_Metadata[ENTITY_SHOW_ROTATION_IN_GUI] = ENTITY_STATE_DISABLED;
+
+    m_ActiveMaterialIndex = -1;
 }
 
 Entity::~Entity() {
@@ -23,15 +25,17 @@ Entity::~Entity() {
         delete m_Model;
 }
 
-void Entity::Draw(const float deltaTime, ShaderProgram* const shader) const {
+void Entity::Draw(const float deltaTime) const {
     assert(m_Model != nullptr);
+    assert(m_ActiveMaterialIndex != -1);
     m_Model->Bind();
     m_Model->Draw();
     m_Model->Unbind();
 }
 
-void Entity::Draw(const float deltaTime, ShaderProgram* const shader, Light* const light, Camera* const camera) const {
+void Entity::Draw(const float deltaTime, Light* const light, Camera* const camera) const {
     assert(m_Model != nullptr);
+    assert(m_ActiveMaterialIndex != -1);
     m_Model->Bind();
     m_Model->Draw();
     m_Model->Unbind();
@@ -54,4 +58,22 @@ const std::string& Entity::GetName() const {
 
 bool Entity::GetIsLightingEnabled() const {
     return m_IsLightingEnabled;
+}
+
+void Entity::AddMaterial(Material* material) {
+    m_ActiveMaterialIndex = m_Materials.size();
+    m_Materials.push_back(material);
+}
+
+void Entity::SetActiveMaterial(int activeIndex) {
+    if (m_Materials.size() >= activeIndex) {
+        std::cerr << "Cannot set entity material index to: " << activeIndex << std::endl;
+        return;
+    }
+
+    m_ActiveMaterialIndex = activeIndex;
+}
+
+Material* Entity::GetActiveMaterial() const {
+    return m_Materials.at(m_ActiveMaterialIndex);
 }
