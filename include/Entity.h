@@ -18,8 +18,9 @@
 #define ENTITY_SHOW_IN_GUI 0x00
 #define ENTITY_SHOW_LIGHTING_IN_GUI 0x01
 #define ENTITY_SHOW_COLOR_IN_GUI 0x02
-#define ENTITY_SHOW_TRANSFORM_IN_GUI 0x03
+#define ENTITY_SHOW_TRANSLATION_IN_GUI 0x03
 #define ENTITY_SHOW_ROTATION_IN_GUI 0x04
+#define ENTITY_SHOW_SCALE_IN_GUI 0x05
 
 #define ENTITY_STATE_ENABLED 0x00
 #define ENTITY_STATE_DISABLED 0x01
@@ -31,13 +32,16 @@ class Entity {
     virtual void Draw(const float deltaTime) const;
     virtual void Draw(const float deltaTime, Light* const light, Camera* const camera) const;
     virtual void Update(const float deltaTime);
-    const Transform& GetTransform() const;
+    Transform& GetTransform();
     char GetMetadata(const char key) const;
     const std::string& GetName() const;
     bool GetIsLightingEnabled() const;
+    void SetIsLightingEnabled(const bool isLightingEnabled);
     void AddMaterial(Material* material);
     void SetActiveMaterial(int activeIndex);
     Material* GetActiveMaterial() const;
+    int GetMaterialIndex(unsigned int type) const;
+    int GetMaterialIndex(unsigned int type, int order) const;
 
    protected:
     std::string m_Name;

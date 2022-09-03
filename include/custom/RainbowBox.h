@@ -8,8 +8,11 @@ class RainbowBox : public Entity {
    public:
     RainbowBox() : Entity("RainbowBox"), m_Time(0.0f) {
         m_Model = ModelLoader::RainbowCube();
-        m_Metadata[ENTITY_SHOW_TRANSFORM_IN_GUI] = ENTITY_STATE_ENABLED;
+        m_Metadata[ENTITY_SHOW_LIGHTING_IN_GUI] = ENTITY_STATE_DISABLED;
+        m_Metadata[ENTITY_SHOW_COLOR_IN_GUI] = ENTITY_STATE_DISABLED;
+        m_Metadata[ENTITY_SHOW_TRANSLATION_IN_GUI] = ENTITY_STATE_ENABLED;
         m_Metadata[ENTITY_SHOW_ROTATION_IN_GUI] = ENTITY_STATE_ENABLED;
+        m_Metadata[ENTITY_SHOW_SCALE_IN_GUI] = ENTITY_STATE_ENABLED;
         m_IsLightingEnabled = false;
     }
 

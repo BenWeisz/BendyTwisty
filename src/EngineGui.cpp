@@ -1,11 +1,6 @@
 #include "EngineGui.h"
 
 ImGuiIO* EngineGui::IO;
-float* EngineGui::lightRGB;
-float* EngineGui::planeRGB;
-float* EngineGui::boxRGB;
-float* EngineGui::teapotRGB;
-float EngineGui::cameraSpeed;
 std::vector<EntityGUIData> EngineGui::entityData;
 
 void EngineGui::Init(GLFWwindow* window) {
@@ -27,36 +22,9 @@ void EngineGui::Init(GLFWwindow* window) {
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 410");
-
-    lightRGB = new float[3];
-    lightRGB[0] = 1.0f;
-    lightRGB[1] = 1.0f;
-    lightRGB[2] = 1.0f;
-
-    planeRGB = new float[3];
-    planeRGB[0] = 0.498f;
-    planeRGB[1] = 0.588f;
-    planeRGB[2] = 0.6f;
-
-    boxRGB = new float[3];
-    boxRGB[0] = 1.0f;
-    boxRGB[1] = 0.5f;
-    boxRGB[2] = 0.0f;
-
-    teapotRGB = new float[3];
-    teapotRGB[0] = 0.2f;
-    teapotRGB[1] = 0.6f;
-    teapotRGB[2] = 1.0f;
-
-    cameraSpeed = 5.0f;
 }
 
 void EngineGui::Destory() {
-    delete lightRGB;
-    delete planeRGB;
-    delete boxRGB;
-    delete teapotRGB;
-
     for (auto data : entityData) {
         delete[] data.data;
     }
@@ -99,13 +67,19 @@ int EngineGui::GetEntityDataOffset(const Entity& entity, const char key) {
     } else
         return offset;
 
-    if (key != ENTITY_SHOW_TRANSFORM_IN_GUI) {
-        if (entity.GetMetadata(ENTITY_SHOW_TRANSFORM_IN_GUI) == ENTITY_STATE_ENABLED)
+    if (key != ENTITY_SHOW_TRANSLATION_IN_GUI) {
+        if (entity.GetMetadata(ENTITY_SHOW_TRANSLATION_IN_GUI) == ENTITY_STATE_ENABLED)
             offset += 3 * sizeof(float);
     } else
         return offset;
 
-    if (key != ENTITY_SHOW_ROTATION_IN_GUI || entity.GetMetadata(ENTITY_SHOW_ROTATION_IN_GUI) != ENTITY_STATE_ENABLED) {
+    if (key != ENTITY_SHOW_ROTATION_IN_GUI) {
+        if (entity.GetMetadata(ENTITY_SHOW_ROTATION_IN_GUI) == ENTITY_STATE_ENABLED)
+            offset += 3 * sizeof(float);
+    } else
+        return offset;
+
+    if (key != ENTITY_SHOW_SCALE_IN_GUI || entity.GetMetadata(ENTITY_SHOW_SCALE_IN_GUI) != ENTITY_STATE_ENABLED) {
         return -1;
     } else
         return offset;
@@ -120,9 +94,11 @@ unsigned int EngineGui::GetEntityGUIDataSize(const Entity& entity) {
         size += sizeof(bool);
     if (entity.GetMetadata(ENTITY_SHOW_COLOR_IN_GUI) == ENTITY_STATE_ENABLED)
         size += 3 * sizeof(float);
-    if (entity.GetMetadata(ENTITY_SHOW_TRANSFORM_IN_GUI) == ENTITY_STATE_ENABLED)
+    if (entity.GetMetadata(ENTITY_SHOW_TRANSLATION_IN_GUI) == ENTITY_STATE_ENABLED)
         size += 3 * sizeof(float);
     if (entity.GetMetadata(ENTITY_SHOW_ROTATION_IN_GUI) == ENTITY_STATE_ENABLED)
+        size += 3 * sizeof(float);
+    if (entity.GetMetadata(ENTITY_SHOW_SCALE_IN_GUI) == ENTITY_STATE_ENABLED)
         size += 3 * sizeof(float);
 
     return size;
@@ -137,6 +113,8 @@ void EngineGui::RegisterEntity(Entity& entity) {
     for (int i = 0; i < size; i++)
         dataBytes[i] = 0x00;
 
+    LoadSettings(entity, dataBytes);
+
     EntityGUIData data = {
         .entity = entity,
         .data = dataBytes,
@@ -146,50 +124,101 @@ void EngineGui::RegisterEntity(Entity& entity) {
 }
 
 void EngineGui::ShowSettingsMenu(const Light& light, const Camera& camera) {
-    for (auto data : entityData) {
-        Entity& entity = data.entity;
-        char* settingsData = data.data;
-        if (ImGui::CollapsingHeader(entity.GetName().c_str())) {
-            if (entity.GetMetadata(ENTITY_SHOW_LIGHTING_IN_GUI) == ENTITY_STATE_ENABLED) {
-                bool* handle = (bool*)(settingsData + EngineGui::GetEntityDataOffset(entity, ENTITY_SHOW_LIGHTING_IN_GUI));
-                ImGui::Checkbox(("Use Lighting##" + entity.GetName()).c_str(), handle);
-            }
-            if (entity.GetMetadata(ENTITY_SHOW_COLOR_IN_GUI) == ENTITY_STATE_ENABLED) {
-                float* handle = (float*)(settingsData + EngineGui::GetEntityDataOffset(entity, ENTITY_SHOW_COLOR_IN_GUI));
-                ImGui::ColorEdit3(("Flat Color##" + entity.GetName()).c_str(), handle);
-            }
-            if (entity.GetMetadata(ENTITY_SHOW_TRANSFORM_IN_GUI) == ENTITY_STATE_ENABLED) {
-                float* handle = (float*)(settingsData + EngineGui::GetEntityDataOffset(entity, ENTITY_SHOW_TRANSFORM_IN_GUI));
-                ImGui::InputFloat3(("Transform##" + entity.GetName()).c_str(), handle);
-            }
-            if (entity.GetMetadata(ENTITY_SHOW_ROTATION_IN_GUI) == ENTITY_STATE_ENABLED) {
-                float* handle = (float*)(settingsData + EngineGui::GetEntityDataOffset(entity, ENTITY_SHOW_ROTATION_IN_GUI));
-                ImGui::InputFloat3(("Rotation##" + entity.GetName()).c_str(), handle);
+    if (ImGui::CollapsingHeader("Entities")) {
+        for (auto data : entityData) {
+            Entity& entity = data.entity;
+            char* settingsData = data.data;
+            if (ImGui::CollapsingHeader(entity.GetName().c_str())) {
+                if (entity.GetMetadata(ENTITY_SHOW_LIGHTING_IN_GUI) == ENTITY_STATE_ENABLED) {
+                    bool* handle = (bool*)(settingsData + EngineGui::GetEntityDataOffset(entity, ENTITY_SHOW_LIGHTING_IN_GUI));
+                    ImGui::Checkbox(("Use Lighting##" + entity.GetName()).c_str(), handle);
+                    entity.SetIsLightingEnabled(*handle);
+                }
+                if (entity.GetMetadata(ENTITY_SHOW_COLOR_IN_GUI) == ENTITY_STATE_ENABLED) {
+                    float* handle = (float*)(settingsData + EngineGui::GetEntityDataOffset(entity, ENTITY_SHOW_COLOR_IN_GUI));
+                    ImGui::ColorEdit3(("Flat Color##" + entity.GetName()).c_str(), handle);
+
+                    FlatMaterial* flatMaterial = (FlatMaterial*)entity.GetActiveMaterial();
+                    flatMaterial->color[0] = handle[0];
+                    flatMaterial->color[1] = handle[1];
+                    flatMaterial->color[2] = handle[2];
+                }
+                if (entity.GetMetadata(ENTITY_SHOW_TRANSLATION_IN_GUI) == ENTITY_STATE_ENABLED) {
+                    float* handle = (float*)(settingsData + EngineGui::GetEntityDataOffset(entity, ENTITY_SHOW_TRANSLATION_IN_GUI));
+                    ImGui::InputFloat3(("Transform##" + entity.GetName()).c_str(), handle);
+
+                    Transform& transform = entity.GetTransform();
+                    transform.SetTranslation(handle[0], handle[1], handle[2]);
+                }
+                if (entity.GetMetadata(ENTITY_SHOW_ROTATION_IN_GUI) == ENTITY_STATE_ENABLED) {
+                    float* handle = (float*)(settingsData + EngineGui::GetEntityDataOffset(entity, ENTITY_SHOW_ROTATION_IN_GUI));
+                    ImGui::InputFloat3(("Rotation##" + entity.GetName()).c_str(), handle);
+
+                    Transform& transform = entity.GetTransform();
+                    transform.SetRotation(handle[0], handle[1], handle[2]);
+                }
+                if (entity.GetMetadata(ENTITY_SHOW_SCALE_IN_GUI) == ENTITY_STATE_ENABLED) {
+                    float* handle = (float*)(settingsData + EngineGui::GetEntityDataOffset(entity, ENTITY_SHOW_SCALE_IN_GUI));
+                    ImGui::InputFloat3(("Scale##" + entity.GetName()).c_str(), handle);
+
+                    Transform& transform = entity.GetTransform();
+                    transform.SetScale(handle[0], handle[1], handle[2]);
+                }
             }
         }
     }
+    ImGui::SetNextItemWidth(350);
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 }
-
-// void EngineGui::ShowSettingsMenu(const Light& light, const Camera& camera) {
-//     ImGui::ColorEdit3("Light Color", (float*)lightRGB);
-//     pointLight->SetColor(lightRGB);
-
-//     ImGui::ColorEdit3("Plane Color", (float*)planeRGB);
-//     plane->SetColor(planeRGB);
-
-//     ImGui::ColorEdit3("Box Color", (float*)boxRGB);
-//     box->SetColor(boxRGB);
-
-//     ImGui::ColorEdit3("Teapot", (float*)teapotRGB);
-//     teapot->SetColor(teapotRGB);
-
-//     ImGui::SetNextItemWidth(220);
-//     ImGui::DragFloat("Camera Move Speed", &cameraSpeed, 5.0f);
-//     camera->SetCameraSpeed(cameraSpeed);
-
-//     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-// }
 
 bool EngineGui::HasContent() {
     return entityData.size();
+}
+
+void EngineGui::LoadSettings(Entity& entity, char* data) {
+    if (entity.GetMetadata(ENTITY_SHOW_IN_GUI) == ENTITY_STATE_DISABLED)
+        return;
+
+    if (entity.GetMetadata(ENTITY_SHOW_LIGHTING_IN_GUI) == ENTITY_STATE_ENABLED) {
+        bool* isLightingEnabled = (bool*)data;
+        *isLightingEnabled = entity.GetIsLightingEnabled();
+    }
+
+    if (entity.GetMetadata(ENTITY_SHOW_COLOR_IN_GUI) == ENTITY_STATE_ENABLED) {
+        FlatMaterial* flatMaterial = (FlatMaterial*)entity.GetActiveMaterial();
+        float* settingColor = (float*)(data + GetEntityDataOffset(entity, ENTITY_SHOW_COLOR_IN_GUI));
+        settingColor[0] = flatMaterial->color[0];
+        settingColor[1] = flatMaterial->color[1];
+        settingColor[2] = flatMaterial->color[2];
+    }
+
+    if (entity.GetMetadata(ENTITY_SHOW_TRANSLATION_IN_GUI) == ENTITY_STATE_ENABLED) {
+        Transform& transform = entity.GetTransform();
+        float* settingTranslation = (float*)(data + GetEntityDataOffset(entity, ENTITY_SHOW_TRANSLATION_IN_GUI));
+
+        auto translation = transform.GetTranslation();
+        settingTranslation[0] = translation[0];
+        settingTranslation[1] = translation[1];
+        settingTranslation[2] = translation[2];
+    }
+
+    if (entity.GetMetadata(ENTITY_SHOW_ROTATION_IN_GUI) == ENTITY_STATE_ENABLED) {
+        Transform& transform = entity.GetTransform();
+        float* settingRotation = (float*)(data + GetEntityDataOffset(entity, ENTITY_SHOW_ROTATION_IN_GUI));
+
+        auto rotation = transform.GetRotation();
+        settingRotation[0] = rotation[0];
+        settingRotation[1] = rotation[1];
+        settingRotation[2] = rotation[2];
+    }
+
+    if (entity.GetMetadata(ENTITY_SHOW_SCALE_IN_GUI) == ENTITY_STATE_ENABLED) {
+        Transform& transform = entity.GetTransform();
+        float* settingScale = (float*)(data + GetEntityDataOffset(entity, ENTITY_SHOW_SCALE_IN_GUI));
+
+        auto scale = transform.GetScale();
+        settingScale[0] = scale[0];
+        settingScale[1] = scale[1];
+        settingScale[2] = scale[2];
+    }
 }

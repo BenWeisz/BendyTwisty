@@ -14,6 +14,9 @@ class Teapot : public Entity {
         m_Model = ModelLoader::LoadModel("../res/obj/teapot_area.obj");
         m_Transform.SetTranslation(-5.0f, 0.0f, 0.0f);
         m_Transform.SetScale(0.5, 0.5f, 0.5f);
+        m_Metadata[ENTITY_SHOW_TRANSLATION_IN_GUI] = ENTITY_STATE_ENABLED;
+        m_Metadata[ENTITY_SHOW_ROTATION_IN_GUI] = ENTITY_STATE_ENABLED;
+        m_Metadata[ENTITY_SHOW_SCALE_IN_GUI] = ENTITY_STATE_ENABLED;
     }
 
     void Draw(const float deltaTime, Light* const light, Camera* const camera) const override {

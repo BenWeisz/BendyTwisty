@@ -7,8 +7,8 @@
 #include "Model.h"
 #include "ShaderProgram.h"
 
-#define LIGHT_POINT 0
-#define LIGHT_DIRECTIONAL 1
+#define LIGHT_POINT 0x00
+#define LIGHT_DIRECTIONAL 0x01
 
 class Light {
    public:

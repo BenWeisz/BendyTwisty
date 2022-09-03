@@ -12,6 +12,8 @@
 #include "Camera.h"
 #include "Entity.h"
 
+#include "Material.h"
+
 struct EntityGUIData {
     Entity& entity;
     char* data;
@@ -20,11 +22,6 @@ struct EntityGUIData {
 
 namespace EngineGui {
 extern ImGuiIO* IO;
-extern float* lightRGB;
-extern float* planeRGB;
-extern float* boxRGB;
-extern float* teapotRGB;
-extern float cameraSpeed;
 extern std::vector<EntityGUIData> entityData;
 extern void Init(GLFWwindow* window);
 void StartDraw(const char* title);
@@ -35,4 +32,5 @@ void RegisterEntity(Entity& entity);
 void ShowSettingsMenu(const Light& light, const Camera& camera);
 bool HasContent();
 void Destory();
+void LoadSettings(Entity& entity, char* data);
 };  // namespace EngineGui

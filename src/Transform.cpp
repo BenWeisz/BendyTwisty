@@ -34,3 +34,11 @@ void Transform::SetTranslation(const float translationX, const float translation
 glm::vec3 Transform::GetTranslation() const {
     return m_Translation;
 }
+
+glm::vec3 Transform::GetRotation() const {
+    return m_Rotation;
+}
+
+glm::vec3 Transform::GetScale() const {
+    return m_Scale;
+}

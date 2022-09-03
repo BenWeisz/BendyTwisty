@@ -80,6 +80,7 @@ int main(void) {
     ShaderProgram phongPointFnShader("../res/shaders/normals_f.vert", "../res/shaders/light_shading_point_fn.frag");
     PhongMaterial* phongPointFnMaterial_Plane = new PhongMaterial(
         phongPointFnShader,
+        MATERIAL_PHONG,
         glm::vec3(0.498f, 0.588f, 0.6f),
         0.1f,
         1.0f,
@@ -87,28 +88,54 @@ int main(void) {
 
     PhongMaterial* phongPointFnMaterial_Box = new PhongMaterial(
         phongPointFnShader,
+        MATERIAL_PHONG,
         glm::vec3(1.0f, 0.5f, 0.0f),
         0.1f,
         1.0f,
         0.5f);
 
     ShaderProgram rainbowBoxShader("../res/shaders/rainbow_box.vert", "../res/shaders/rainbow_box.frag");
-    Material* rainbowBoxMaterial = new Material(rainbowBoxShader);
+    Material* rainbowBoxMaterial = new Material(rainbowBoxShader, MATERIAL_CUSTOM);
+
+    ShaderProgram flatShader("../res/shaders/normal_bypass.vert", "../res/shaders/flat.frag");
+    FlatMaterial* flatMaterial_Plane = new FlatMaterial(
+        flatShader,
+        MATERIAL_FLAT,
+        glm::vec3(0.498f, 0.588f, 0.6f));
+
+    FlatMaterial* flatMaterial_Box = new FlatMaterial(
+        flatShader,
+        MATERIAL_FLAT,
+        glm::vec3(1.0f, 0.5f, 0.0f));
+
+    FlatMaterial* flatMaterial_Teapot = new FlatMaterial(
+        flatShader,
+        MATERIAL_FLAT,
+        glm::vec3(0.3f, 0.5f, 1.0f));
 
     ShaderProgram phongPointVnShader("../res/shaders/normals_v.vert", "../res/shaders/light_shading_point_vn.frag");
     PhongMaterial* phongPointVnMaterial_Teapot = new PhongMaterial(
         phongPointVnShader,
+        MATERIAL_PHONG,
         glm::vec3(0.3f, 0.5f, 1.0f),
         0.1f,
         1.0f,
         1.0f);
 
+    plane.AddMaterial(flatMaterial_Plane);
     plane.AddMaterial(phongPointFnMaterial_Plane);
-    box.AddMaterial(phongPointFnMaterial_Box);
-    rainbowBox.AddMaterial(rainbowBoxMaterial);
-    teapot.AddMaterial(phongPointVnMaterial_Teapot);
+    plane.SetIsLightingEnabled(true);
 
-    ShaderProgram flatShader("../res/shaders/base.vert", "../res/shaders/flat.frag");
+    box.AddMaterial(flatMaterial_Box);
+    box.AddMaterial(phongPointFnMaterial_Box);
+    box.SetIsLightingEnabled(true);
+
+    rainbowBox.AddMaterial(rainbowBoxMaterial);
+
+    teapot.AddMaterial(flatMaterial_Teapot);
+    teapot.AddMaterial(phongPointVnMaterial_Teapot);
+    teapot.SetIsLightingEnabled(true);
+
     PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
     modelRenderer.AddLight(&pointLight);
 
@@ -137,6 +164,7 @@ int main(void) {
     // Fragment Shaders
     // base
     // flat
+    // flat_normal
     // light_shading_point_fn
     // light_shading_point_vn
     // light_shading_directional_fn
