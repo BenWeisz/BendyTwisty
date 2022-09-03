@@ -1,22 +1,15 @@
 #include "Light.h"
 
-Light::Light(glm::vec3 color, unsigned int type) {
+unsigned int Light::m_LightNum = 0;
+
+Light::Light(glm::vec3 color, unsigned int type, const std::string& name) {
     m_Color = color;
-    m_AmbientStrength = 0.1f;
-    m_SpecularStrength = 0.5f;
     m_Type = type;
+    m_Name = "L" + std::to_string(m_LightNum++) + ": " + name;
 }
 
 glm::vec3 Light::GetColor() const {
     return m_Color;
-}
-
-float Light::GetAmbientStrength() const {
-    return m_AmbientStrength;
-}
-
-float Light::GetSpecularStrength() const {
-    return m_SpecularStrength;
 }
 
 void Light::SetColor(const float* rgb) {
@@ -25,4 +18,8 @@ void Light::SetColor(const float* rgb) {
 
 const unsigned int Light::GetType() const {
     return m_Type;
+}
+
+std::string& Light::GetName() {
+    return m_Name;
 }

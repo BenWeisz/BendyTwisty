@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <glm/ext.hpp>
 
 #include "ModelLoader.h"
@@ -12,16 +14,17 @@
 
 class Light {
    public:
-    Light(glm::vec3 color, unsigned int type);
+    Light(glm::vec3 color, unsigned int type, const std::string& name);
     glm::vec3 GetColor() const;
-    float GetAmbientStrength() const;
-    float GetSpecularStrength() const;
     void SetColor(const float* rgb);
     const unsigned int GetType() const;
+    std::string& GetName();
+
+   private:
+    std::string m_Name;
+    static unsigned int m_LightNum;
 
    protected:
     glm::vec3 m_Color;
-    float m_AmbientStrength;
-    float m_SpecularStrength;
     unsigned int m_Type;
 };

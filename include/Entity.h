@@ -53,5 +53,5 @@ class Entity {
     int m_ActiveMaterialIndex;
 
    private:
-    static int m_EntityNum;
+    static unsigned int m_EntityNum;
 };

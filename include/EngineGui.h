@@ -29,6 +29,7 @@ void EndDraw();
 int GetEntityDataOffset(const Entity& entity, const char key);
 unsigned int GetEntityGUIDataSize(const Entity& entity);
 void RegisterEntity(Entity& entity);
+void RegisterLight(Light& light);
 void ShowSettingsMenu(const Light& light, const Camera& camera);
 bool HasContent();
 void Destory();

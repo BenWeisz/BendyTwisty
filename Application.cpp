@@ -136,7 +136,7 @@ int main(void) {
     teapot.AddMaterial(phongPointVnMaterial_Teapot);
     teapot.SetIsLightingEnabled(true);
 
-    PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f));
+    PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f), "Rotating Light");
     modelRenderer.AddLight(&pointLight);
 
     modelRenderer.AddEntity(&plane);

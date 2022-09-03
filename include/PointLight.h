@@ -10,7 +10,7 @@
 
 class PointLight : public Light {
    public:
-    PointLight(ShaderProgram* const shader, glm::vec3 color);
+    PointLight(ShaderProgram* const shader, glm::vec3 color, const std::string& name);
     void Draw(const float deltaTime) const;
     void Update(const float deltaTime);
     ShaderProgram* GetShader() const;

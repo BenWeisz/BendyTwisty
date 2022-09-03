@@ -1,6 +1,6 @@
 #include "PointLight.h"
 
-PointLight::PointLight(ShaderProgram* const shader, glm::vec3 color) : Light(color, LIGHT_POINT) {
+PointLight::PointLight(ShaderProgram* const shader, glm::vec3 color, const std::string& name) : Light(color, LIGHT_POINT, name) {
     m_Shader = shader;
     m_Model = ModelLoader::NormalsCube();
 

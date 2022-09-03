@@ -4,7 +4,7 @@
 
 class DirectionalLight : public Light {
    public:
-    DirectionalLight(glm::vec3 color, glm::vec3 direction);
+    DirectionalLight(glm::vec3 color, glm::vec3 direction, const std::string& name);
     glm::vec3 GetDirection() const;
 
    private:

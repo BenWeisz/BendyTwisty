@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-int Entity::m_EntityNum = 0;
+unsigned int Entity::m_EntityNum = 0;
 
 Entity::Entity(const std::string& name) {
     m_Name = "E" + std::to_string(m_EntityNum++) + ": " + name;

@@ -123,6 +123,9 @@ void EngineGui::RegisterEntity(Entity& entity) {
     entityData.push_back(data);
 }
 
+void RegisterLight(Light& light) {
+}
+
 void EngineGui::ShowSettingsMenu(const Light& light, const Camera& camera) {
     if (ImGui::CollapsingHeader("Entities")) {
         for (auto data : entityData) {
