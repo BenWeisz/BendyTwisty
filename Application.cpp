@@ -139,6 +139,9 @@ int main(void) {
     PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f), "Rotating Light");
     modelRenderer.AddLight(&pointLight);
 
+    // DirectionalLight directionalLight(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "Sun");
+    // modelRenderer.AddLight(&directionalLight);
+
     modelRenderer.AddEntity(&plane);
     modelRenderer.AddEntity(&box);
     modelRenderer.AddEntity(&rainbowBox);
@@ -155,6 +158,7 @@ int main(void) {
     EngineGui::RegisterEntity(plane);
     EngineGui::RegisterEntity(box);
     EngineGui::RegisterEntity(teapot);
+    EngineGui::RegisterLight(pointLight);
 
     // Vertex Shaders
     // base

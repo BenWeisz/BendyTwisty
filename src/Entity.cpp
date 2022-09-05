@@ -27,7 +27,7 @@ Entity::~Entity() {
 }
 
 void Entity::Draw(const float deltaTime) const {
-    // ! DO NOT CHANGE MATERIALS IN DRAW CALLS
+    // ! DO NOT SWITCH MATERIALS IN DRAW CALLS
     assert(m_Model != nullptr);
     assert(m_ActiveMaterialIndex != -1);
     m_Model->Bind();
