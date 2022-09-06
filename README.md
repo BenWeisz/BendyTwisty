@@ -15,3 +15,5 @@ https://user-images.githubusercontent.com/15256744/187484764-42a4a681-e387-4140-
 3. Run `cmake ..` in build directory
 4. Run `make`
 5. Voila!
+
+For M1 Macs you may need to run `cmake -DCMAKE_APPLE_SILICON_PROCESSOR=arm64 ..` instead
