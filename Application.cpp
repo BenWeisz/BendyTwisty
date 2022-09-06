@@ -158,7 +158,7 @@ int main(void) {
     EngineGui::RegisterEntity(plane);
     EngineGui::RegisterEntity(box);
     EngineGui::RegisterEntity(teapot);
-    EngineGui::RegisterLight(pointLight);
+    EngineGui::RegisterLight(&pointLight);
 
     // Vertex Shaders
     // base
@@ -191,7 +191,7 @@ int main(void) {
 
         if (EngineGui::HasContent()) {
             EngineGui::StartDraw("ModelEngine Settings");
-            EngineGui::ShowSettingsMenu(pointLight, modelRenderer.GetCamera());
+            EngineGui::ShowSettingsMenu(modelRenderer.GetCamera());
             // EngineGui::ShowSettingsMenu(&pointLight, &plane, &box, &teapot, modelRenderer.GetCamera());
             // EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
             EngineGui::EndDraw();

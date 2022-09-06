@@ -2,6 +2,7 @@
 
 ImGuiIO* EngineGui::IO;
 std::vector<EntityGUIData> EngineGui::entityData;
+Light* EngineGui::light = nullptr;
 
 void EngineGui::Init(GLFWwindow* window) {
     IMGUI_CHECKVERSION();
@@ -123,10 +124,11 @@ void EngineGui::RegisterEntity(Entity& entity) {
     entityData.push_back(data);
 }
 
-void RegisterLight(Light& light) {
+void EngineGui::RegisterLight(Light* newLight) {
+    light = newLight;
 }
 
-void EngineGui::ShowSettingsMenu(const Light& light, const Camera& camera) {
+void EngineGui::ShowSettingsMenu(const Camera& camera) {
     if (ImGui::CollapsingHeader("Entities")) {
         for (auto data : entityData) {
             Entity& entity = data.entity;
@@ -169,6 +171,16 @@ void EngineGui::ShowSettingsMenu(const Light& light, const Camera& camera) {
                 }
             }
         }
+    }
+    if (ImGui::CollapsingHeader("Light") && light != nullptr) {
+        float color[3];
+        auto colorVec = light->GetColor();
+        color[0] = colorVec.x;
+        color[1] = colorVec.y;
+        color[2] = colorVec.z;
+
+        ImGui::ColorEdit3("Color", color);
+        light->SetColor(color);
     }
     ImGui::SetNextItemWidth(350);
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

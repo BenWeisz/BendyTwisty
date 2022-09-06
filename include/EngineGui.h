@@ -23,14 +23,15 @@ struct EntityGUIData {
 namespace EngineGui {
 extern ImGuiIO* IO;
 extern std::vector<EntityGUIData> entityData;
+extern Light* light;
 extern void Init(GLFWwindow* window);
 void StartDraw(const char* title);
 void EndDraw();
 int GetEntityDataOffset(const Entity& entity, const char key);
 unsigned int GetEntityGUIDataSize(const Entity& entity);
 void RegisterEntity(Entity& entity);
-void RegisterLight(Light& light);
-void ShowSettingsMenu(const Light& light, const Camera& camera);
+void RegisterLight(Light* newLight);
+void ShowSettingsMenu(const Camera& camera);
 bool HasContent();
 void Destory();
 void LoadSettings(Entity& entity, char* data);
