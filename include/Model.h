@@ -24,10 +24,12 @@ class Model {
     void AddBufferLayout(const std::vector<LayoutElement> layoutElements);
     void PackModel();
     void Draw() const;
+    void SetPrimitive(const GLenum type, const GLfloat size);
 
    private:
     std::vector<VertexBuffer> m_VBOs;
     IndexBuffer m_IBO;
     VertexArray m_VAO;
     std::vector<VertexBufferLayout> m_BufferLayouts;
+    GLenum m_PrimitiveType;
 };

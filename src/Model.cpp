@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model() {}
+Model::Model() : m_PrimitiveType(GL_TRIANGLES) {}
 
 Model::~Model() {}
 
@@ -59,9 +59,15 @@ void Model::PackModel() {
 }
 
 void Model::Draw() const {
-    glDrawElements(GL_TRIANGLES, m_IBO.GetIndexCount(), GL_UNSIGNED_INT, (const GLvoid *)0);
+    glDrawElements(m_PrimitiveType, m_IBO.GetIndexCount(), GL_UNSIGNED_INT, (const GLvoid *)0);
 }
 
-// is drawing light
-// is color changeable
-// is moveable
+void Model::SetPrimitive(const GLenum type, const GLfloat size) {
+    assert(type == GL_TRIANGLES || type == GL_LINES || type == GL_POINTS);
+    m_PrimitiveType = type;
+
+    if (type == GL_LINES)
+        glLineWidth(size);
+    else if (type == GL_POINTS)
+        glPointSize(size);
+}

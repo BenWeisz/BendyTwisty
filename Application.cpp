@@ -191,20 +191,6 @@ int main(void) {
     // EngineGui::RegisterLight(&pointLight);
     EngineGui::RegisterLight(&directionalLight);
 
-    // Vertex Shaders
-    // base
-    // normals_f
-    // normals_v
-
-    // Fragment Shaders
-    // base
-    // flat
-    // flat_normal
-    // light_shading_point_fn
-    // light_shading_point_vn
-    // light_shading_directional_fn
-    // light_shading_directional_vn
-
     // Now we have a current OpenGL context, we can use OpenGL normally
     while (!glfwWindowShouldClose(window)) {
         float currentTime = (float)glfwGetTime();
