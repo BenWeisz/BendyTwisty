@@ -77,22 +77,41 @@ int main(void) {
     Box box;
     Teapot teapot;
 
-    ShaderProgram phongPointFnShader("../res/shaders/normals_f.vert", "../res/shaders/light_shading_point_fn.frag");
-    PhongMaterial* phongPointFnMaterial_Plane = new PhongMaterial(
-        phongPointFnShader,
+    // Directional Light
+    ShaderProgram phongDirectionalFnShader("../res/shaders/normals_f.vert", "../res/shaders/light_shading_directional_fn.frag");
+    PhongMaterial* phongDirectionalFnMaterial_Plane = new PhongMaterial(
+        phongDirectionalFnShader,
         MATERIAL_PHONG,
         glm::vec3(0.498f, 0.588f, 0.6f),
         0.1f,
         1.0f,
         0.5f);
 
-    PhongMaterial* phongPointFnMaterial_Box = new PhongMaterial(
-        phongPointFnShader,
+    PhongMaterial* phongDirectionalFnMaterial_Box = new PhongMaterial(
+        phongDirectionalFnShader,
         MATERIAL_PHONG,
         glm::vec3(1.0f, 0.5f, 0.0f),
         0.1f,
         1.0f,
         0.5f);
+
+    // Point Light
+    // ShaderProgram phongPointFnShader("../res/shaders/normals_f.vert", "../res/shaders/light_shading_point_fn.frag");
+    // PhongMaterial* phongPointFnMaterial_Plane = new PhongMaterial(
+    //     phongPointFnShader,
+    //     MATERIAL_PHONG,
+    //     glm::vec3(0.498f, 0.588f, 0.6f),
+    //     0.1f,
+    //     1.0f,
+    //     0.5f);
+
+    // PhongMaterial* phongPointFnMaterial_Box = new PhongMaterial(
+    //     phongPointFnShader,
+    //     MATERIAL_PHONG,
+    //     glm::vec3(1.0f, 0.5f, 0.0f),
+    //     0.1f,
+    //     1.0f,
+    //     0.5f);
 
     ShaderProgram rainbowBoxShader("../res/shaders/rainbow_box.vert", "../res/shaders/rainbow_box.frag");
     Material* rainbowBoxMaterial = new Material(rainbowBoxShader, MATERIAL_CUSTOM);
@@ -113,34 +132,45 @@ int main(void) {
         MATERIAL_FLAT,
         glm::vec3(0.3f, 0.5f, 1.0f));
 
-    ShaderProgram phongPointVnShader("../res/shaders/normals_v.vert", "../res/shaders/light_shading_point_vn.frag");
-    PhongMaterial* phongPointVnMaterial_Teapot = new PhongMaterial(
-        phongPointVnShader,
+    // Directional lighting
+    ShaderProgram phongDirectionalVnShader("../res/shaders/normals_v.vert", "../res/shaders/light_shading_directional_vn.frag");
+    PhongMaterial* phongDirectionalVnMaterial_Teapot = new PhongMaterial(
+        phongDirectionalVnShader,
         MATERIAL_PHONG,
         glm::vec3(0.3f, 0.5f, 1.0f),
         0.1f,
         1.0f,
         1.0f);
 
+    // Point lighting
+    // ShaderProgram phongPointVnShader("../res/shaders/normals_v.vert", "../res/shaders/light_shading_point_vn.frag");
+    // PhongMaterial* phongPointVnMaterial_Teapot = new PhongMaterial(
+    //     phongPointVnShader,
+    //     MATERIAL_PHONG,
+    //     glm::vec3(0.3f, 0.5f, 1.0f),
+    //     0.1f,
+    //     1.0f,
+    //     1.0f);
+
     plane.AddMaterial(flatMaterial_Plane);
-    plane.AddMaterial(phongPointFnMaterial_Plane);
+    plane.AddMaterial(phongDirectionalFnMaterial_Plane);
     plane.SetIsLightingEnabled(true);
 
     box.AddMaterial(flatMaterial_Box);
-    box.AddMaterial(phongPointFnMaterial_Box);
+    box.AddMaterial(phongDirectionalFnMaterial_Box);
     box.SetIsLightingEnabled(true);
 
     rainbowBox.AddMaterial(rainbowBoxMaterial);
 
     teapot.AddMaterial(flatMaterial_Teapot);
-    teapot.AddMaterial(phongPointVnMaterial_Teapot);
+    teapot.AddMaterial(phongDirectionalVnMaterial_Teapot);
     teapot.SetIsLightingEnabled(true);
 
-    PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f), "Rotating Light");
-    modelRenderer.AddLight(&pointLight);
+    // PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f), "Rotating Light");
+    // modelRenderer.AddLight(&pointLight);
 
-    // DirectionalLight directionalLight(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "Sun");
-    // modelRenderer.AddLight(&directionalLight);
+    DirectionalLight directionalLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.2f, 1.5f), "Sun");
+    modelRenderer.AddLight(&directionalLight);
 
     modelRenderer.AddEntity(&plane);
     modelRenderer.AddEntity(&box);
@@ -158,7 +188,8 @@ int main(void) {
     EngineGui::RegisterEntity(plane);
     EngineGui::RegisterEntity(box);
     EngineGui::RegisterEntity(teapot);
-    EngineGui::RegisterLight(&pointLight);
+    // EngineGui::RegisterLight(&pointLight);
+    EngineGui::RegisterLight(&directionalLight);
 
     // Vertex Shaders
     // base
@@ -192,8 +223,6 @@ int main(void) {
         if (EngineGui::HasContent()) {
             EngineGui::StartDraw("ModelEngine Settings");
             EngineGui::ShowSettingsMenu(modelRenderer.GetCamera());
-            // EngineGui::ShowSettingsMenu(&pointLight, &plane, &box, &teapot, modelRenderer.GetCamera());
-            // EngineGui::ShowSettingsMenu(&directionalLight, &plane, &box, &teapot, modelRenderer.GetCamera());
             EngineGui::EndDraw();
         }
 
