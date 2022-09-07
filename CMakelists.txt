@@ -6,7 +6,6 @@ add_definitions(-std=c++17)
 add_compile_definitions(__gl_h_ GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED)
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
-set(CMAKE_BUILD_TYPE Debug)
 
 add_executable(ModelEngine Application.cpp)
 target_sources(ModelEngine PUBLIC
@@ -31,6 +30,12 @@ target_sources(ModelEngine PUBLIC
     extern/imgui/imgui_widgets.cpp
     extern/imgui/imgui_tables.cpp
 )
+
+set(IS_DEBUG_BUILD CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+if(${IS_DEBUG_BUILD})
+    add_compile_definitions(__DEBUG__)
+endif()
 
 find_package(glfw3 3.4 REQUIRED)
 find_package(OpenGL REQUIRED)

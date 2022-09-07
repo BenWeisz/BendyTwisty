@@ -27,9 +27,9 @@ class Model {
     void SetPrimitive(const GLenum type, const GLfloat size);
 
    private:
-    std::vector<VertexBuffer> m_VBOs;
+    VertexBuffer m_VBO;
     IndexBuffer m_IBO;
     VertexArray m_VAO;
-    std::vector<VertexBufferLayout> m_BufferLayouts;
+    VertexBufferLayout m_BufferLayout;
     GLenum m_PrimitiveType;
 };

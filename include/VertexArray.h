@@ -10,12 +10,11 @@
 class VertexArray {
    private:
     GLuint m_RendererID;
-    int m_NextAttr;
 
    public:
     VertexArray();
     ~VertexArray();
     void Bind() const;
     void Unbind() const;
-    void AddBuffer(const VertexBuffer& vbo, const VertexBufferLayout& layout);
+    void SetBuffer(const VertexBuffer& vbo, const VertexBufferLayout& layout);
 };

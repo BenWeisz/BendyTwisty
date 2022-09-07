@@ -26,6 +26,12 @@
 #include "custom/Box.h"
 #include "custom/Teapot.h"
 
+#if __DEBUG__
+#define RESOURCE_DIR(x) "./res/shaders/" x
+#else
+#define RESOURCE_DIR(x) "../res/shaders/" x
+#endif
+
 const size_t WIDTH = 640;
 const size_t HEIGHT = 480;
 const char* WINDOW_NAME = "ModelEngine";
@@ -73,12 +79,12 @@ int main(void) {
     ModelRenderer modelRenderer(window, WIDTH, HEIGHT);
 
     RainbowBox rainbowBox;
-    Plane plane;
-    Box box;
-    Teapot teapot;
+    // Plane plane;
+    // Box box;
+    // Teapot teapot;
 
     // Directional Light
-    ShaderProgram phongDirectionalFnShader("../res/shaders/normals_f.vert", "../res/shaders/light_shading_directional_fn.frag");
+    ShaderProgram phongDirectionalFnShader(RESOURCE_DIR("normals_f.vert"), RESOURCE_DIR("light_shading_directional_fn.frag"));
     PhongMaterial* phongDirectionalFnMaterial_Plane = new PhongMaterial(
         phongDirectionalFnShader,
         MATERIAL_PHONG,
@@ -96,7 +102,7 @@ int main(void) {
         0.5f);
 
     // Point Light
-    // ShaderProgram phongPointFnShader("../res/shaders/normals_f.vert", "../res/shaders/light_shading_point_fn.frag");
+    // ShaderProgram phongPointFnShader(RESOURCE_DIR("normals_f.vert"), RESOURCE_DIR("light_shading_point_fn.frag"));
     // PhongMaterial* phongPointFnMaterial_Plane = new PhongMaterial(
     //     phongPointFnShader,
     //     MATERIAL_PHONG,
@@ -113,10 +119,10 @@ int main(void) {
     //     1.0f,
     //     0.5f);
 
-    ShaderProgram rainbowBoxShader("../res/shaders/rainbow_box.vert", "../res/shaders/rainbow_box.frag");
+    ShaderProgram rainbowBoxShader(RESOURCE_DIR("rainbow_box.vert"), RESOURCE_DIR("rainbow_box.frag"));
     Material* rainbowBoxMaterial = new Material(rainbowBoxShader, MATERIAL_CUSTOM);
 
-    ShaderProgram flatShader("../res/shaders/normal_bypass.vert", "../res/shaders/flat.frag");
+    ShaderProgram flatShader(RESOURCE_DIR("normal_bypass.vert"), RESOURCE_DIR("flat.frag"));
     FlatMaterial* flatMaterial_Plane = new FlatMaterial(
         flatShader,
         MATERIAL_FLAT,
@@ -133,7 +139,7 @@ int main(void) {
         glm::vec3(0.3f, 0.5f, 1.0f));
 
     // Directional lighting
-    ShaderProgram phongDirectionalVnShader("../res/shaders/normals_v.vert", "../res/shaders/light_shading_directional_vn.frag");
+    ShaderProgram phongDirectionalVnShader(RESOURCE_DIR("normals_v.vert"), RESOURCE_DIR("light_shading_directional_vn.frag"));
     PhongMaterial* phongDirectionalVnMaterial_Teapot = new PhongMaterial(
         phongDirectionalVnShader,
         MATERIAL_PHONG,
@@ -143,7 +149,7 @@ int main(void) {
         1.0f);
 
     // Point lighting
-    // ShaderProgram phongPointVnShader("../res/shaders/normals_v.vert", "../res/shaders/light_shading_point_vn.frag");
+    // ShaderProgram phongPointVnShader(RESOURCE_DIR("normals_v.vert"), RESOURCE_DIR("light_shading_point_vn.frag"));
     // PhongMaterial* phongPointVnMaterial_Teapot = new PhongMaterial(
     //     phongPointVnShader,
     //     MATERIAL_PHONG,
@@ -152,19 +158,19 @@ int main(void) {
     //     1.0f,
     //     1.0f);
 
-    plane.AddMaterial(flatMaterial_Plane);
-    plane.AddMaterial(phongDirectionalFnMaterial_Plane);
-    plane.SetIsLightingEnabled(true);
+    // plane.AddMaterial(flatMaterial_Plane);
+    // plane.AddMaterial(phongDirectionalFnMaterial_Plane);
+    // plane.SetIsLightingEnabled(true);
 
-    box.AddMaterial(flatMaterial_Box);
-    box.AddMaterial(phongDirectionalFnMaterial_Box);
-    box.SetIsLightingEnabled(true);
+    // box.AddMaterial(flatMaterial_Box);
+    // box.AddMaterial(phongDirectionalFnMaterial_Box);
+    // box.SetIsLightingEnabled(true);
 
     rainbowBox.AddMaterial(rainbowBoxMaterial);
 
-    teapot.AddMaterial(flatMaterial_Teapot);
-    teapot.AddMaterial(phongDirectionalVnMaterial_Teapot);
-    teapot.SetIsLightingEnabled(true);
+    // teapot.AddMaterial(flatMaterial_Teapot);
+    // teapot.AddMaterial(phongDirectionalVnMaterial_Teapot);
+    // teapot.SetIsLightingEnabled(true);
 
     // PointLight pointLight(&flatShader, glm::vec3(1.0f, 1.0f, 1.0f), "Rotating Light");
     // modelRenderer.AddLight(&pointLight);
@@ -172,10 +178,10 @@ int main(void) {
     DirectionalLight directionalLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.2f, 1.5f), "Sun");
     modelRenderer.AddLight(&directionalLight);
 
-    modelRenderer.AddEntity(&plane);
-    modelRenderer.AddEntity(&box);
+    // modelRenderer.AddEntity(&plane);
+    // modelRenderer.AddEntity(&box);
     modelRenderer.AddEntity(&rainbowBox);
-    modelRenderer.AddEntity(&teapot);
+    // modelRenderer.AddEntity(&teapot);
 
     float deltaTime = 0.0f;
     float lastTime = (float)glfwGetTime();
@@ -185,9 +191,9 @@ int main(void) {
     glClearColor(15.0f / 255.0f, 44.0f / 255.0f, 92.0f / 255.0f, 1.0f);
 
     EngineGui::RegisterEntity(rainbowBox);
-    EngineGui::RegisterEntity(plane);
-    EngineGui::RegisterEntity(box);
-    EngineGui::RegisterEntity(teapot);
+    // EngineGui::RegisterEntity(plane);
+    // EngineGui::RegisterEntity(box);
+    // EngineGui::RegisterEntity(teapot);
     // EngineGui::RegisterLight(&pointLight);
     EngineGui::RegisterLight(&directionalLight);
 

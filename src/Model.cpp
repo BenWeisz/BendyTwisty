@@ -25,7 +25,9 @@ void Model::SetVertexData(const GLvoid *data, const unsigned int count, const GL
             break;
     }
 
-    m_VBOs.emplace_back(data, size);
+    m_VBO.Bind();
+    m_VBO.SetData(data, size);
+    m_VBO.Unbind();
 }
 
 void Model::SetIndexData(const GLuint *data, const unsigned int count) {
@@ -38,23 +40,17 @@ void Model::SetBufferLayout(const std::vector<LayoutElement> layoutElements) {
     if (!layoutElements.size())
         return;
 
-    m_BufferLayouts.emplace_back();
-
     for (auto &element : layoutElements) {
         GLint count = element.count;
         GLenum type = element.type;
         if (type == GL_FLOAT)
-            m_BufferLayouts[m_BufferLayouts.size() - 1].Push<GLfloat>(count);
+            m_BufferLayout.Push<GLfloat>(count);
     }
 }
 
 void Model::PackModel() {
-    assert(m_VBOs.size() == m_BufferLayouts.size());
     m_VAO.Bind();
-
-    for (int i = 0; i < m_VBOs.size(); i++)
-        m_VAO.AddBuffer(m_VBOs[i], m_BufferLayouts[i]);
-
+    m_VAO.SetBuffer(m_VBO, m_BufferLayout);
     m_VAO.Unbind();
 }
 
