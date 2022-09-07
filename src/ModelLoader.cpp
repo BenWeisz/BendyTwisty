@@ -72,13 +72,13 @@ Model* ModelLoader::LoadModel(const std::string& path) {
     }
 
     Model* model = new Model();
-    model->AddVertexData((GLvoid*)buffer, vertCount * 6, GL_FLOAT);
+    model->SetVertexData((GLvoid*)buffer, vertCount * 6, GL_FLOAT);
     model->SetIndexData(indices, faceCount * 3);
 
     std::vector<LayoutElement> layoutElements;
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
-    model->AddBufferLayout(layoutElements);
+    model->SetBufferLayout(layoutElements);
 
     model->PackModel();
 
@@ -101,12 +101,12 @@ Model* ModelLoader::SimplePlane() {
         0, 1, 2,
         2, 1, 3};
 
-    model->AddVertexData((GLvoid*)buffer, 12, GL_FLOAT);
+    model->SetVertexData((GLvoid*)buffer, 12, GL_FLOAT);
     model->SetIndexData(indices, 6);
 
     std::vector<LayoutElement> layoutElements;
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
-    model->AddBufferLayout(layoutElements);
+    model->SetBufferLayout(layoutElements);
 
     model->PackModel();
 
@@ -126,13 +126,13 @@ Model* ModelLoader::NormalsPlane() {
         1, 0, 2,
         1, 3, 2};
 
-    model->AddVertexData((GLvoid*)buffer, 24, GL_FLOAT);
+    model->SetVertexData((GLvoid*)buffer, 24, GL_FLOAT);
     model->SetIndexData(indices, 6);
 
     std::vector<LayoutElement> layoutElements;
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
-    model->AddBufferLayout(layoutElements);
+    model->SetBufferLayout(layoutElements);
 
     model->PackModel();
 
@@ -166,12 +166,12 @@ Model* ModelLoader::NormalsCube() {
         6, 3, 7,
         6, 2, 3};
 
-    model->AddVertexData((GLvoid*)buffer, 48, GL_FLOAT);
+    model->SetVertexData((GLvoid*)buffer, 48, GL_FLOAT);
 
     std::vector<LayoutElement> layoutElements;
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
-    model->AddBufferLayout(layoutElements);
+    model->SetBufferLayout(layoutElements);
 
     model->SetIndexData(indices, 36);
     model->PackModel();
@@ -206,12 +206,12 @@ Model* ModelLoader::RainbowCube() {
         1, 2, 5,
         5, 2, 6};
 
-    model->AddVertexData((GLvoid*)buffer, 48, GL_FLOAT);
+    model->SetVertexData((GLvoid*)buffer, 48, GL_FLOAT);
 
     std::vector<LayoutElement> layoutElements;
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
-    model->AddBufferLayout(layoutElements);
+    model->SetBufferLayout(layoutElements);
 
     model->SetIndexData(indices, 36);
     model->PackModel();
@@ -246,11 +246,11 @@ Model* ModelLoader::SimpleCube() {
         1, 2, 5,
         5, 2, 6};
 
-    model->AddVertexData((GLvoid*)buffer, 24, GL_FLOAT);
+    model->SetVertexData((GLvoid*)buffer, 24, GL_FLOAT);
 
     std::vector<LayoutElement> layoutElements;
     layoutElements.push_back((LayoutElement){3, GL_FLOAT});
-    model->AddBufferLayout(layoutElements);
+    model->SetBufferLayout(layoutElements);
 
     model->SetIndexData(indices, 36);
     model->PackModel();

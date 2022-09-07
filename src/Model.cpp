@@ -14,7 +14,7 @@ void Model::Unbind() const {
     m_VAO.Unbind();
 }
 
-void Model::AddVertexData(const GLvoid *data, const unsigned int count, const GLenum type) {
+void Model::SetVertexData(const GLvoid *data, const unsigned int count, const GLenum type) {
     GLsizeiptr size;
     switch (type) {
         case GL_FLOAT:
@@ -34,7 +34,7 @@ void Model::SetIndexData(const GLuint *data, const unsigned int count) {
     m_IBO.Unbind();
 }
 
-void Model::AddBufferLayout(const std::vector<LayoutElement> layoutElements) {
+void Model::SetBufferLayout(const std::vector<LayoutElement> layoutElements) {
     if (!layoutElements.size())
         return;
 

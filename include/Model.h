@@ -19,9 +19,9 @@ class Model {
     ~Model();
     void Bind() const;
     void Unbind() const;
-    void AddVertexData(const GLvoid *data, const unsigned int count, const GLenum type);
+    void SetVertexData(const GLvoid *data, const unsigned int count, const GLenum type);
     void SetIndexData(const GLuint *data, const unsigned int count);
-    void AddBufferLayout(const std::vector<LayoutElement> layoutElements);
+    void SetBufferLayout(const std::vector<LayoutElement> layoutElements);
     void PackModel();
     void Draw() const;
     void SetPrimitive(const GLenum type, const GLfloat size);
