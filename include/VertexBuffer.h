@@ -6,9 +6,9 @@
 class VertexBuffer {
    public:
     VertexBuffer();
-    VertexBuffer(const GLvoid *data, const GLsizeiptr size);
+    VertexBuffer(const GLvoid *data, const GLsizeiptr size, const GLenum usage);
     ~VertexBuffer();
-    void SetData(const GLvoid *data, const GLsizeiptr size);
+    void SetData(const GLvoid *data, const GLsizeiptr size, const GLenum usage);
     void Bind() const;
     void Unbind() const;
 

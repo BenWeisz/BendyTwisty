@@ -1,6 +1,7 @@
 #include "Model.h"
 
-Model::Model() : m_PrimitiveType(GL_TRIANGLES) {}
+Model::Model() : m_PrimitiveType(GL_TRIANGLES), m_Usage(MODEL_STATIC) {}
+Model::Model(GLenum usage) : m_PrimitiveType(GL_TRIANGLES), m_Usage(usage) {}
 
 Model::~Model() {}
 
@@ -26,7 +27,7 @@ void Model::SetVertexData(const GLvoid *data, const unsigned int count, const GL
     }
 
     m_VBO.Bind();
-    m_VBO.SetData(data, size);
+    m_VBO.SetData(data, size, m_Usage);
     m_VBO.Unbind();
 }
 

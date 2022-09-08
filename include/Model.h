@@ -13,9 +13,13 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 
+#define MODEL_STATIC GL_STATIC_DRAW
+#define MODEL_STREAMING GL_STREAM_DRAW
+
 class Model {
    public:
     Model();
+    Model(GLenum usage);
     ~Model();
     void Bind() const;
     void Unbind() const;
@@ -32,4 +36,5 @@ class Model {
     VertexArray m_VAO;
     VertexBufferLayout m_BufferLayout;
     GLenum m_PrimitiveType;
+    GLenum m_Usage;
 };
