@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 
-project(ModelEngine VERSION 1.0)
+project(BendyTwisty VERSION 1.0)
 
 add_definitions(-std=c++17)
 add_compile_definitions(__gl_h_ GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED)
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
-add_executable(ModelEngine Application.cpp)
-target_sources(ModelEngine PUBLIC
+add_executable(BendyTwisty Application.cpp)
+target_sources(BendyTwisty PUBLIC
     src/VertexBuffer.cpp
     src/IndexBuffer.cpp
     src/VertexArray.cpp
@@ -42,16 +42,16 @@ find_package(OpenGL REQUIRED)
 find_package(glm REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
-target_include_directories(ModelEngine PUBLIC ${OPENGL_INCLUDE_DIR})
-target_include_directories(ModelEngine PUBLIC include)
-target_include_directories(ModelEngine PUBLIC include)
-target_include_directories(ModelEngine PUBLIC extern)
-target_include_directories(ModelEngine PUBLIC extern/imgui)
+target_include_directories(BendyTwisty PUBLIC ${OPENGL_INCLUDE_DIR})
+target_include_directories(BendyTwisty PUBLIC include)
+target_include_directories(BendyTwisty PUBLIC include)
+target_include_directories(BendyTwisty PUBLIC extern)
+target_include_directories(BendyTwisty PUBLIC extern/imgui)
 
 link_directories(${CMAKE_SOURCE_DIR}/include/extern)
 
-target_link_libraries(ModelEngine "-framework Cocoa")
-target_link_libraries(ModelEngine "-framework OpenGL")
-target_link_libraries(ModelEngine "-framework IOKit")
-target_link_libraries(ModelEngine glfw ${OPENGL_gl_LIBRARY})
-target_link_libraries(ModelEngine Eigen3::Eigen)
+target_link_libraries(BendyTwisty "-framework Cocoa")
+target_link_libraries(BendyTwisty "-framework OpenGL")
+target_link_libraries(BendyTwisty "-framework IOKit")
+target_link_libraries(BendyTwisty glfw ${OPENGL_gl_LIBRARY})
+target_link_libraries(BendyTwisty Eigen3::Eigen)
