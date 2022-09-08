@@ -222,6 +222,17 @@ int main(void) {
         glfwSwapBuffers(window);
     }
 
+    delete phongDirectionalFnMaterial_Plane;
+    delete phongDirectionalFnMaterial_Box;
+    delete phongPointFnMaterial_Plane;
+    delete phongPointFnMaterial_Box;
+    delete rainbowBoxMaterial;
+    delete flatMaterial_Plane;
+    delete flatMaterial_Box;
+    delete flatMaterial_Teapot;
+    delete phongDirectionalVnMaterial_Teapot;
+    delete phongPointVnMaterial_Teapot;
+
     EngineGui::Destory();
     glfwTerminate();
 
