@@ -22,7 +22,7 @@
 #include "Material.h"
 
 #include "custom/Plane.h"
-#include "custom/Rod.h"
+#include "custom/rod/Rod.h"
 
 #if __DEBUG__
 #define RESOURCE_DIR(x) "./res/shaders/" x

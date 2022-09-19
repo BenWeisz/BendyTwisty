@@ -1,9 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <cmath>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 #include "Entity.h"
 #include "VertexBufferLayout.h"
@@ -50,6 +52,8 @@ class Rod : public Entity {
         for (int i = 0; i < m_Segments + 1; i++) {
             q(0, i) = startX + (i * step);
             q(1, i) = 0.0f;
+            if (i == 1)
+                q(1, i) = 1.0f;
             q(2, i) = 0.0f;
         }
 
@@ -73,23 +77,35 @@ class Rod : public Entity {
         delete[] indices;
 
         // Set up physics model
-        qbar = q;
-        qdot = Eigen::MatrixXf::Zero(3, m_Segments + 1);
-        bFrame << 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, -1.0f, 0.0f;
+        // qbar = q;
+        // qdot = Eigen::MatrixXf::Zero(3, m_Segments + 1);
+        // bFrame << 1.0f, 0.0f, 0.0f,
+        //     0.0f, 0.0f, 1.0f,
+        //     0.0f, -1.0f, 0.0f;
 
-        ebar = computeEdgeVectors(qbar);
-        kb = computeCurvatureBinormal(ebar);
+        // ebar = ComputeEdgeVectors(qbar);
+        // kb = ComputeCurvatureBinormal(ebar);
 
-        std::cout << kb << std::endl;
+        // theta = Eigen::VectorXf::Zero(m_Segments);
+
+        // Eigen::VectorXf costheta = thetabar.cos();
+        // Eigen::VectorXf sintheta = thetabar.sin();
+
+        // auto a = RotationAboutAxis(Eigen::Vector3f({0.0f, 0.0f, 0.0f}), Eigen::Vector3f({1.0f, 1.0f, 0.0f}), M_PI / 2.0f);
+        // auto a = RotationAboutAxis(Eigen::Vector3f({0.0f, 0.0f, 0.0f}), Eigen::Vector3f({1.0f, 0.0f, 0.0f}), M_PI / 2.0f);
+        // Eigen::Vector4f b = Eigen::Vector4f({0.0f, 1.0f, 0.0f, 1.0f});
+        // std::cout << a * b << std::endl;
+
+        // Eigen::Matrix3f a;
+        // a = Eigen::AngleAxisf(M_PI / 2.0f, Eigen::Vector3f({1.0f, 0.0f, 0.0f}));
+        // Eigen::Vector3f b = Eigen::Vector3f({0.0f, 1.0f, 0.0f});
     }
 
-    Eigen::MatrixXf computeEdgeVectors(const Eigen::MatrixXf& x) {
+    Eigen::MatrixXf ComputeEdgeVectors(const Eigen::MatrixXf& x) {
         return x.block(0, 1, 3, m_Segments) - x.block(0, 0, 3, m_Segments);
     }
 
-    Eigen::MatrixXf computeCurvatureBinormal(const Eigen::MatrixXf& e) {
+    Eigen::MatrixXf ComputeCurvatureBinormal(const Eigen::MatrixXf& e) {
         auto eim1 = e.block(0, 0, 3, m_Segments - 1);
         auto ei = e.block(0, 1, 3, m_Segments - 1);
 
@@ -121,4 +137,5 @@ class Rod : public Entity {
     Eigen::Matrix3f bFrame;
     Eigen::MatrixXf ebar;
     Eigen::MatrixXf kb;
+    Eigen::VectorXf theta;
 };
