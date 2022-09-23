@@ -25,7 +25,7 @@ class Rod : public Entity {
 
         // Updates should be preformed here
 
-        m_Model->SetVertexData(q.data(), 3 * (m_Segments + 1), GL_FLOAT);
+        m_Model->SetVertexData(m_q.data(), 3 * (m_Segments + 1), GL_FLOAT);
     }
 
     void Draw(const float deltaTime) const override {
@@ -45,16 +45,14 @@ class Rod : public Entity {
         m_Model = new Model(MODEL_STREAMING);
         m_Model->SetPrimitive(GL_LINES, 1.0f);
 
-        q = Eigen::MatrixXf(3, m_Segments + 1);
+        m_q = Eigen::MatrixXf(3, m_Segments + 1);
 
         float step = m_Length / m_Segments;
         float startX = -m_Length / 2.0f;
         for (int i = 0; i < m_Segments + 1; i++) {
-            q(0, i) = startX + (i * step);
-            q(1, i) = 0.0f;
-            if (i == 1)
-                q(1, i) = 1.0f;
-            q(2, i) = 0.0f;
+            m_q(0, i) = startX + (i * step);
+            m_q(1, i) = 0.0f;
+            m_q(2, i) = 0.0f;
         }
 
         GLuint* indices = new GLuint[2 * m_Segments];
@@ -65,77 +63,18 @@ class Rod : public Entity {
             indices[offset + 1] = i;
         }
 
-        m_Model->SetVertexData(q.data(), 3 * (m_Segments + 1), GL_FLOAT);
+        // Boiler Plate
+        m_Model->SetVertexData(m_q.data(), 3 * (m_Segments + 1), GL_FLOAT);
         m_Model->SetIndexData(indices, 2 * m_Segments);
-
         std::vector<LayoutElement> layoutElements;
         layoutElements.push_back((LayoutElement){3, GL_FLOAT});
-
         m_Model->SetBufferLayout(layoutElements);
         m_Model->PackModel();
-
         delete[] indices;
-
-        // Set up physics model
-        // qbar = q;
-        // qdot = Eigen::MatrixXf::Zero(3, m_Segments + 1);
-        // bFrame << 1.0f, 0.0f, 0.0f,
-        //     0.0f, 0.0f, 1.0f,
-        //     0.0f, -1.0f, 0.0f;
-
-        // ebar = ComputeEdgeVectors(qbar);
-        // kb = ComputeCurvatureBinormal(ebar);
-
-        // theta = Eigen::VectorXf::Zero(m_Segments);
-
-        // Eigen::VectorXf costheta = thetabar.cos();
-        // Eigen::VectorXf sintheta = thetabar.sin();
-
-        // auto a = RotationAboutAxis(Eigen::Vector3f({0.0f, 0.0f, 0.0f}), Eigen::Vector3f({1.0f, 1.0f, 0.0f}), M_PI / 2.0f);
-        // auto a = RotationAboutAxis(Eigen::Vector3f({0.0f, 0.0f, 0.0f}), Eigen::Vector3f({1.0f, 0.0f, 0.0f}), M_PI / 2.0f);
-        // Eigen::Vector4f b = Eigen::Vector4f({0.0f, 1.0f, 0.0f, 1.0f});
-        // std::cout << a * b << std::endl;
-
-        // Eigen::Matrix3f a;
-        // a = Eigen::AngleAxisf(M_PI / 2.0f, Eigen::Vector3f({1.0f, 0.0f, 0.0f}));
-        // Eigen::Vector3f b = Eigen::Vector3f({0.0f, 1.0f, 0.0f});
-    }
-
-    Eigen::MatrixXf ComputeEdgeVectors(const Eigen::MatrixXf& x) {
-        return x.block(0, 1, 3, m_Segments) - x.block(0, 0, 3, m_Segments);
-    }
-
-    Eigen::MatrixXf ComputeCurvatureBinormal(const Eigen::MatrixXf& e) {
-        auto eim1 = e.block(0, 0, 3, m_Segments - 1);
-        auto ei = e.block(0, 1, 3, m_Segments - 1);
-
-        auto ebarmag = (ebar.transpose() * ebar).diagonal().cwiseSqrt();
-        auto a = ebarmag.rows();
-        auto b = ebarmag.cols();
-        auto magprod = ebarmag.segment(0, m_Segments - 1).cwiseProduct(ebarmag.segment(1, m_Segments - 1));
-
-        auto edot = (eim1.transpose() * ei).diagonal();
-
-        auto bottom = magprod + edot;
-
-        Eigen::MatrixXf binormals = Eigen::MatrixXf::Zero(3, m_Segments - 1);
-        for (int i = 0; i < m_Segments - 1; i++) {
-            Eigen::Vector3f e1 = eim1.col(i);
-            Eigen::Vector3f e2 = ei.col(i);
-            binormals.col(i) = e1.cross(e2) * 2 / bottom(i);
-        }
-
-        return binormals;
     }
 
    private:
     const GLfloat m_Length;
     const int m_Segments;
-    Eigen::MatrixXf q;
-    Eigen::MatrixXf qbar;
-    Eigen::MatrixXf qdot;
-    Eigen::Matrix3f bFrame;
-    Eigen::MatrixXf ebar;
-    Eigen::MatrixXf kb;
-    Eigen::VectorXf theta;
+    Eigen::MatrixXf m_q;
 };

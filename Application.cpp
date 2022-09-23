@@ -155,7 +155,7 @@ int main(void) {
 
         modelRenderer.Draw(deltaTime);
 
-        if (EngineGui::HasContent()) {
+        if (EngineGui::HasContent() && false) {
             EngineGui::StartDraw("ModelEngine Settings");
             EngineGui::ShowSettingsMenu(modelRenderer.GetCamera());
             EngineGui::EndDraw();

@@ -4,3 +4,4 @@
 extern/glm/.DS_Store
 extern/.DS_Store
 .DS_Store
+**/python-mock
