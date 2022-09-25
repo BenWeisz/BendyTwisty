@@ -17,6 +17,7 @@
 #include "compute_phi.h"
 #include "parallel_transport.h"
 #include "compute_material_frame.h"
+#include "compute_omega.h"
 
 #define VERTEX_STRESS_FREE 0
 #define VERTEX_CLAMPED 1
@@ -66,7 +67,7 @@ class Rod : public Entity {
         }
 
         // Save a copy of the original vertex points
-        // m_x(1, 1) = 10;
+        m_x(1, 1) = 10;
         m_xbar = m_x;
 
         // Set up the natural undeformed defining bishop frame with t, u, v being columnwise
@@ -96,11 +97,14 @@ class Rod : public Entity {
 
         // Compute the material frame for computing omega bar
         std::vector<Eigen::Matrix3f> mf = compute_material_frame(m_bf, m_theta);
-        ∂
 
-            // Boiler Plate
-            // Set up the correct indicies for the vertex data
-            GLuint* indices = new GLuint[2 * m_Segments];
+        // Compute the omega bar values
+        m_omega_bar_j_im1 = compute_omega(kbbar, mf, OMEGA_J_IM1);
+        m_omega_bar_j_i = compute_omega(kbbar, mf, OMEGA_J_I);
+
+        // Boiler Plate
+        // Set up the correct indicies for the vertex data
+        GLuint* indices = new GLuint[2 * m_Segments];
 
         for (int i = 1; i < m_Segments + 1; i++) {
             const int offset = (i - 1) * 2;
