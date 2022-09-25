@@ -12,15 +12,15 @@
 #include "Material.h"
 #include "ShaderProgram.h"
 
+#include "util.h"
 #include "compute_edges.h"
 #include "compute_kb.h"
 #include "compute_phi.h"
 #include "parallel_transport.h"
 #include "compute_material_frame.h"
 #include "compute_omega.h"
-
-#define VERTEX_STRESS_FREE 0
-#define VERTEX_CLAMPED 1
+#include "compute_neighbor_len.h"
+#include "compute_grad_dEdtheta.h"
 
 class Rod : public Entity {
    public:
@@ -55,6 +55,10 @@ class Rod : public Entity {
         m_Model = new Model(MODEL_STREAMING);
         m_Model->SetPrimitive(GL_LINES, 1.0f);
 
+        // Configure material parameters
+        m_alpha = 1;
+        m_beta = 1;
+
         // Set up the vertex positions
         m_x = Eigen::MatrixXf(3, m_Segments + 1);
 
@@ -67,7 +71,7 @@ class Rod : public Entity {
         }
 
         // Save a copy of the original vertex points
-        m_x(1, 1) = 10;
+        // m_x(1, 1) = 10;
         m_xbar = m_x;
 
         // Set up the natural undeformed defining bishop frame with t, u, v being columnwise
@@ -94,6 +98,9 @@ class Rod : public Entity {
 
         // Initialize the twist angles for each of the material frames
         m_theta = Eigen::VectorXf::Zero(m_Segments);
+        for (int i = 0; i < m_Segments; i++) {
+            m_theta(i) = i * (3.141592 / m_Segments);
+        }
 
         // Compute the material frame for computing omega bar
         std::vector<Eigen::Matrix3f> mf = compute_material_frame(m_bf, m_theta);
@@ -101,6 +108,24 @@ class Rod : public Entity {
         // Compute the omega bar values
         m_omega_bar_j_im1 = compute_omega(kbbar, mf, OMEGA_J_IM1);
         m_omega_bar_j_i = compute_omega(kbbar, mf, OMEGA_J_I);
+
+        Eigen::VectorXf neighbor_len_bar = compute_neighbor_len(ebar);
+
+        Eigen::Matrix2f bending_modulus;
+        bending_modulus << m_alpha, 0, 0, m_alpha;
+
+        Eigen::VectorXf grad = compute_grad_dEdtheta(
+            neighbor_len_bar,
+            m_omega_bar_j_im1,
+            m_omega_bar_j_i,
+            bending_modulus,
+            m_omega_bar_j_im1,
+            m_omega_bar_j_i,
+            m_beta,
+            m_theta,
+            m_BoundryConditions);
+
+        std::cout << grad << std::endl;
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data
@@ -132,4 +157,6 @@ class Rod : public Entity {
     Eigen::VectorXf m_theta;
     Eigen::MatrixXf m_omega_bar_j_im1;
     Eigen::MatrixXf m_omega_bar_j_i;
+    float m_alpha;
+    float m_beta;
 };
