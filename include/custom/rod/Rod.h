@@ -12,6 +12,15 @@
 #include "Material.h"
 #include "ShaderProgram.h"
 
+#include "compute_edges.h"
+#include "compute_kb.h"
+#include "compute_phi.h"
+#include "parallel_transport.h"
+#include "compute_material_frame.h"
+
+#define VERTEX_STRESS_FREE 0
+#define VERTEX_CLAMPED 1
+
 class Rod : public Entity {
    public:
     Rod(const GLfloat length, const int segments) : Entity("Rod"), m_Length(length), m_Segments(segments) {
@@ -25,7 +34,7 @@ class Rod : public Entity {
 
         // Updates should be preformed here
 
-        m_Model->SetVertexData(m_q.data(), 3 * (m_Segments + 1), GL_FLOAT);
+        m_Model->SetVertexData(m_x.data(), 3 * (m_Segments + 1), GL_FLOAT);
     }
 
     void Draw(const float deltaTime) const override {
@@ -45,17 +54,53 @@ class Rod : public Entity {
         m_Model = new Model(MODEL_STREAMING);
         m_Model->SetPrimitive(GL_LINES, 1.0f);
 
-        m_q = Eigen::MatrixXf(3, m_Segments + 1);
+        // Set up the vertex positions
+        m_x = Eigen::MatrixXf(3, m_Segments + 1);
 
         float step = m_Length / m_Segments;
         float startX = -m_Length / 2.0f;
         for (int i = 0; i < m_Segments + 1; i++) {
-            m_q(0, i) = startX + (i * step);
-            m_q(1, i) = 0.0f;
-            m_q(2, i) = 0.0f;
+            m_x(0, i) = startX + (i * step);
+            m_x(1, i) = 0.0f;
+            m_x(2, i) = 0.0f;
         }
 
-        GLuint* indices = new GLuint[2 * m_Segments];
+        // Save a copy of the original vertex points
+        // m_x(1, 1) = 10;
+        m_xbar = m_x;
+
+        // Set up the natural undeformed defining bishop frame with t, u, v being columnwise
+        m_u0 << 1, 0, 0, 0, 0, 1, 0, -1, 0;
+
+        // Set up the boundry conditions
+        m_BoundryConditions = new char[m_Segments + 1];
+        for (int i = 0; i < m_Segments + 1; i++)
+            m_BoundryConditions[i] = VERTEX_STRESS_FREE;
+
+        // Clamp the first and last vertices
+        m_BoundryConditions[0] = VERTEX_CLAMPED;
+        m_BoundryConditions[m_Segments] = VERTEX_CLAMPED;
+
+        // Compute the curvature binormal for parallel transport
+        Eigen::MatrixXf ebar = compute_edges(m_xbar);
+        Eigen::MatrixXf kbbar = compute_kb(ebar, ebar);
+
+        // Compute the angles between consecutive edges
+        Eigen::VectorXf phibar = compute_phi(ebar);
+
+        // Parallel transport the u0 frame along the rod
+        m_bf = parallel_transport(m_u0, kbbar, phibar);
+
+        // Initialize the twist angles for each of the material frames
+        m_theta = Eigen::VectorXf::Zero(m_Segments);
+
+        // Compute the material frame for computing omega bar
+        std::vector<Eigen::Matrix3f> mf = compute_material_frame(m_bf, m_theta);
+        ∂
+
+            // Boiler Plate
+            // Set up the correct indicies for the vertex data
+            GLuint* indices = new GLuint[2 * m_Segments];
 
         for (int i = 1; i < m_Segments + 1; i++) {
             const int offset = (i - 1) * 2;
@@ -63,8 +108,7 @@ class Rod : public Entity {
             indices[offset + 1] = i;
         }
 
-        // Boiler Plate
-        m_Model->SetVertexData(m_q.data(), 3 * (m_Segments + 1), GL_FLOAT);
+        m_Model->SetVertexData(m_x.data(), 3 * (m_Segments + 1), GL_FLOAT);
         m_Model->SetIndexData(indices, 2 * m_Segments);
         std::vector<LayoutElement> layoutElements;
         layoutElements.push_back((LayoutElement){3, GL_FLOAT});
@@ -76,5 +120,12 @@ class Rod : public Entity {
    private:
     const GLfloat m_Length;
     const int m_Segments;
-    Eigen::MatrixXf m_q;
+    Eigen::MatrixXf m_x;
+    Eigen::MatrixXf m_xbar;
+    Eigen::Matrix3f m_u0;
+    char* m_BoundryConditions;
+    std::vector<Eigen::Matrix3f> m_bf;
+    Eigen::VectorXf m_theta;
+    Eigen::MatrixXf m_omega_bar_j_im1;
+    Eigen::MatrixXf m_omega_bar_j_i;
 };
