@@ -21,6 +21,7 @@
 #include "compute_omega.h"
 #include "compute_neighbor_len.h"
 #include "compute_grad_dEdtheta.h"
+#include "compute_hessian_d2Edtheta2.h"
 
 class Rod : public Entity {
    public:
@@ -78,13 +79,13 @@ class Rod : public Entity {
         m_u0 << 1, 0, 0, 0, 0, 1, 0, -1, 0;
 
         // Set up the boundry conditions
-        m_BoundryConditions = new char[m_Segments + 1];
-        for (int i = 0; i < m_Segments + 1; i++)
+        m_BoundryConditions = new char[m_Segments];
+        for (int i = 0; i < m_Segments; i++)
             m_BoundryConditions[i] = VERTEX_STRESS_FREE;
 
         // Clamp the first and last vertices
         m_BoundryConditions[0] = VERTEX_CLAMPED;
-        m_BoundryConditions[m_Segments] = VERTEX_CLAMPED;
+        m_BoundryConditions[m_Segments - 1] = VERTEX_CLAMPED;
 
         // Compute the curvature binormal for parallel transport
         Eigen::MatrixXf ebar = compute_edges(m_xbar);
@@ -126,6 +127,16 @@ class Rod : public Entity {
             m_BoundryConditions);
 
         std::cout << grad << std::endl;
+
+        Eigen::SparseMatrix<float> hessian = compute_hessian_d2Edtheta2(
+            m_beta,
+            neighbor_len_bar,
+            m_omega_bar_j_im1,
+            m_omega_bar_j_i,
+            bending_modulus,
+            m_omega_bar_j_im1,
+            m_omega_bar_j_i,
+            m_BoundryConditions);
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data
