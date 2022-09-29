@@ -24,6 +24,8 @@
 #include "compute_hessian_d2Edtheta2.h"
 #include "newtons_method_minimization.h"
 #include "compute_grad_holonomy.h"
+#include "compute_skew_matrices.h"
+#include "compute_grad_kb.h"
 
 class Rod : public Entity {
    public:
@@ -143,8 +145,12 @@ class Rod : public Entity {
         m_Time = 0.0f;
         m_DeltaTime = 0.01;
 
+        // Testing only
         PsiGrad psi_grad = compute_grad_holonomy(kbbar, ebar);
         PsiGradSum psi_grad_sum = compute_grad_holonomy_sum(psi_grad);
+
+        std::vector<Eigen::Matrix3f> skew_matrices = compute_skew_matrices(ebar);
+        KBGrad kb_grad = compute_grad_kb(skew_matrices, kbbar, ebar, ebar);
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data
