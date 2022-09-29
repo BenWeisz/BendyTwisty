@@ -4,28 +4,30 @@
 
 #include <Eigen/Core>
 
-#define OMEGA_J_IM1 0
-#define OMEGA_J_I 1
+typedef struct Omega {
+    Eigen::MatrixXf omega_j_im1;
+    Eigen::MatrixXf omega_j_i;
+} Omega;
 
-// Compute the values for omega_j^i
-// If OMEGA_J_IM1 is specified then j=i-1 otherwise if OMEGA_J_I is specified then j=i
-Eigen::MatrixXf compute_omega(Eigen::MatrixXf& kb, std::vector<Eigen::Matrix3f>& mf, const char type) {
+// Compute the values for omega_j^im1 and omega_j^i
+Omega compute_omega(Eigen::MatrixXf& kb, std::vector<Eigen::Matrix3f>& mf) {
     int num_segments = mf.size();
 
-    assert(type == OMEGA_J_I || type == OMEGA_J_IM1);
-    int start_index = type;  // for j=i-1, i=1 is valid for kb and so we can start from 0 for the material frames;
-
-    Eigen::MatrixXf m1(3, num_segments - 1);
-    Eigen::MatrixXf m2(3, num_segments - 1);
-    for (int i = start_index; i < num_segments - 1 + start_index; i++) {
-        int k = i - start_index;
-        m1.col(k) = mf[i].col(1);
-        m2.col(k) = mf[i].col(2);
+    Omega omega;
+    Eigen::MatrixXf m1(3, num_segments);
+    Eigen::MatrixXf m2(3, num_segments);
+    for (int i = 0; i < num_segments; i++) {
+        m1.col(i) = mf[i].col(1);
+        m2.col(i) = mf[i].col(2);
     }
 
-    Eigen::MatrixXf omega(2, num_segments - 1);
-    omega.row(0) = (kb.transpose() * m2).diagonal();
-    omega.row(1) = (-kb.transpose() * m1).diagonal();
+    omega.omega_j_im1.resize(2, num_segments - 1);
+    omega.omega_j_im1.row(0) = (kb.transpose() * m2.block(0, 0, 3, num_segments - 1)).diagonal();
+    omega.omega_j_im1.row(1) = (-kb.transpose() * m1.block(0, 0, 3, num_segments - 1)).diagonal();
+
+    omega.omega_j_i.resize(2, num_segments - 1);
+    omega.omega_j_i.row(0) = (kb.transpose() * m2.block(0, 1, 3, num_segments - 1)).diagonal();
+    omega.omega_j_i.row(1) = (-kb.transpose() * m1.block(0, 1, 3, num_segments - 1)).diagonal();
 
     return omega;
 }

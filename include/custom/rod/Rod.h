@@ -114,8 +114,9 @@ class Rod : public Entity {
         // Step 1
         //
         // Compute the omega bar values
-        m_omega_bar_j_im1 = compute_omega(kbbar, mf, OMEGA_J_IM1);
-        m_omega_bar_j_i = compute_omega(kbbar, mf, OMEGA_J_I);
+        Omega omega = compute_omega(kbbar, mf);
+        m_omega_bar_j_im1 = omega.omega_j_im1;
+        m_omega_bar_j_i = omega.omega_j_i;
 
         //
         // Step 2

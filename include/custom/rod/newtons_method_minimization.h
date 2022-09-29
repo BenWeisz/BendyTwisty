@@ -11,15 +11,14 @@
 #include "compute_grad_dEdtheta.h"
 #include "compute_hessian_d2Edtheta2.h"
 
-Eigen::MatrixXf newtons_compute_omega(std::vector<Eigen::Matrix3f>& bf,
-                                      Eigen::VectorXf& theta,
-                                      Eigen::MatrixXf& kb,
-                                      const char type) {
+Omega newtons_compute_omega(std::vector<Eigen::Matrix3f>& bf,
+                            Eigen::VectorXf& theta,
+                            Eigen::MatrixXf& kb) {
     // Compute Material Frame
     std::vector<Eigen::Matrix3f> mf = compute_material_frame(bf, theta);
 
     // Compute Omega
-    Eigen::MatrixXf omega = compute_omega(kb, mf, type);
+    Omega omega = compute_omega(kb, mf);
     return omega;
 }
 
@@ -36,8 +35,9 @@ Eigen::VectorXf newtons_method_minimization(
     const float tol,
     const int max_iters) {
     // Compute the initial omegas
-    Eigen::MatrixXf omega_j_im1 = newtons_compute_omega(bf, initial_theta, kb, OMEGA_J_IM1);
-    Eigen::MatrixXf omega_j_i = newtons_compute_omega(bf, initial_theta, kb, OMEGA_J_I);
+    Omega omega = newtons_compute_omega(bf, initial_theta, kb);
+    Eigen::MatrixXf omega_j_im1 = omega.omega_j_im1;
+    Eigen::MatrixXf omega_j_i = omega.omega_j_i;
 
     // Compute the initial gradient
     Eigen::VectorXf grad = compute_grad_dEdtheta(
@@ -84,8 +84,9 @@ Eigen::VectorXf newtons_method_minimization(
         theta = theta + d;
 
         // Compute the omegas
-        omega_j_im1 = newtons_compute_omega(bf, theta, kb, OMEGA_J_IM1);
-        omega_j_i = newtons_compute_omega(bf, theta, kb, OMEGA_J_I);
+        omega = newtons_compute_omega(bf, theta, kb);
+        omega_j_im1 = omega.omega_j_im1;
+        omega_j_i = omega.omega_j_i;
 
         // Compute the gradient
         grad = compute_grad_dEdtheta(
