@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Eigen/Core>
 
 Eigen::VectorXf compute_phi(Eigen::MatrixXf& e) {

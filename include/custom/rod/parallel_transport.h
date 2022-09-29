@@ -1,5 +1,8 @@
+#pragma once
+
 #include <vector>
 #include <cmath>
+
 #include <Eigen/Core>
 
 // Rotate 3d vector v about the unit axis k by angle theta

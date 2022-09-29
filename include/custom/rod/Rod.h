@@ -22,6 +22,7 @@
 #include "compute_neighbor_len.h"
 #include "compute_grad_dEdtheta.h"
 #include "compute_hessian_d2Edtheta2.h"
+#include "newtons_method_minimization.h"
 
 class Rod : public Entity {
    public:
@@ -106,37 +107,39 @@ class Rod : public Entity {
         // Compute the material frame for computing omega bar
         std::vector<Eigen::Matrix3f> mf = compute_material_frame(m_bf, m_theta);
 
+        //
+        // Step 1
+        //
         // Compute the omega bar values
         m_omega_bar_j_im1 = compute_omega(kbbar, mf, OMEGA_J_IM1);
         m_omega_bar_j_i = compute_omega(kbbar, mf, OMEGA_J_I);
+
+        //
+        // Step 2
+        //
+        // Set quasistatic material frame
+        m_NewtonsTol = 0.0001;
+        m_NewtonsMaxIters = 10;
 
         Eigen::VectorXf neighbor_len_bar = compute_neighbor_len(ebar);
 
         Eigen::Matrix2f bending_modulus;
         bending_modulus << m_alpha, 0, 0, m_alpha;
 
-        Eigen::VectorXf grad = compute_grad_dEdtheta(
+        m_theta = newtons_method_minimization(
             neighbor_len_bar,
-            m_omega_bar_j_im1,
-            m_omega_bar_j_i,
             bending_modulus,
             m_omega_bar_j_im1,
             m_omega_bar_j_i,
             m_beta,
             m_theta,
-            m_BoundryConditions);
+            m_BoundryConditions,
+            m_bf,
+            kbbar,
+            m_NewtonsTol,
+            m_NewtonsMaxIters);
 
-        std::cout << grad << std::endl;
-
-        Eigen::SparseMatrix<float> hessian = compute_hessian_d2Edtheta2(
-            m_beta,
-            neighbor_len_bar,
-            m_omega_bar_j_im1,
-            m_omega_bar_j_i,
-            bending_modulus,
-            m_omega_bar_j_im1,
-            m_omega_bar_j_i,
-            m_BoundryConditions);
+        std::cout << m_theta << std::endl;
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data
@@ -170,4 +173,6 @@ class Rod : public Entity {
     Eigen::MatrixXf m_omega_bar_j_i;
     float m_alpha;
     float m_beta;
+    float m_NewtonsTol;
+    int m_NewtonsMaxIters;
 };

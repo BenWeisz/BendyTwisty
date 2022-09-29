@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Eigen/Core>
 
 // Take the position x and compute the edge vectors

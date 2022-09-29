@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Eigen/Core>
 
 Eigen::MatrixXf compute_kb(Eigen::MatrixXf &e, Eigen::MatrixXf &ebar) {
