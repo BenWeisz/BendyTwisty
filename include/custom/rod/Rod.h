@@ -26,6 +26,7 @@
 #include "compute_grad_holonomy.h"
 #include "compute_skew_matrices.h"
 #include "compute_grad_kb.h"
+#include "compute_grad_omega.h"
 
 class Rod : public Entity {
    public:
@@ -114,9 +115,7 @@ class Rod : public Entity {
         // Step 1
         //
         // Compute the omega bar values
-        Omega omega = compute_omega(kbbar, mf);
-        m_omega_bar_j_im1 = omega.omega_j_im1;
-        m_omega_bar_j_i = omega.omega_j_i;
+        m_omega_bar = compute_omega(kbbar, mf);
 
         //
         // Step 2
@@ -133,8 +132,7 @@ class Rod : public Entity {
         m_theta = newtons_method_minimization(
             neighbor_len_bar,
             bending_modulus,
-            m_omega_bar_j_im1,
-            m_omega_bar_j_i,
+            m_omega_bar,
             m_beta,
             m_theta,
             m_BoundryConditions,
@@ -152,6 +150,8 @@ class Rod : public Entity {
 
         std::vector<Eigen::Matrix3f> skew_matrices = compute_skew_matrices(ebar);
         KBGrad kb_grad = compute_grad_kb(skew_matrices, kbbar, ebar, ebar);
+
+        compute_grad_omega(mf, kb_grad, omega);
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data
@@ -181,8 +181,7 @@ class Rod : public Entity {
     char* m_BoundryConditions;
     std::vector<Eigen::Matrix3f> m_bf;
     Eigen::VectorXf m_theta;
-    Eigen::MatrixXf m_omega_bar_j_im1;
-    Eigen::MatrixXf m_omega_bar_j_i;
+    Omega m_omega_bar;
     float m_alpha;
     float m_beta;
     float m_Time;

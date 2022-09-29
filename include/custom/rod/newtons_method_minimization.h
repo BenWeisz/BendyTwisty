@@ -25,8 +25,7 @@ Omega newtons_compute_omega(std::vector<Eigen::Matrix3f>& bf,
 Eigen::VectorXf newtons_method_minimization(
     Eigen::VectorXf& neighbor_len_bar,
     Eigen::Matrix2f& bending_modulus,
-    Eigen::MatrixXf& omega_bar_j_im1,
-    Eigen::MatrixXf& omega_bar_j_i,
+    Omega& omega_bar,
     const float beta,
     Eigen::VectorXf& initial_theta,
     char* boundry_conditions,
@@ -42,11 +41,9 @@ Eigen::VectorXf newtons_method_minimization(
     // Compute the initial gradient
     Eigen::VectorXf grad = compute_grad_dEdtheta(
         neighbor_len_bar,
-        omega_j_im1,
-        omega_j_i,
+        omega,
         bending_modulus,
-        omega_bar_j_im1,
-        omega_bar_j_i,
+        omega_bar,
         beta,
         initial_theta,
         boundry_conditions);
@@ -55,11 +52,9 @@ Eigen::VectorXf newtons_method_minimization(
     Eigen::SparseMatrix<float> hessian = compute_hessian_d2Edtheta2(
         beta,
         neighbor_len_bar,
-        omega_j_im1,
-        omega_j_i,
+        omega,
         bending_modulus,
-        omega_bar_j_im1,
-        omega_bar_j_i,
+        omega_bar,
         boundry_conditions);
 
     int i = 0;
@@ -85,17 +80,13 @@ Eigen::VectorXf newtons_method_minimization(
 
         // Compute the omegas
         omega = newtons_compute_omega(bf, theta, kb);
-        omega_j_im1 = omega.omega_j_im1;
-        omega_j_i = omega.omega_j_i;
 
         // Compute the gradient
         grad = compute_grad_dEdtheta(
             neighbor_len_bar,
-            omega_j_im1,
-            omega_j_i,
+            omega,
             bending_modulus,
-            omega_bar_j_im1,
-            omega_bar_j_i,
+            omega_bar,
             beta,
             theta,
             boundry_conditions);
@@ -104,11 +95,9 @@ Eigen::VectorXf newtons_method_minimization(
         hessian = compute_hessian_d2Edtheta2(
             beta,
             neighbor_len_bar,
-            omega_j_im1,
-            omega_j_i,
+            omega,
             bending_modulus,
-            omega_bar_j_im1,
-            omega_bar_j_i,
+            omega_bar,
             boundry_conditions);
 
         i++;

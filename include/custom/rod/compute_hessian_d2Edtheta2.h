@@ -10,11 +10,9 @@
 Eigen::SparseMatrix<float> compute_hessian_d2Edtheta2(
     float beta,
     Eigen::VectorXf& neighbor_len_bar,
-    Eigen::MatrixXf& omega_j_im1,
-    Eigen::MatrixXf& omega_j_i,
+    Omega& omega,
     Eigen::Matrix2f& bending_modulus,
-    Eigen::MatrixXf& omega_bar_j_im1,
-    Eigen::MatrixXf& omega_bar_j_i,
+    Omega& omega_bar,
     char* boundry_conditions) {
     int num_segments = neighbor_len_bar.size() + 1;
 
@@ -39,8 +37,8 @@ Eigen::SparseMatrix<float> compute_hessian_d2Edtheta2(
             coeffs.push_back(v);
 
             // subterms for j,j where j >= 1
-            Eigen::Vector2f wij = omega_j_i.col(i - 1);
-            Eigen::Vector2f wij_bar = omega_bar_j_i.col(i - 1);
+            Eigen::Vector2f wij = omega.omega_j_i.col(i - 1);
+            Eigen::Vector2f wij_bar = omega_bar.omega_j_i.col(i - 1);
 
             // term 1: 1/lbar_i * (w^j_i)^T * J^T * Bbar * J * w^j_i
             float term1 = (wij.dot(J.transpose() * bending_modulus * J * wij)) / neighbor_len_bar(i - 1);
@@ -60,8 +58,8 @@ Eigen::SparseMatrix<float> compute_hessian_d2Edtheta2(
             coeffs.push_back(v);
 
             // subterms for j,j where 0 <= j <= num_segments - 2
-            Eigen::Vector2f wij = omega_j_im1.col(i);
-            Eigen::Vector2f wij_bar = omega_bar_j_im1.col(i);
+            Eigen::Vector2f wij = omega.omega_j_im1.col(i);
+            Eigen::Vector2f wij_bar = omega_bar.omega_j_im1.col(i);
 
             // term 1: 1/lbar_i * (w^j_i)^T * J^T * Bbar * J * w^j_i
             float term1 = (wij.dot(J.transpose() * bending_modulus * J * wij)) / neighbor_len_bar(i);

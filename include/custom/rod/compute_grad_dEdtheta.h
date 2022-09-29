@@ -3,16 +3,15 @@
 #include <Eigen/Core>
 
 #include "util.h"
+#include "compute_omega.h"
 
 // Compute the gradient of the elastic energy with respect to the twist angle theta
 // This is used for enforcing a quasistatic material frame via newton's method
 Eigen::VectorXf compute_grad_dEdtheta(
     Eigen::VectorXf& neighbor_len_bar,
-    Eigen::MatrixXf& omega_j_im1,
-    Eigen::MatrixXf& omega_j_i,
+    Omega& omega,
     Eigen::Matrix2f& bending_modulus,
-    Eigen::MatrixXf& omega_bar_j_im1,
-    Eigen::MatrixXf& omega_bar_j_i,
+    Omega& omega_bar,
     const float beta,
     Eigen::VectorXf& theta,
     char* boundry_conditions) {
@@ -29,13 +28,13 @@ Eigen::VectorXf compute_grad_dEdtheta(
     // Compute the gradient of the W terms
     // dW_j/dtheta_j
     Eigen::VectorXf dW_i_dtheta_j_i;
-    dW_i_dtheta_j_i = (omega_j_i.transpose() * JB * (omega_j_i - omega_bar_j_i)).diagonal();
+    dW_i_dtheta_j_i = (omega.omega_j_i.transpose() * JB * (omega.omega_j_i - omega_bar.omega_j_i)).diagonal();
     dW_i_dtheta_j_i = dW_i_dtheta_j_i.array() / neighbor_len_bar.array();
     grad.segment(1, num_segments - 1) += dW_i_dtheta_j_i;
 
     // dW_j+1/dtheta_j
     Eigen::VectorXf dW_i_dtheta_j_ip1;
-    dW_i_dtheta_j_ip1 = (omega_j_im1.transpose() * JB * (omega_j_im1 - omega_bar_j_im1)).diagonal();
+    dW_i_dtheta_j_ip1 = (omega.omega_j_im1.transpose() * JB * (omega.omega_j_im1 - omega_bar.omega_j_im1)).diagonal();
     dW_i_dtheta_j_ip1 = dW_i_dtheta_j_ip1.array() / neighbor_len_bar.array();
     grad.segment(0, num_segments - 1) += dW_i_dtheta_j_ip1;
 
