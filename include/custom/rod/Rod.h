@@ -23,6 +23,7 @@
 #include "compute_grad_dEdtheta.h"
 #include "compute_hessian_d2Edtheta2.h"
 #include "newtons_method_minimization.h"
+#include "compute_grad_holonomy.h"
 
 class Rod : public Entity {
    public:
@@ -139,7 +140,11 @@ class Rod : public Entity {
             m_NewtonsTol,
             m_NewtonsMaxIters);
 
-        std::cout << m_theta << std::endl;
+        m_Time = 0.0f;
+        m_DeltaTime = 0.01;
+
+        PsiGrad psi_grad = compute_grad_holonomy(kbbar, ebar);
+        PsiGradSum psi_grad_sum = compute_grad_holonomy_sum(psi_grad);
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data
@@ -173,6 +178,8 @@ class Rod : public Entity {
     Eigen::MatrixXf m_omega_bar_j_i;
     float m_alpha;
     float m_beta;
+    float m_Time;
+    float m_DeltaTime;
     float m_NewtonsTol;
     int m_NewtonsMaxIters;
 };
