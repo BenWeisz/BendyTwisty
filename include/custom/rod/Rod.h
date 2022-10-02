@@ -146,7 +146,7 @@ class Rod : public Entity {
 
         // Testing only
         PsiGrad psi_grad = compute_grad_holonomy(kbbar, ebar);
-        PsiGradSum psi_grad_sum = compute_grad_holonomy_sum(d);
+        PsiGradSum psi_grad_sum = compute_grad_holonomy_sum(psi_grad);
 
         // std::vector<Eigen::Matrix3f> skew_matrices = compute_skew_matrices(ebar);
         // KBGrad kb_grad = compute_grad_kb(skew_matrices, kbbar, ebar, ebar);
