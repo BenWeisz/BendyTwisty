@@ -7,7 +7,9 @@ add_compile_definitions(__gl_h_ GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLU
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
+add_executable(Tests Tests.cpp)
 add_executable(BendyTwisty Application.cpp)
+
 target_sources(BendyTwisty PUBLIC
     src/VertexBuffer.cpp
     src/IndexBuffer.cpp
@@ -41,12 +43,17 @@ find_package(glfw3 3.4 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glm REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Catch2 3 REQUIRED)
+
+target_link_libraries(Tests Catch2::Catch2WithMain)
+target_link_libraries(Tests Eigen3::Eigen)
 
 target_include_directories(BendyTwisty PUBLIC ${OPENGL_INCLUDE_DIR})
 target_include_directories(BendyTwisty PUBLIC include)
-target_include_directories(BendyTwisty PUBLIC include)
 target_include_directories(BendyTwisty PUBLIC extern)
 target_include_directories(BendyTwisty PUBLIC extern/imgui)
+
+target_include_directories(Tests PUBLIC include)
 
 link_directories(${CMAKE_SOURCE_DIR}/include/extern)
 
