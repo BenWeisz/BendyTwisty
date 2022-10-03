@@ -44,6 +44,9 @@ TEST_CASE("Square loop", "[compute_kb]") {
     REQUIRE(kb.col(0).dot(ones) == -2);
     REQUIRE(kb.col(1).dot(ones) == -2);
     REQUIRE(kb.col(2).dot(ones) == -2);
+    REQUIRE(kb(2, 0) == -2);
+    REQUIRE(kb(2, 1) == -2);
+    REQUIRE(kb(2, 2) == -2);
 
     Eigen::VectorXf kb_mag = (kb.transpose() * kb).diagonal().cwiseSqrt();
     float k_mag = 2 * tan((M_PI / 2.0) / 2.0);
