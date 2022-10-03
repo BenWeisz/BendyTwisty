@@ -1,12 +1,14 @@
 #pragma once
 
 #include <vector>
-#include <Eigen/Core>
 #include <catch2/catch_approx.hpp>
 #include <cmath>
 #include <limits>
 
+#include <Eigen/Core>
+
 #include "../include/custom/rod/parallel_transport.h"
+#include "util.h"
 
 TEST_CASE("Rotate from axis to axis", "[rotate_about_unit_axis]") {
     Eigen::Vector3f v;
@@ -58,15 +60,6 @@ TEST_CASE("Rotation about zero vector is same as original", "[rotate_about_unit_
     REQUIRE(v(2) == vrot(2));
 }
 
-bool frames_are_equal(Eigen::Matrix3f& f1, Eigen::Matrix3f& f2) {
-    bool res = true;
-    for (int i = 0; i < 9; i++) {
-        res = res && (f1.array()(i) == Catch::Approx(f2.array()(i)).margin(std::numeric_limits<float>::epsilon() * 100));
-    }
-
-    return res;
-}
-
 TEST_CASE("Square Loop Rod", "[parallel_transport]") {
     Eigen::Matrix3f u0;
     u0 << 1, 0, 0, 0, 0, 1, 0, -1, 0;
@@ -106,6 +99,7 @@ TEST_CASE("Straight Rod", "[parallel_transport]") {
     Eigen::VectorXf phi = Eigen::VectorXf::Zero(3);
     std::vector<Eigen::Matrix3f> bishop_frames = parallel_transport(u0, kb, phi);
 
+    REQUIRE(bishop_frames.size() == 4);
     REQUIRE(frames_are_equal(bishop_frames[0], u0));
     REQUIRE(frames_are_equal(bishop_frames[1], u0));
     REQUIRE(frames_are_equal(bishop_frames[2], u0));
