@@ -7,9 +7,9 @@
 
 #include <Eigen/Core>
 
-bool frames_are_equal(Eigen::Matrix3f& f1, Eigen::Matrix3f& f2) {
+bool matrices_are_equal(const Eigen::MatrixXf& f1, const Eigen::MatrixXf& f2, const int size) {
     bool res = true;
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < size; i++) {
         res = res && (f1.array()(i) == Catch::Approx(f2.array()(i)).margin(std::numeric_limits<float>::epsilon() * 100));
     }
 

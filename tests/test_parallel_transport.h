@@ -81,10 +81,10 @@ TEST_CASE("Square Loop Rod", "[parallel_transport]") {
     Eigen::VectorXf phi = Eigen::VectorXf::Ones(3).array() * (M_PI / 2.0f);
     std::vector<Eigen::Matrix3f> bishop_frames = parallel_transport(u0, kb, phi);
 
-    REQUIRE(frames_are_equal(bishop_frames[0], u0));
-    REQUIRE(frames_are_equal(bishop_frames[1], u1));
-    REQUIRE(frames_are_equal(bishop_frames[2], u2));
-    REQUIRE(frames_are_equal(bishop_frames[3], u3));
+    REQUIRE(matrices_are_equal(bishop_frames[0], u0, 9));
+    REQUIRE(matrices_are_equal(bishop_frames[1], u1, 9));
+    REQUIRE(matrices_are_equal(bishop_frames[2], u2, 9));
+    REQUIRE(matrices_are_equal(bishop_frames[3], u3, 9));
 }
 
 TEST_CASE("Straight Rod", "[parallel_transport]") {
@@ -100,8 +100,8 @@ TEST_CASE("Straight Rod", "[parallel_transport]") {
     std::vector<Eigen::Matrix3f> bishop_frames = parallel_transport(u0, kb, phi);
 
     REQUIRE(bishop_frames.size() == 4);
-    REQUIRE(frames_are_equal(bishop_frames[0], u0));
-    REQUIRE(frames_are_equal(bishop_frames[1], u0));
-    REQUIRE(frames_are_equal(bishop_frames[2], u0));
-    REQUIRE(frames_are_equal(bishop_frames[3], u0));
+    REQUIRE(matrices_are_equal(bishop_frames[0], u0, 9));
+    REQUIRE(matrices_are_equal(bishop_frames[1], u0, 9));
+    REQUIRE(matrices_are_equal(bishop_frames[2], u0, 9));
+    REQUIRE(matrices_are_equal(bishop_frames[3], u0, 9));
 }

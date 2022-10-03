@@ -37,10 +37,10 @@ TEST_CASE("Straight Rod", "[compute_material_frame]") {
     m3 << 1, 0, 0, 0, sin_pi_4, -sin_pi_4, 0, sin_pi_4, sin_pi_4;
 
     REQUIRE(mf.size() == 4);
-    REQUIRE(frames_are_equal(mf[0], u0));
-    REQUIRE(frames_are_equal(mf[1], m1));
-    REQUIRE(frames_are_equal(mf[2], m2));
-    REQUIRE(frames_are_equal(mf[3], m3));
+    REQUIRE(matrices_are_equal(mf[0], u0, 9));
+    REQUIRE(matrices_are_equal(mf[1], m1, 9));
+    REQUIRE(matrices_are_equal(mf[2], m2, 9));
+    REQUIRE(matrices_are_equal(mf[3], m3, 9));
 }
 
 TEST_CASE("Square loop and rotated", "[compute_material_frame]") {
@@ -83,8 +83,8 @@ TEST_CASE("Square loop and rotated", "[compute_material_frame]") {
     m3 << 0, -s, s, 1, 0, 0, 0, s, s;
 
     REQUIRE(mf.size() == 4);
-    REQUIRE(frames_are_equal(mf[0], u0));
-    REQUIRE(frames_are_equal(mf[1], m1));
-    REQUIRE(frames_are_equal(mf[2], m2));
-    REQUIRE(frames_are_equal(mf[3], m3));
+    REQUIRE(matrices_are_equal(mf[0], u0, 9));
+    REQUIRE(matrices_are_equal(mf[1], m1, 9));
+    REQUIRE(matrices_are_equal(mf[2], m2, 9));
+    REQUIRE(matrices_are_equal(mf[3], m3, 9));
 }
