@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 Eigen::MatrixXf compute_kb(Eigen::MatrixXf &e, Eigen::MatrixXf &ebar) {
     int num_segments = e.cols();

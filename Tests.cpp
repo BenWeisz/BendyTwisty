@@ -2,3 +2,4 @@
 
 #include "tests/test_compute_edges.h"
 #include "tests/test_compute_kb.h"
+#include "tests/test_compute_phi.h"
