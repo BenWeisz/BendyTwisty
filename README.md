@@ -1,4 +1,4 @@
-# ModelEngine
+# Bendy Twisty
 
 Discrete Elastic Rods based on Columbia [Paper](http://www.cs.columbia.edu/cg/pdfs/143-rods.pdf) by Miklos Bergou
 
