@@ -9,7 +9,7 @@
 #include "../include/custom/rod/compute_grad_dEdtheta.h"
 #include "../include/custom/rod/util.h"
 
-TEST_CASE("Straight twisted rod", "[compute_grad_dEdtheta]") {
+TEST_CASE("Square loop twisted rod", "[compute_grad_dEdtheta]") {
     Eigen::VectorXf neighbor_len_bar(3);
     neighbor_len_bar << 2, 2, 2;
 

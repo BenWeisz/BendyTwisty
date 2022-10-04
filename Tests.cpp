@@ -8,3 +8,4 @@
 #include "tests/test_compute_omega.h"
 #include "tests/test_compute_grad_dEdtheta.h"
 #include "tests/test_compute_neighbor_len.h"
+#include "tests/test_compute_hessian_d2Edtheta2.h"
