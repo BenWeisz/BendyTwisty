@@ -6,3 +6,5 @@
 #include "tests/test_parallel_transport.h"
 #include "tests/test_compute_material_frame.h"
 #include "tests/test_compute_omega.h"
+// #include "tests/test_compute_grad_dEdtheta.h"
+#include "tests/test_compute_neighbor_len.h"
