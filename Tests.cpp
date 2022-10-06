@@ -11,5 +11,5 @@
 #include "tests/test_compute_hessian_d2Edtheta2.h"
 #include "tests/test_compute_grad_holonomy.h"
 #include "tests/test_compute_skew_matrices.h"
-// #include "tests/test_compute_grad_kb.h"
+#include "tests/test_compute_grad_kb.h"
 // #include "tests/test_compute_grad_omega.h"
