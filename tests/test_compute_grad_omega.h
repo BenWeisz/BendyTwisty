@@ -45,6 +45,7 @@ TEST_CASE("Square loop omega grad", "[compute_grad_omega]") {
 
     Eigen::MatrixXf zero = Eigen::MatrixXf::Zero(2, 3);
 
+    // Set up kb grad values
     Eigen::Matrix3f zero_one;
     zero_one << 0, -o, t, 1, -o, -o, -1, o, o;
     Eigen::Matrix3f one_two;
@@ -74,6 +75,7 @@ TEST_CASE("Square loop omega grad", "[compute_grad_omega]") {
     kb_grad.grad_kb_i.push_back(two_two);
     kb_grad.grad_kb_i.push_back(three_three);
 
+    // Set up omega values
     Omega omega;
     omega.omega_j_im1 = Eigen::MatrixXf(2, 3);
     omega.omega_j_im1 << -2, -2, -2, 1, 1, 1;
@@ -81,6 +83,7 @@ TEST_CASE("Square loop omega grad", "[compute_grad_omega]") {
     omega.omega_j_i = Eigen::MatrixXf(2, 3);
     omega.omega_j_i << -2, -2, -2, -1, -1, -1;
 
+    // Set up psi grad sum
     PsiGradSum psi_grad_sum;
     Eigen::MatrixXf psi_grad0(3, 3);
     psi_grad0 << 0, 0, 0, 0, 0, 0, -1, -1, -1;
@@ -100,6 +103,7 @@ TEST_CASE("Square loop omega grad", "[compute_grad_omega]") {
 
     OmegaGrad omega_grad = compute_grad_omega(mf, kb_grad, omega, psi_grad_sum);
 
+    // Set up all the predicted values. There are 30 2x3 matrices
     Eigen::MatrixXf zero_zero_one(2, 3);
     zero_zero_one << 1, 0, -2, -1, o, o;
     Eigen::MatrixXf one_zero_one(2, 3);
