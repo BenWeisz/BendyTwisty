@@ -27,6 +27,7 @@
 #include "compute_skew_matrices.h"
 #include "compute_grad_kb.h"
 #include "compute_grad_omega.h"
+#include "compute_pdE_pdx.h"
 
 class Rod : public Entity {
    public:
@@ -151,7 +152,9 @@ class Rod : public Entity {
         std::vector<Eigen::Matrix3f> skew_matrices = compute_skew_matrices(ebar);
         KBGrad kb_grad = compute_grad_kb(skew_matrices, kbbar, ebar, ebar);
 
-        // compute_grad_omega(mf, kb_grad, m_omega_bar, psi_grad_sum);
+        OmegaGrad omega_grad = compute_grad_omega(mf, kb_grad, m_omega_bar, psi_grad_sum);
+
+        compute_pdE_pdx(neighbor_len_bar, omega_grad, bending_modulus, m_omega_bar, m_omega_bar);
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data
