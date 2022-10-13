@@ -25,6 +25,7 @@ Eigen::VectorXf compute_pdE_pdtheta(
 
     Eigen::VectorXf beta_term = 2.0f * beta * (m.array() / neighbor_len_bar.array());
 
-    Eigen::VectorXf pdE_pdtheta = omega_term + beta_term;
+    Eigen::VectorXf pdE_pdtheta = Eigen::VectorXf::Zero(num_segments);
+    pdE_pdtheta.segment(1, num_segments - 1) = omega_term + beta_term;
     return pdE_pdtheta;
 }

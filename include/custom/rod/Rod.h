@@ -28,6 +28,8 @@
 #include "compute_grad_kb.h"
 #include "compute_grad_omega.h"
 #include "compute_pdE_pdx.h"
+#include "compute_pdE_pdtheta.h"
+#include "compute_elastic_forces.h"
 
 class Rod : public Entity {
    public:
@@ -155,6 +157,7 @@ class Rod : public Entity {
         OmegaGrad omega_grad = compute_grad_omega(mf, kb_grad, m_omega_bar, psi_grad_sum);
 
         compute_pdE_pdx(neighbor_len_bar, omega_grad, bending_modulus, m_omega_bar, m_omega_bar);
+        compute_pdE_pdtheta(neighbor_len_bar, m_omega_bar, m_omega_bar, bending_modulus, m_beta, m_theta);
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data

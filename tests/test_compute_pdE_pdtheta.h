@@ -32,9 +32,12 @@ TEST_CASE("Test coil dpEdptheta", "[compute_pdE_pdtheta]") {
     omega_bar.omega_j_i << -1, -1, -1, 0, 0, 0;
 
     Eigen::VectorXf theta(4);
-    theta << 1, 2, 3, 4;
+    theta << 1, 2, 4, 8;
 
     Eigen::VectorXf dEdtheta = compute_pdE_pdtheta(neighbor_len_bar, omega, omega_bar, bending_modulus, beta, theta);
 
-    REQUIRE(matrices_are_equal(dEdtheta, Eigen::Vector3f::Zero(), 3));
+    Eigen::Vector4f res;
+    res << 0, 0, 2, 6;
+
+    REQUIRE(matrices_are_equal(dEdtheta, res, 4));
 }

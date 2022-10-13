@@ -15,3 +15,4 @@
 #include "tests/test_compute_grad_omega.h"
 #include "tests/test_compute_pdE_pdx.h"
 #include "tests/test_compute_pdE_pdtheta.h"
+#include "tests/test_compute_elastic_forces.h"
