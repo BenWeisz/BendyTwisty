@@ -13,3 +13,4 @@
 #include "tests/test_compute_skew_matrices.h"
 #include "tests/test_compute_grad_kb.h"
 #include "tests/test_compute_grad_omega.h"
+#include "tests/test_compute_pdE_pdx.h"
