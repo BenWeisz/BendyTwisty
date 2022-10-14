@@ -23,6 +23,7 @@ FORCE compute_elastic_forces(EPGradX& pdE_pdx, Eigen::VectorXf& pdE_pdtheta, Psi
         }
     }
 
+    // Note: We might need to clamp the force in case the curvature gets really high
     for (int i = 0; i < num_segments + 1; i++) {
         elastic_force.segment(i * 3, 3) = -pdE_pdx[i];
         if (is_clamped) {
