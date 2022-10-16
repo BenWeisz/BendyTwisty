@@ -27,7 +27,6 @@ FORCE compute_elastic_forces(EPGradX& pdE_pdx, Eigen::VectorXf& pdE_pdtheta, Psi
     for (int i = 0; i < num_segments + 1; i++) {
         elastic_force.segment(i * 3, 3) = -pdE_pdx[i];
         if (is_clamped) {
-            float a = pdE_pdtheta(num_segments - 1);
             elastic_force.segment(i * 3, 3) += pdE_pdtheta(num_segments - 1) * psi_grad_sum[i].col(num_segments - 2);
         }
     }
