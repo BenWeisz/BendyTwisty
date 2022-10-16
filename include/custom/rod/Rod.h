@@ -30,6 +30,10 @@
 #include "compute_pdE_pdx.h"
 #include "compute_pdE_pdtheta.h"
 #include "compute_elastic_forces.h"
+#include "time_integrate.h"
+#include "compute_strain.h"
+#include "compute_grad_strain.h"
+#include "fast_manifold_projection.h"
 
 class Rod : public Entity {
    public:
@@ -65,8 +69,9 @@ class Rod : public Entity {
         m_Model->SetPrimitive(GL_LINES, 1.0f);
 
         // Configure material parameters
-        m_alpha = 1;
-        m_beta = 1;
+        m_alpha = 1.0f;
+        m_beta = 1.0f;
+        m_VertexMass = 1.0f;
 
         // Set up the vertex positions
         m_x = Eigen::MatrixXf(3, m_Segments + 1);
@@ -83,8 +88,13 @@ class Rod : public Entity {
         // m_x(1, 1) = 10;
         m_xbar = m_x;
 
+        m_v = Eigen::MatrixXf::Zero(3, m_Segments + 1);
+        m_vbar = m_v;
+
         // Set up the natural undeformed defining bishop frame with t, u, v being columnwise
-        m_u0 << 1, 0, 0, 0, 0, 1, 0, -1, 0;
+        m_u0
+            << 1,
+            0, 0, 0, 0, 1, 0, -1, 0;
 
         // Set up the boundry conditions
         m_BoundryConditions = new char[m_Segments];
@@ -156,8 +166,16 @@ class Rod : public Entity {
 
         OmegaGrad omega_grad = compute_grad_omega(mf, kb_grad, m_omega_bar, psi_grad_sum);
 
-        compute_pdE_pdx(neighbor_len_bar, omega_grad, bending_modulus, m_omega_bar, m_omega_bar);
-        compute_pdE_pdtheta(neighbor_len_bar, m_omega_bar, m_omega_bar, bending_modulus, m_beta, m_theta);
+        EPGradX pdEpdx = compute_pdE_pdx(neighbor_len_bar, omega_grad, bending_modulus, m_omega_bar, m_omega_bar);
+        Eigen::VectorXf pdEpdtheta = compute_pdE_pdtheta(neighbor_len_bar, m_omega_bar, m_omega_bar, bending_modulus, m_beta, m_theta);
+
+        FORCE force = compute_elastic_forces(pdEpdx, pdEpdtheta, psi_grad_sum, m_BoundryConditions);
+
+        time_integrate(m_x, m_v, force, m_VertexMass, m_DeltaTime);
+
+        compute_strain(ebar, ebar);
+
+        fast_manifold_projection(m_x, m_v, ebar, m_DeltaTime, m_VertexMass, 8);
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data
@@ -183,6 +201,8 @@ class Rod : public Entity {
     const int m_Segments;
     Eigen::MatrixXf m_x;
     Eigen::MatrixXf m_xbar;
+    Eigen::MatrixXf m_v;
+    Eigen::MatrixXf m_vbar;
     Eigen::Matrix3f m_u0;
     char* m_BoundryConditions;
     std::vector<Eigen::Matrix3f> m_bf;
@@ -194,4 +214,5 @@ class Rod : public Entity {
     float m_DeltaTime;
     float m_NewtonsTol;
     int m_NewtonsMaxIters;
+    float m_VertexMass;
 };
