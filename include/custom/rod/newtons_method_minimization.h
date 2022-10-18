@@ -33,6 +33,7 @@ Eigen::VectorXf newtons_method_minimization(
     Eigen::MatrixXf& kb,
     const float tol,
     const int max_iters) {
+    int num_segments = neighbor_len_bar.size() + 1;
     // Compute the initial omegas
     Omega omega = newtons_compute_omega(bf, initial_theta, kb);
     Eigen::MatrixXf omega_j_im1 = omega.omega_j_im1;
@@ -76,7 +77,13 @@ Eigen::VectorXf newtons_method_minimization(
         }
 
         // Update the theta parameter
-        theta = theta + d;
+        int k = 0;
+        for (int j = 0; j < num_segments; j++) {
+            if (boundry_conditions[j] == VERTEX_STRESS_FREE) {
+                theta(j) += d(k);
+                k++;
+            }
+        }
 
         // Compute the omegas
         omega = newtons_compute_omega(bf, theta, kb);
