@@ -83,10 +83,8 @@ TEST_CASE("Square loop twisted rod", "[compute_grad_dEdtheta]") {
             theta,
             boundary_conditions);
 
-        REQUIRE(grad.size() == 4);
-        REQUIRE(grad(0) == Catch::Approx(0));
-        REQUIRE(grad(1) == Catch::Approx(4.0f * s));
-        REQUIRE(grad(2) == Catch::Approx(4.0f));
-        REQUIRE(grad(3) == Catch::Approx(0));
+        REQUIRE(grad.size() == 2);
+        REQUIRE(grad(0) == Catch::Approx(4.0f * s));
+        REQUIRE(grad(1) == Catch::Approx(4.0f));
     }
 }

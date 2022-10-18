@@ -99,27 +99,13 @@ TEST_CASE("Square loop twisted rod", "[compute_hessian_d2Edtheta2]") {
             omega_bar,
             boundary_conditions);
 
-        REQUIRE(hessian.cols() == 4);
-        REQUIRE(hessian.rows() == 4);
+        REQUIRE(hessian.cols() == 2);
+        REQUIRE(hessian.rows() == 2);
 
-        REQUIRE(hessian.coeff(0, 0) == 0.0f);
-        REQUIRE(hessian.coeff(0, 1) == 0.0f);
-        REQUIRE(hessian.coeff(0, 2) == 0.0f);
-        REQUIRE(hessian.coeff(0, 3) == 0.0f);
+        REQUIRE(hessian.coeff(0, 0) == Catch::Approx(2 + (4 * s)));
+        REQUIRE(hessian.coeff(0, 1) == -1.0f);
 
         REQUIRE(hessian.coeff(1, 0) == -1.0f);
-        REQUIRE(hessian.coeff(1, 1) == Catch::Approx(2 + (4 * s)));
-        REQUIRE(hessian.coeff(1, 2) == -1.0f);
-        REQUIRE(hessian.coeff(1, 3) == 0.0f);
-
-        REQUIRE(hessian.coeff(2, 0) == 0.0f);
-        REQUIRE(hessian.coeff(2, 1) == -1.0f);
-        REQUIRE(hessian.coeff(2, 2) == 2.0f);
-        REQUIRE(hessian.coeff(2, 3) == -1.0f);
-
-        REQUIRE(hessian.coeff(3, 0) == 0.0f);
-        REQUIRE(hessian.coeff(3, 1) == 0.0f);
-        REQUIRE(hessian.coeff(3, 2) == 0.0f);
-        REQUIRE(hessian.coeff(3, 3) == 0.0f);
+        REQUIRE(hessian.coeff(1, 1) == 2.0f);
     }
 }
