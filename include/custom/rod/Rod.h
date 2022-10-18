@@ -34,11 +34,12 @@
 #include "compute_strain.h"
 #include "compute_grad_strain.h"
 #include "fast_manifold_projection.h"
+#include "compute_updated_u0.h"
 
 class Rod : public Entity {
    public:
-    Rod(const GLfloat length, const int segments) : Entity("Rod"), m_Length(length), m_Segments(segments) {
-        InitModel();
+    Rod(const GLfloat length, const int segments) : Entity("Rod"), m_Segments(segments) {
+        InitModel(length);
         m_IsLightingEnabled = false;
         m_Metadata[ENTITY_SHOW_IN_GUI] = false;
     }
@@ -46,7 +47,80 @@ class Rod : public Entity {
     void Update(const float deltaTime) override {
         m_Model->SetVertexData(NULL, 3 * (m_Segments + 1), GL_FLOAT);
 
-        // Updates should be preformed here
+        //
+        // STEP 6
+        //
+        // Compute the forces on the centerline
+        Eigen::MatrixXf e = compute_edges(m_x);
+        std::vector<Eigen::Matrix3f> skew_matrices = compute_skew_matrices(e);
+
+        Eigen::MatrixXf kb = compute_kb(e, m_ebar);
+        KBGrad kb_grad = compute_grad_kb(skew_matrices, kb, e, m_ebar);
+
+        PsiGrad psi_grad = compute_grad_holonomy(kb, m_ebar);
+        PsiGradSum psi_grad_sum = compute_grad_holonomy_sum(psi_grad);
+
+        // Compute the updated material frames
+        std::vector<Eigen::Matrix3f> mf = compute_material_frame(m_bf, m_theta);
+
+        // Compute the new omega and omega grad
+        Omega omega = compute_omega(kb, mf);
+        OmegaGrad omega_grad = compute_grad_omega(mf, kb_grad, omega, psi_grad_sum);
+
+        Eigen::Matrix2f bending_modulus;
+        bending_modulus << m_alpha, 0, 0, m_alpha;
+
+        // Compute the subcomponents of the negative force
+        EPGradX pdEpdx = compute_pdE_pdx(m_NeighborLenBar, omega_grad, bending_modulus, omega, m_omega_bar);
+        Eigen::VectorXf pdEpdtheta = compute_pdE_pdtheta(m_NeighborLenBar, omega, m_omega_bar, bending_modulus, m_beta, m_theta);
+
+        FORCE force = compute_elastic_forces(pdEpdx, pdEpdtheta, psi_grad_sum, m_BoundryConditions);
+
+        //
+        // Step 7
+        //
+        // Integrate the centerline
+        time_integrate(m_x, m_v, force, m_VertexMass, m_DeltaTime);
+
+        //
+        // Step 8
+        //
+        // Enforce inextensibility
+        // [Goldenthal, 2006] paper mentions convergence occurs in about 3-5 iteration
+        fast_manifold_projection(m_x, m_v, m_ebar, m_DeltaTime, m_VertexMass, 5);
+
+        //
+        // Step 10
+        //
+        // Update bishop frame
+        // Update the initial bishop frame so the tangent is still tangent to the first edge
+        m_u0 = compute_updated_u0(m_x, m_u0);
+
+        // Update the bishop frames across the rod
+        e = compute_edges(m_x);
+        Eigen::VectorXf phi = compute_phi(e);
+        m_bf = parallel_transport(m_u0, kb, phi);
+
+        //
+        // Step 11
+        //
+        // Update quasistatic frame
+        kb = compute_kb(e, m_ebar);
+        m_theta = newtons_method_minimization(
+            m_NeighborLenBar,
+            bending_modulus,
+            m_omega_bar,
+            m_beta,
+            m_theta,
+            m_BoundryConditions,
+            m_bf,
+            kb,
+            m_NewtonsTol,
+            m_NewtonsMaxIters);
+
+        m_theta(m_Segments - 1) += m_DeltaTime;
+        std::cout << m_x << "\n"
+                  << std::endl;
 
         m_Model->SetVertexData(m_x.data(), 3 * (m_Segments + 1), GL_FLOAT);
     }
@@ -64,7 +138,8 @@ class Rod : public Entity {
     }
 
    private:
-    void InitModel() {
+    void InitModel(const float rodLength) {
+        // ModelEngine Boiler Plate
         m_Model = new Model(MODEL_STREAMING);
         m_Model->SetPrimitive(GL_LINES, 1.0f);
 
@@ -72,12 +147,19 @@ class Rod : public Entity {
         m_alpha = 1.0f;
         m_beta = 1.0f;
         m_VertexMass = 1.0f;
+        m_NewtonsTol = 0.0001;
+        m_NewtonsMaxIters = 10;
+        m_Time = 0.0f;
+        m_DeltaTime = 0.01;
+
+        Eigen::Matrix2f bending_modulus;
+        bending_modulus << m_alpha, 0, 0, m_alpha;
 
         // Set up the vertex positions
         m_x = Eigen::MatrixXf(3, m_Segments + 1);
 
-        float step = m_Length / m_Segments;
-        float startX = -m_Length / 2.0f;
+        float step = rodLength / m_Segments;
+        float startX = -rodLength / 2.0f;
         for (int i = 0; i < m_Segments + 1; i++) {
             m_x(0, i) = startX + (i * step);
             m_x(1, i) = 0.0f;
@@ -106,20 +188,22 @@ class Rod : public Entity {
         m_BoundryConditions[m_Segments - 1] = VERTEX_CLAMPED;
 
         // Compute the curvature binormal for parallel transport
-        Eigen::MatrixXf ebar = compute_edges(m_xbar);
-        Eigen::MatrixXf kbbar = compute_kb(ebar, ebar);
+        m_ebar = compute_edges(m_xbar);
+        m_NeighborLenBar = compute_neighbor_len(m_ebar);
+
+        Eigen::MatrixXf kbbar = compute_kb(m_ebar, m_ebar);
 
         // Compute the angles between consecutive edges
-        Eigen::VectorXf phibar = compute_phi(ebar);
+        Eigen::VectorXf phibar = compute_phi(m_ebar);
 
         // Parallel transport the u0 frame along the rod
         m_bf = parallel_transport(m_u0, kbbar, phibar);
 
-        // Initialize the twist angles for each of the material frames
+        // Fix the thetas for the clamped frames
         m_theta = Eigen::VectorXf::Zero(m_Segments);
-        for (int i = 0; i < m_Segments; i++) {
-            m_theta(i) = i * (3.141592 / m_Segments);
-        }
+        m_theta(0) = 0.0f;                      // We clamp the first frame with zero twist
+        m_theta(m_Segments - 1) = M_PI * 2.0f;  // We clamp the last boundary with a twist angle
+        // The rest of the angles are updated in the quasistatic update
 
         // Compute the material frame for computing omega bar
         std::vector<Eigen::Matrix3f> mf = compute_material_frame(m_bf, m_theta);
@@ -134,16 +218,9 @@ class Rod : public Entity {
         // Step 2
         //
         // Set quasistatic material frame
-        m_NewtonsTol = 0.0001;
-        m_NewtonsMaxIters = 10;
-
-        Eigen::VectorXf neighbor_len_bar = compute_neighbor_len(ebar);
-
-        Eigen::Matrix2f bending_modulus;
-        bending_modulus << m_alpha, 0, 0, m_alpha;
 
         m_theta = newtons_method_minimization(
-            neighbor_len_bar,
+            m_NeighborLenBar,
             bending_modulus,
             m_omega_bar,
             m_beta,
@@ -153,29 +230,6 @@ class Rod : public Entity {
             kbbar,
             m_NewtonsTol,
             m_NewtonsMaxIters);
-
-        m_Time = 0.0f;
-        m_DeltaTime = 0.01;
-
-        // Testing only
-        PsiGrad psi_grad = compute_grad_holonomy(kbbar, ebar);
-        PsiGradSum psi_grad_sum = compute_grad_holonomy_sum(psi_grad);
-
-        std::vector<Eigen::Matrix3f> skew_matrices = compute_skew_matrices(ebar);
-        KBGrad kb_grad = compute_grad_kb(skew_matrices, kbbar, ebar, ebar);
-
-        OmegaGrad omega_grad = compute_grad_omega(mf, kb_grad, m_omega_bar, psi_grad_sum);
-
-        EPGradX pdEpdx = compute_pdE_pdx(neighbor_len_bar, omega_grad, bending_modulus, m_omega_bar, m_omega_bar);
-        Eigen::VectorXf pdEpdtheta = compute_pdE_pdtheta(neighbor_len_bar, m_omega_bar, m_omega_bar, bending_modulus, m_beta, m_theta);
-
-        FORCE force = compute_elastic_forces(pdEpdx, pdEpdtheta, psi_grad_sum, m_BoundryConditions);
-
-        time_integrate(m_x, m_v, force, m_VertexMass, m_DeltaTime);
-
-        compute_strain(ebar, ebar);
-
-        fast_manifold_projection(m_x, m_v, ebar, m_DeltaTime, m_VertexMass, 8);
 
         // Boiler Plate
         // Set up the correct indicies for the vertex data
@@ -197,17 +251,21 @@ class Rod : public Entity {
     }
 
    private:
-    const GLfloat m_Length;
     const int m_Segments;
     Eigen::MatrixXf m_x;
     Eigen::MatrixXf m_xbar;
     Eigen::MatrixXf m_v;
     Eigen::MatrixXf m_vbar;
+
+    Eigen::MatrixXf m_ebar;
+
     Eigen::Matrix3f m_u0;
     char* m_BoundryConditions;
     std::vector<Eigen::Matrix3f> m_bf;
     Eigen::VectorXf m_theta;
     Omega m_omega_bar;
+    Eigen::VectorXf m_NeighborLenBar;
+
     float m_alpha;
     float m_beta;
     float m_Time;
@@ -216,3 +274,12 @@ class Rod : public Entity {
     int m_NewtonsMaxIters;
     float m_VertexMass;
 };
+
+/**
+ * - Variables that need to be updated
+ * - position
+ * - velocity
+ *
+ * - Variables that need to be held
+ * -
+ */

@@ -18,3 +18,4 @@
 #include "tests/test_compute_elastic_forces.h"
 #include "tests/test_compute_strain.h"
 #include "tests/test_compute_grad_strain.h"
+#include "tests/test_compute_updated_u0.h"
