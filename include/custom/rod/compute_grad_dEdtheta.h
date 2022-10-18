@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <Eigen/Core>
 
 #include "util.h"
@@ -45,11 +47,15 @@ Eigen::VectorXf compute_grad_dEdtheta(
     grad.segment(1, num_segments - 1) += 2.0 * beta * ml;
     grad.segment(0, num_segments - 1) -= 2.0 * beta * ml;
 
-    // Correct for boundry conditions
+    // Remap to ignore boundary conidtions
+    std::vector<float> grad_coeffs;
     for (int i = 0; i < num_segments; i++) {
-        if (boundry_conditions[i] == VERTEX_CLAMPED)
-            grad(i) = 0.0f;
+        if (boundry_conditions[i] == VERTEX_STRESS_FREE) {
+            grad_coeffs.push_back(grad(i));
+        }
     }
 
-    return grad;
+    Eigen::VectorXf remapped_grad = Eigen::Map<Eigen::VectorXf, Eigen::Unaligned>(grad_coeffs.data(), grad_coeffs.size());
+
+    return remapped_grad;
 }
