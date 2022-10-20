@@ -70,7 +70,7 @@ class Rod : public Entity {
         Eigen::Matrix2f bending_modulus;
         bending_modulus << m_alpha, 0, 0, m_alpha;
 
-        // Compute the subcomponents of the negative force
+        // Compute the sub-components of the negative force
         EPGradX pdEpdx = compute_pdE_pdx(m_NeighborLenBar, omega_grad, bending_modulus, omega, m_omega_bar);
         Eigen::VectorXf pdEpdtheta = compute_pdE_pdtheta(m_NeighborLenBar, omega, m_omega_bar, bending_modulus, m_beta, m_theta);
 

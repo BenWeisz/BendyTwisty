@@ -25,8 +25,8 @@ void fast_manifold_projection(Eigen::MatrixXf& x, Eigen::MatrixXf& xdot, Eigen::
 
     const float threshold = 1e-8;
 
-    // Fast Manifold Projection requires that we us the pre-time integration x in the computation of then new xdot
-    // At this point, when we call this function, our x has already been updated with xdot * dt so in this step we reverse that
+    // Fast Manifold Projection requires that we use the pre-time integration x in the computation of the new xdot
+    // At this point, when we call this function, our x has already been updated with xdot * dt so in this step we reverse that calculation
     Eigen::MatrixXf xtilde = x - (dt * xdot);
     Eigen::MatrixXf e = compute_edges(x);
     Eigen::VectorXf strain = compute_strain(e, ebar);

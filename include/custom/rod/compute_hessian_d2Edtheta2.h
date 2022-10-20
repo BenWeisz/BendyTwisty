@@ -79,7 +79,7 @@ Eigen::SparseMatrix<float> compute_hessian_d2Edtheta2(
             coeffs.push_back(jj);
         }
 
-        // This is only incremented if the vertex at i was not clampled
+        // This is only incremented if the vertex at i was not clamped
         k++;
     }
 
