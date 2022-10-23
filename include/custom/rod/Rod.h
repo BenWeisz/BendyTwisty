@@ -274,12 +274,3 @@ class Rod : public Entity {
     int m_NewtonsMaxIters;
     float m_VertexMass;
 };
-
-/**
- * - Variables that need to be updated
- * - position
- * - velocity
- *
- * - Variables that need to be held
- * -
- */
