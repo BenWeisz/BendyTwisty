@@ -51,10 +51,10 @@ TEST_CASE("Test coil", "[test_compute_elastic_forces]") {
 
     char* boundary_conditions = new char[num_segments];
     for (int i = 0; i < num_segments; i++)
-        boundary_conditions[i] = VERTEX_STRESS_FREE;
+        boundary_conditions[i] = EDGE_STRESS_FREE;
 
-    boundary_conditions[0] = VERTEX_CLAMPED;
-    boundary_conditions[num_segments - 1] = VERTEX_CLAMPED;
+    boundary_conditions[0] = EDGE_CLAMPED;
+    boundary_conditions[num_segments - 1] = EDGE_CLAMPED;
 
     FORCE elastic_force = compute_elastic_forces(pdE_pdx, pdE_pdtheta, psi_grad_sum, boundary_conditions);
 

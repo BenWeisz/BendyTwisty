@@ -46,10 +46,10 @@ TEST_CASE("Square loop twisted rod", "[compute_grad_dEdtheta]") {
 
     SECTION("Free ends") {
         char boundary_conditions[4];
-        boundary_conditions[0] = VERTEX_STRESS_FREE;
-        boundary_conditions[1] = VERTEX_STRESS_FREE;
-        boundary_conditions[2] = VERTEX_STRESS_FREE;
-        boundary_conditions[3] = VERTEX_STRESS_FREE;
+        boundary_conditions[0] = EDGE_STRESS_FREE;
+        boundary_conditions[1] = EDGE_STRESS_FREE;
+        boundary_conditions[2] = EDGE_STRESS_FREE;
+        boundary_conditions[3] = EDGE_STRESS_FREE;
 
         Eigen::VectorXf grad = compute_grad_dEdtheta(
             neighbor_len_bar,
@@ -69,10 +69,10 @@ TEST_CASE("Square loop twisted rod", "[compute_grad_dEdtheta]") {
 
     SECTION("Clamped ends") {
         char boundary_conditions[4];
-        boundary_conditions[0] = VERTEX_CLAMPED;
-        boundary_conditions[1] = VERTEX_STRESS_FREE;
-        boundary_conditions[2] = VERTEX_STRESS_FREE;
-        boundary_conditions[3] = VERTEX_CLAMPED;
+        boundary_conditions[0] = EDGE_CLAMPED;
+        boundary_conditions[1] = EDGE_STRESS_FREE;
+        boundary_conditions[2] = EDGE_STRESS_FREE;
+        boundary_conditions[3] = EDGE_CLAMPED;
 
         Eigen::VectorXf grad = compute_grad_dEdtheta(
             neighbor_len_bar,

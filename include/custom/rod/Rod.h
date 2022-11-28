@@ -171,7 +171,6 @@ class Rod : public Entity {
         m_xbar = m_x;
 
         m_v = Eigen::MatrixXf::Zero(3, m_Segments + 1);
-        m_vbar = m_v;
 
         // Set up the natural undeformed defining bishop frame with t, u, v being columnwise
         m_u0
@@ -181,11 +180,11 @@ class Rod : public Entity {
         // Set up the boundry conditions
         m_BoundryConditions = new char[m_Segments];
         for (int i = 0; i < m_Segments; i++)
-            m_BoundryConditions[i] = VERTEX_STRESS_FREE;
+            m_BoundryConditions[i] = EDGE_STRESS_FREE;
 
         // Clamp the first and last vertices
-        m_BoundryConditions[0] = VERTEX_CLAMPED;
-        m_BoundryConditions[m_Segments - 1] = VERTEX_CLAMPED;
+        m_BoundryConditions[0] = EDGE_CLAMPED;
+        m_BoundryConditions[m_Segments - 1] = EDGE_CLAMPED;
 
         // Compute the curvature binormal for parallel transport
         m_ebar = compute_edges(m_xbar);
@@ -255,7 +254,6 @@ class Rod : public Entity {
     Eigen::MatrixXf m_x;
     Eigen::MatrixXf m_xbar;
     Eigen::MatrixXf m_v;
-    Eigen::MatrixXf m_vbar;
 
     Eigen::MatrixXf m_ebar;
 

@@ -1,4 +1,4 @@
 #pragma once
 
-#define VERTEX_STRESS_FREE 0
-#define VERTEX_CLAMPED 1
+#define EDGE_STRESS_FREE 0
+#define EDGE_CLAMPED 1

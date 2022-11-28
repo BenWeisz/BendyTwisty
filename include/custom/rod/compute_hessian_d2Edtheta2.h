@@ -24,13 +24,13 @@ Eigen::SparseMatrix<float> compute_hessian_d2Edtheta2(
 
     int free_count = 0;
     for (int i = 0; i < num_segments; i++)
-        if (boundry_conditions[i] == VERTEX_STRESS_FREE)
+        if (boundry_conditions[i] == EDGE_STRESS_FREE)
             free_count++;
 
     int k = 0;
     // Fill the hessian with values
     for (int i = 0; i < num_segments; i++) {
-        if (boundry_conditions[i] == VERTEX_CLAMPED)
+        if (boundry_conditions[i] == EDGE_CLAMPED)
             continue;
 
         // j, j-1 term

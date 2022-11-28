@@ -79,7 +79,7 @@ Eigen::VectorXf newtons_method_minimization(
         // Update the theta parameter
         int k = 0;
         for (int j = 0; j < num_segments; j++) {
-            if (boundry_conditions[j] == VERTEX_STRESS_FREE) {
+            if (boundry_conditions[j] == EDGE_STRESS_FREE) {
                 theta(j) += d(k);
                 k++;
             }

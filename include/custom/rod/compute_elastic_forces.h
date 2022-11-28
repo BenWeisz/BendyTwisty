@@ -17,7 +17,7 @@ FORCE compute_elastic_forces(EPGradX& pdE_pdx, Eigen::VectorXf& pdE_pdtheta, Psi
 
     bool is_clamped = false;
     for (int i = 0; i < num_segments; i++) {
-        if (boundary_conditions[i] == VERTEX_CLAMPED) {
+        if (boundary_conditions[i] == EDGE_CLAMPED) {
             is_clamped = true;
             break;
         }

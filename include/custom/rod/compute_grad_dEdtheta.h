@@ -50,7 +50,7 @@ Eigen::VectorXf compute_grad_dEdtheta(
     // Remap to ignore boundary conidtions
     std::vector<float> grad_coeffs;
     for (int i = 0; i < num_segments; i++) {
-        if (boundry_conditions[i] == VERTEX_STRESS_FREE) {
+        if (boundry_conditions[i] == EDGE_STRESS_FREE) {
             grad_coeffs.push_back(grad(i));
         }
     }
