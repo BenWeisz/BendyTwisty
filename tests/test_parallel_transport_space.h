@@ -7,7 +7,7 @@
 
 #include <Eigen/Core>
 
-#include "../include/custom/rod/parallel_transport.h"
+#include "../include/custom/rod/parallel_transport_space.h"
 #include "util.h"
 
 TEST_CASE("Rotate from axis to axis", "[rotate_about_unit_axis]") {
@@ -60,7 +60,7 @@ TEST_CASE("Rotation about zero vector is same as original", "[rotate_about_unit_
     REQUIRE(v(2) == vrot(2));
 }
 
-TEST_CASE("Square Loop Rod", "[parallel_transport]") {
+TEST_CASE("Square Loop Rod", "[parallel_transport_space]") {
     Eigen::Matrix3f u0;
     u0 << 1, 0, 0, 0, 0, 1, 0, -1, 0;
 
@@ -79,7 +79,7 @@ TEST_CASE("Square Loop Rod", "[parallel_transport]") {
     kb(2, 2) = -2;
 
     Eigen::VectorXf phi = Eigen::VectorXf::Ones(3).array() * (M_PI / 2.0f);
-    std::vector<Eigen::Matrix3f> bishop_frames = parallel_transport(u0, kb, phi);
+    std::vector<Eigen::Matrix3f> bishop_frames = parallel_transport_space(u0, kb, phi);
 
     REQUIRE(matrices_are_equal(bishop_frames[0], u0, 9));
     REQUIRE(matrices_are_equal(bishop_frames[1], u1, 9));
@@ -87,7 +87,7 @@ TEST_CASE("Square Loop Rod", "[parallel_transport]") {
     REQUIRE(matrices_are_equal(bishop_frames[3], u3, 9));
 }
 
-TEST_CASE("Straight Rod", "[parallel_transport]") {
+TEST_CASE("Straight Rod", "[parallel_transport_space]") {
     Eigen::Matrix3f u0;
     u0 << 1, 0, 0, 0, 0, 1, 0, -1, 0;
 
@@ -97,7 +97,7 @@ TEST_CASE("Straight Rod", "[parallel_transport]") {
     kb(2, 2) = -1;
 
     Eigen::VectorXf phi = Eigen::VectorXf::Zero(3);
-    std::vector<Eigen::Matrix3f> bishop_frames = parallel_transport(u0, kb, phi);
+    std::vector<Eigen::Matrix3f> bishop_frames = parallel_transport_space(u0, kb, phi);
 
     REQUIRE(bishop_frames.size() == 4);
     REQUIRE(matrices_are_equal(bishop_frames[0], u0, 9));

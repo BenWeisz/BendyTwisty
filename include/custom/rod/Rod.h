@@ -16,7 +16,8 @@
 #include "compute_edges.h"
 #include "compute_kb.h"
 #include "compute_phi.h"
-#include "parallel_transport.h"
+#include "parallel_transport_space.h"
+#include "parallel_transport_time.h"
 #include "compute_material_frame.h"
 #include "compute_omega.h"
 #include "compute_neighbor_len.h"
@@ -99,7 +100,7 @@ class Rod : public Entity {
         // Update the bishop frames across the rod
         e = compute_edges(m_x);
         Eigen::VectorXf phi = compute_phi(e);
-        m_bf = parallel_transport(m_u0, kb, phi);
+        m_bf = parallel_transport_space(m_u0, kb, phi);
 
         //
         // Step 11
@@ -196,7 +197,9 @@ class Rod : public Entity {
         Eigen::VectorXf phibar = compute_phi(m_ebar);
 
         // Parallel transport the u0 frame along the rod
-        m_bf = parallel_transport(m_u0, kbbar, phibar);
+        m_bf = parallel_transport_space(m_u0, kbbar, phibar);
+
+        parallel_transport_time(m_bf, m_ebar);
 
         // Fix the thetas for the clamped frames
         m_theta = Eigen::VectorXf::Zero(m_Segments);

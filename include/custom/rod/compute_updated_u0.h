@@ -5,7 +5,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "custom/rod/parallel_transport.h"
+#include "custom/rod/parallel_transport_space.h"
 
 Eigen::Matrix3f compute_updated_u0(Eigen::MatrixXf& x, Eigen::Matrix3f& u0) {
     Eigen::Vector3f tt = u0.col(0);
