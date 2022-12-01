@@ -8,7 +8,7 @@
 #include "util.h"
 
 // Parallel transport the given frame along the rod
-std::vector<Eigen::Matrix3f> parallel_transport_space(Eigen::Matrix3f& f, Eigen::MatrixXf& kb, Eigen::VectorXf& phi) {
+std::vector<Eigen::Matrix3f> parallel_transport(Eigen::Matrix3f& f, Eigen::MatrixXf& kb, Eigen::VectorXf& phi) {
     int num_segments = kb.cols() + 1;
     std::vector<Eigen::Matrix3f> frames;
 
