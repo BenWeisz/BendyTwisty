@@ -1,14 +1,15 @@
 #pragma once
 
 #include <cmath>
+#include <iostream>
 
 #include <Eigen/Core>
-#include <Eigen/Sparse>
 #include <catch2/catch_approx.hpp>
 
 #include "../include/custom/rod/compute_omega.h"
 #include "../include/custom/rod/compute_hessian_d2Edtheta2.h"
 #include "../include/custom/rod/util.h"
+#include "util.h"
 
 TEST_CASE("Square loop twisted rod", "[compute_hessian_d2Edtheta2]") {
     Eigen::VectorXf neighbor_len_bar(3);
@@ -52,7 +53,7 @@ TEST_CASE("Square loop twisted rod", "[compute_hessian_d2Edtheta2]") {
         boundary_conditions[2] = EDGE_STRESS_FREE;
         boundary_conditions[3] = EDGE_STRESS_FREE;
 
-        Eigen::SparseMatrix<float> hessian = compute_hessian_d2Edtheta2(
+        Hessian hessian = compute_hessian_d2Edtheta2(
             beta,
             neighbor_len_bar,
             omega,
@@ -60,28 +61,22 @@ TEST_CASE("Square loop twisted rod", "[compute_hessian_d2Edtheta2]") {
             omega_bar,
             boundary_conditions);
 
-        REQUIRE(hessian.cols() == 4);
-        REQUIRE(hessian.rows() == 4);
+        REQUIRE(hessian.lower.size() == 4);
+        REQUIRE(hessian.center.size() == 4);
+        REQUIRE(hessian.upper.size() == 4);
 
-        REQUIRE(hessian.coeff(0, 0) == 3.0f);
-        REQUIRE(hessian.coeff(0, 1) == -1.0f);
-        REQUIRE(hessian.coeff(0, 2) == 0.0f);
-        REQUIRE(hessian.coeff(0, 3) == 0.0f);
+        Eigen::VectorXf lower(4);
+        lower << 0.0f, -1.0f, -1.0f, -1.0f;
 
-        REQUIRE(hessian.coeff(1, 0) == -1.0f);
-        REQUIRE(hessian.coeff(1, 1) == Catch::Approx(2 + (4 * s)));
-        REQUIRE(hessian.coeff(1, 2) == -1.0f);
-        REQUIRE(hessian.coeff(1, 3) == 0.0f);
+        Eigen::VectorXf center(4);
+        center << 3.0f, 2.0f + (4.0f * s), 2.0f, 1.0f - s2;
 
-        REQUIRE(hessian.coeff(2, 0) == 0.0f);
-        REQUIRE(hessian.coeff(2, 1) == -1.0f);
-        REQUIRE(hessian.coeff(2, 2) == 2.0f);
-        REQUIRE(hessian.coeff(2, 3) == -1.0f);
+        Eigen::VectorXf upper(4);
+        upper << -1.0f, -1.0f, -1.0f, 0.0f;
 
-        REQUIRE(hessian.coeff(3, 0) == 0.0f);
-        REQUIRE(hessian.coeff(3, 1) == 0.0f);
-        REQUIRE(hessian.coeff(3, 2) == -1.0f);
-        REQUIRE(hessian.coeff(3, 3) == Catch::Approx(1.0f - s2));
+        REQUIRE(matrices_are_equal(hessian.lower, lower, 4));
+        REQUIRE(matrices_are_equal(hessian.center, center, 4));
+        REQUIRE(matrices_are_equal(hessian.upper, upper, 4));
     }
 
     SECTION("Clamped ends") {
@@ -91,7 +86,7 @@ TEST_CASE("Square loop twisted rod", "[compute_hessian_d2Edtheta2]") {
         boundary_conditions[2] = EDGE_STRESS_FREE;
         boundary_conditions[3] = EDGE_CLAMPED;
 
-        Eigen::SparseMatrix<float> hessian = compute_hessian_d2Edtheta2(
+        Hessian hessian = compute_hessian_d2Edtheta2(
             beta,
             neighbor_len_bar,
             omega,
@@ -99,13 +94,21 @@ TEST_CASE("Square loop twisted rod", "[compute_hessian_d2Edtheta2]") {
             omega_bar,
             boundary_conditions);
 
-        REQUIRE(hessian.cols() == 2);
-        REQUIRE(hessian.rows() == 2);
+        REQUIRE(hessian.lower.size() == 4);
+        REQUIRE(hessian.center.size() == 4);
+        REQUIRE(hessian.upper.size() == 4);
 
-        REQUIRE(hessian.coeff(0, 0) == Catch::Approx(2 + (4 * s)));
-        REQUIRE(hessian.coeff(0, 1) == -1.0f);
+        Eigen::VectorXf lower(4);
+        lower << 0.0f, -1.0f, -1.0f, 0.0f;
 
-        REQUIRE(hessian.coeff(1, 0) == -1.0f);
-        REQUIRE(hessian.coeff(1, 1) == 2.0f);
+        Eigen::VectorXf center(4);
+        center << 1.0f, 2.0f + (4.0f * s), 2.0f, 1.0f;
+
+        Eigen::VectorXf upper(4);
+        upper << 0.0f, -1.0f, -1.0f, 0.0f;
+
+        REQUIRE(matrices_are_equal(hessian.lower, lower, 4));
+        REQUIRE(matrices_are_equal(hessian.center, center, 4));
+        REQUIRE(matrices_are_equal(hessian.upper, upper, 4));
     }
 }

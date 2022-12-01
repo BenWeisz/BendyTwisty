@@ -33,11 +33,9 @@ Hessian compute_hessian_d2Edtheta2(
     for (int i = 0; i < num_segments; i++) {
         // We don't want the clamped angles to be updated so we just set these entries to a 1x1 identity
         if (boundry_conditions[i] == EDGE_CLAMPED) {
+            lower(i) = 0.0f;
             center(i) = 1.0f;
-            if (i > 0)
-                lower(i - 1) = 0.0f;
-            if (i < num_segments - 1)
-                upper(i + 1) = 0.0f;
+            upper(i) = 0.0f;
             continue;
         }
 
