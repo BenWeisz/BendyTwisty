@@ -29,16 +29,16 @@ Eigen::VectorXf compute_grad_dEdtheta(
 
     // Compute the gradient of the W terms
     // dW_j/dtheta_j
-    Eigen::VectorXf dW_i_dtheta_j_i;
-    dW_i_dtheta_j_i = (omega.omega_j_i.transpose() * JB * (omega.omega_j_i - omega_bar.omega_j_i)).diagonal();
-    dW_i_dtheta_j_i = dW_i_dtheta_j_i.array() / neighbor_len_bar.array();
-    grad.segment(1, num_segments - 1) += dW_i_dtheta_j_i;
+    Eigen::VectorXf dW_j_dtheta_j;
+    dW_j_dtheta_j = (omega.omega_j_i.transpose() * JB * (omega.omega_j_i - omega_bar.omega_j_i)).diagonal();
+    dW_j_dtheta_j = dW_j_dtheta_j.array() / neighbor_len_bar.array();
+    grad.segment(1, num_segments - 1) += dW_j_dtheta_j;
 
     // dW_j+1/dtheta_j
-    Eigen::VectorXf dW_i_dtheta_j_ip1;
-    dW_i_dtheta_j_ip1 = (omega.omega_j_im1.transpose() * JB * (omega.omega_j_im1 - omega_bar.omega_j_im1)).diagonal();
-    dW_i_dtheta_j_ip1 = dW_i_dtheta_j_ip1.array() / neighbor_len_bar.array();
-    grad.segment(0, num_segments - 1) += dW_i_dtheta_j_ip1;
+    Eigen::VectorXf dW_jp1_dtheta_j;
+    dW_jp1_dtheta_j = (omega.omega_j_im1.transpose() * JB * (omega.omega_j_im1 - omega_bar.omega_j_im1)).diagonal();
+    dW_jp1_dtheta_j = dW_jp1_dtheta_j.array() / neighbor_len_bar.array();
+    grad.segment(0, num_segments - 1) += dW_jp1_dtheta_j;
 
     // Compute the twist difference m_i = theta_i - theta_i-1
     Eigen::VectorXf m = theta.segment(1, num_segments - 1) - theta.segment(0, num_segments - 1);
@@ -47,15 +47,9 @@ Eigen::VectorXf compute_grad_dEdtheta(
     grad.segment(1, num_segments - 1) += 2.0 * beta * ml;
     grad.segment(0, num_segments - 1) -= 2.0 * beta * ml;
 
-    // Remap to ignore boundary conidtions
-    std::vector<float> grad_coeffs;
-    for (int i = 0; i < num_segments; i++) {
-        if (boundry_conditions[i] == EDGE_STRESS_FREE) {
-            grad_coeffs.push_back(grad(i));
-        }
-    }
+    for (int i = 0; i < num_segments; i++)
+        if (boundry_conditions[i] == EDGE_CLAMPED)
+            grad(i) = 0.0f;
 
-    Eigen::VectorXf remapped_grad = Eigen::Map<Eigen::VectorXf, Eigen::Unaligned>(grad_coeffs.data(), grad_coeffs.size());
-
-    return remapped_grad;
+    return grad;
 }

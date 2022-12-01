@@ -3,11 +3,16 @@
 #include <vector>
 
 #include <Eigen/Core>
-#include <Eigen/Sparse>
 
 #include "util.h"
 
-Eigen::SparseMatrix<float> compute_hessian_d2Edtheta2(
+typedef struct Hessian {
+    Eigen::VectorXf lower;
+    Eigen::VectorXf center;
+    Eigen::VectorXf upper;
+} Hessian;
+
+Hessian compute_hessian_d2Edtheta2(
     float beta,
     Eigen::VectorXf& neighbor_len_bar,
     Omega& omega,
@@ -16,30 +21,30 @@ Eigen::SparseMatrix<float> compute_hessian_d2Edtheta2(
     char* boundry_conditions) {
     int num_segments = neighbor_len_bar.size() + 1;
 
-    std::vector<Eigen::Triplet<float>> coeffs;
+    Eigen::VectorXf upper = Eigen::VectorXf::Zero(num_segments);
+    Eigen::VectorXf center = Eigen::VectorXf::Zero(num_segments);
+    Eigen::VectorXf lower = Eigen::VectorXf::Zero(num_segments);
 
     // J matrix rotates PI/2 CC
     Eigen::Matrix2f J;
     J << 0, -1, 1, 0;
 
-    int free_count = 0;
-    for (int i = 0; i < num_segments; i++)
-        if (boundry_conditions[i] == EDGE_STRESS_FREE)
-            free_count++;
-
-    int k = 0;
     // Fill the hessian with values
     for (int i = 0; i < num_segments; i++) {
-        if (boundry_conditions[i] == EDGE_CLAMPED)
+        // We don't want the clamped angles to be updated so we just set these entries to a 1x1 identity
+        if (boundry_conditions[i] == EDGE_CLAMPED) {
+            center(i) = 1.0f;
+            if (i > 0)
+                lower(i - 1) = 0.0f;
+            if (i < num_segments - 1)
+                upper(i + 1) = 0.0f;
             continue;
+        }
 
         // j, j-1 term
         if (i - 1 >= 0) {
             float beta_term = 2 * beta / neighbor_len_bar(i - 1);
-            if (k - 1 >= 0) {
-                Eigen::Triplet<float> v(k, k - 1, -beta_term);
-                coeffs.push_back(v);
-            }
+            lower(i) += -beta_term;
 
             // subterms for j,j where j >= 1
             Eigen::Vector2f wij = omega.omega_j_i.col(i - 1);
@@ -52,17 +57,13 @@ Eigen::SparseMatrix<float> compute_hessian_d2Edtheta2(
             float term2 = (wij.dot(bending_modulus * (wij - wij_bar))) / neighbor_len_bar(i - 1);
 
             float jj_term = beta_term + term1 - term2;
-            Eigen::Triplet<float> jj(k, k, jj_term);
-            coeffs.push_back(jj);
+            center(i) += jj_term;
         }
 
         // j, j+1 term
         if (i + 1 < num_segments) {
             float beta_term = 2 * beta / neighbor_len_bar(i);
-            if (k + 1 < free_count) {
-                Eigen::Triplet<float> v(k, k + 1, -beta_term);
-                coeffs.push_back(v);
-            }
+            upper(i) += -beta_term;
 
             // subterms for j,j where 0 <= j <= num_segments - 2
             Eigen::Vector2f wij = omega.omega_j_im1.col(i);
@@ -75,17 +76,14 @@ Eigen::SparseMatrix<float> compute_hessian_d2Edtheta2(
             float term2 = (wij.dot(bending_modulus * (wij - wij_bar))) / neighbor_len_bar(i);
 
             float jj_term = beta_term + term1 - term2;
-            Eigen::Triplet<float> jj(k, k, jj_term);
-            coeffs.push_back(jj);
+            center(i) += jj_term;
         }
-
-        // This is only incremented if the vertex at i was not clamped
-        k++;
     }
 
-    // The hessian matrix
-    Eigen::SparseMatrix<float> hessian(free_count, free_count);
-    hessian.setZero();
-    hessian.setFromTriplets(coeffs.begin(), coeffs.end());
+    Hessian hessian;
+    hessian.lower = lower;
+    hessian.center = center;
+    hessian.upper = upper;
+
     return hessian;
 }

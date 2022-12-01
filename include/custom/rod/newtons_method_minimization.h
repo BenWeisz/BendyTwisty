@@ -3,13 +3,12 @@
 #include <vector>
 
 #include <Eigen/Core>
-#include <Eigen/Sparse>
-#include <Eigen/SparseCholesky>
 
 #include "compute_material_frame.h"
 #include "compute_omega.h"
 #include "compute_grad_dEdtheta.h"
 #include "compute_hessian_d2Edtheta2.h"
+#include "../../math/tridiagonal_solve.h"
 
 Omega newtons_compute_omega(std::vector<Eigen::Matrix3f>& bf,
                             Eigen::VectorXf& theta,
@@ -48,9 +47,10 @@ Eigen::VectorXf newtons_method_minimization(
         beta,
         initial_theta,
         boundry_conditions);
+    grad *= -1.0;
 
     // Compute the initial hessian
-    Eigen::SparseMatrix<float> hessian = compute_hessian_d2Edtheta2(
+    Hessian hessian = compute_hessian_d2Edtheta2(
         beta,
         neighbor_len_bar,
         omega,
@@ -61,29 +61,12 @@ Eigen::VectorXf newtons_method_minimization(
     int i = 0;
     Eigen::VectorXf theta = initial_theta;
     while (grad.norm() > tol && i < max_iters) {
-        Eigen::SimplicialLDLT<Eigen::SparseMatrix<float>> solver;
-        solver.compute(hessian);
-        if (solver.info() != Eigen::Success) {
-            std::cout << "Newtons: Decomposition failed!" << std::endl;
-            return theta;
-        }
-
-        // Solve for the searh direction
+        // Solve for the search direction
         // This uses the 2nd order taylor approximation to the energy function
-        Eigen::VectorXf d = solver.solve(-grad);
-        if (solver.info() != Eigen::Success) {
-            std::cout << "Newtons: Solving failed!" << std::endl;
-            return theta;
-        }
+        Eigen::VectorXf d = tridiagonal_solve(hessian.lower, hessian.center, hessian.upper, grad);
 
         // Update the theta parameter
-        int k = 0;
-        for (int j = 0; j < num_segments; j++) {
-            if (boundry_conditions[j] == EDGE_STRESS_FREE) {
-                theta(j) += d(k);
-                k++;
-            }
-        }
+        theta += d;
 
         // Compute the omegas
         omega = newtons_compute_omega(bf, theta, kb);
@@ -97,6 +80,7 @@ Eigen::VectorXf newtons_method_minimization(
             beta,
             theta,
             boundry_conditions);
+        grad *= -1.0f;
 
         // Compute the hessian
         hessian = compute_hessian_d2Edtheta2(
