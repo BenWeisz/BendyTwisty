@@ -1,7 +1,7 @@
 #include "ModelRenderer.h"
 
 ModelRenderer::ModelRenderer(GLFWwindow* window, const size_t width, const size_t height) : m_Window(window) {
-    glm::vec3 initialEye = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 initialEye = glm::vec3(0.0f, -2.0f, 10.0f);
     glm::vec3 initialCenter = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 initialUp = glm::vec3(0.0f, 1.0f, 0.0f);
 

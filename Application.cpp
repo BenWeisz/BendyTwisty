@@ -124,7 +124,7 @@ int main(void) {
     DirectionalLight directionalLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.2f, 1.5f), "Sun");
     modelRenderer.AddLight(&directionalLight);
 
-    modelRenderer.AddEntity(&plane);
+    // modelRenderer.AddEntity(&plane);
     modelRenderer.AddEntity(&rod);
 
     float deltaTime = 0.0f;

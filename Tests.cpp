@@ -21,3 +21,5 @@
 #include "tests/test_compute_grad_strain.h"
 #include "tests/test_compute_first_u0.h"
 #include "tests/test_compute_updated_u0.h"
+
+#include "tests/test_tridiagonal_solve.h"

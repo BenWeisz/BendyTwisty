@@ -35,6 +35,7 @@
 #include "compute_strain.h"
 #include "compute_grad_strain.h"
 #include "fast_manifold_projection.h"
+#include "compute_first_u0.h"
 #include "compute_updated_u0.h"
 
 class Rod : public Entity {
@@ -95,6 +96,7 @@ class Rod : public Entity {
         //
         // Update bishop frame
         // Update the initial bishop frame so the tangent is still tangent to the first edge
+        // This is done via time parallel transport
         m_u0 = compute_updated_u0(m_x, m_u0);
 
         // Update the bishop frames across the rod
@@ -120,8 +122,6 @@ class Rod : public Entity {
             m_NewtonsMaxIters);
 
         m_theta(m_Segments - 1) += m_DeltaTime;
-        std::cout << m_x << "\n"
-                  << std::endl;
 
         m_Model->SetVertexData(m_x.data(), 3 * (m_Segments + 1), GL_FLOAT);
     }
@@ -163,7 +163,8 @@ class Rod : public Entity {
         float startX = -rodLength / 2.0f;
         for (int i = 0; i < m_Segments + 1; i++) {
             m_x(0, i) = startX + (i * step);
-            m_x(1, i) = 0.0f;
+            float a = -sin(M_PI * (i * step) / rodLength) * (rodLength / 2.0);
+            m_x(1, i) = a;
             m_x(2, i) = 0.0f;
         }
 
@@ -174,9 +175,7 @@ class Rod : public Entity {
         m_v = Eigen::MatrixXf::Zero(3, m_Segments + 1);
 
         // Set up the natural undeformed defining bishop frame with t, u, v being columnwise
-        m_u0
-            << 1,
-            0, 0, 0, 0, 1, 0, -1, 0;
+        m_u0 = compute_first_u0(m_x.col(1) - m_x.col(0));
 
         // Set up the boundry conditions
         m_BoundryConditions = new char[m_Segments];
@@ -198,8 +197,6 @@ class Rod : public Entity {
 
         // Parallel transport the u0 frame along the rod
         m_bf = parallel_transport_space(m_u0, kbbar, phibar);
-
-        parallel_transport_time(m_bf, m_ebar);
 
         // Fix the thetas for the clamped frames
         m_theta = Eigen::VectorXf::Zero(m_Segments);
