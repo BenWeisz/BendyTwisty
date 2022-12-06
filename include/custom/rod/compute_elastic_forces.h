@@ -8,8 +8,6 @@
 #include "compute_grad_holonomy.h"
 #include "util.h"
 
-typedef Eigen::VectorXf FORCE;
-
 FORCE compute_elastic_forces(EPGradX& pdE_pdx, Eigen::VectorXf& pdE_pdtheta, PsiGradSum& psi_grad_sum, char* boundary_conditions) {
     int num_segments = pdE_pdtheta.size();
 

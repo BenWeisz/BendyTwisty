@@ -6,6 +6,7 @@
 #include <Eigen/Geometry>
 
 #include "custom/rod/parallel_transport.h"
+#include "util.h"
 
 Eigen::Matrix3f compute_updated_u0(Eigen::MatrixXf& x, Eigen::Matrix3f& u0) {
     Eigen::Vector3f tt = u0.col(0);
@@ -17,7 +18,8 @@ Eigen::Matrix3f compute_updated_u0(Eigen::MatrixXf& x, Eigen::Matrix3f& u0) {
     ttp1 = ttp1.normalized();
 
     // Compute the angle between the two vectors
-    float phi = acos(tt.dot(ttp1));
+    float dot_angle = clamp(tt.dot(ttp1), -1.0f, 1.0f);
+    float phi = acos(dot_angle);
     Eigen::Vector3f axis = tt.cross(ttp1);
     axis = axis.normalized();
 

@@ -77,7 +77,7 @@ int main(void) {
     ModelRenderer modelRenderer(window, WIDTH, HEIGHT);
 
     Plane plane;
-    Rod rod(10.0f, 5);
+    Rod rod(10.0f, 20);
 
     // Directional Light
     ShaderProgram phongDirectionalFnShader(RESOURCE_DIR("normals_f.vert"), RESOURCE_DIR("light_shading_directional_fn.frag"));
