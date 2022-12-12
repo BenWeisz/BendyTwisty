@@ -12,4 +12,4 @@ Work in progress:
 
 - I'm currently working through implementing some of the energy gradients and adding tests using catch2
 
-![Work in progress](https://github.com/BenWeisz/BendyTwisty/blob/main/samples/sample2.png)
+https://user-images.githubusercontent.com/15256744/207141576-557526a9-d4b1-4ab8-8b9c-1da7e6ee7f5c.mov
